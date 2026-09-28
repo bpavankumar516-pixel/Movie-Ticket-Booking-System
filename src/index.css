@@ -1,134 +1,187 @@
 @import "tailwindcss";
 
+:root {
+  --primary: #0FA58A;        /* teal, active menu, buttons, links */
+  --primary-dark: #0B7F6C;
+  --primary-light: #DFF5F0;  /* icon tiles, badges, soft backgrounds */
+  --primary-gradient: linear-gradient(135deg, #14B8A0, #0B8F7A);
+  --bg-page: #F3F8F8;        /* page background, very light teal-gray */
+  --bg-card: #FFFFFF;
+  --text-heading: #0F1F2E;
+  --text-body: #4B5B6B;
+  --text-muted: #8A97A6;
+  --border: #E6EEF0;
+  --success-bg: #D8F3EA;  --success-text: #0B8F6C;   /* Confirmed / Coming Soon */
+  --warning-bg: #FDEFC7;  --warning-text: #C58A00;   /* Pending */
+  --danger-bg:  #FADADD;  --danger-text:  #D64550;   /* Cancelled */
+  --star: #F5B301;
+  --hero-bg: linear-gradient(120deg, #0B3B45, #0A5A5F);
+  --font-poppins: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@theme {
+  --color-movtego-primary: var(--primary);
+  --color-movtego-dark: var(--primary-dark);
+  --color-movtego-light: var(--primary-light);
+  --color-movtego-page: var(--bg-page);
+  --color-movtego-card: var(--bg-card);
+  --color-movtego-heading: var(--text-heading);
+  --color-movtego-body: var(--text-body);
+  --color-movtego-muted: var(--text-muted);
+  --color-movtego-border: var(--border);
+  --color-movtego-star: var(--star);
+}
+
 @layer base {
-  :root {
-    --font-jakarta: 'Plus Jakarta Sans', sans-serif;
-    --font-outfit: 'Outfit', sans-serif;
-    --font-montserrat: 'Montserrat', sans-serif;
+  html, body {
+    overflow-x: clip;
   }
 
   body {
-    font-family: var(--font-jakarta);
-    background-color: #060A08;
-    color: #ffffff;
-    overflow-x: hidden;
+    font-family: var(--font-poppins);
+    background-color: var(--bg-page);
+    color: var(--text-heading);
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-outfit);
+    font-family: var(--font-poppins);
+    color: var(--text-heading);
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #060A08;
+  background: var(--bg-page);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #141F1A;
+  background: var(--primary);
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #00D690;
+/* MOVTEGO Design System Utility Classes bound to :root CSS variables */
+.bg-movtego-page {
+  background-color: var(--bg-page);
 }
 
-/* MOVIEGO Custom Utility Classes */
-.glass-card-moviego {
-  background: rgba(14, 20, 17, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+.movtego-card {
+  background-color: var(--bg-card);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px -4px rgba(15, 31, 46, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.glass-card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.movtego-sidebar {
+  background-color: var(--bg-card);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px -5px rgba(15, 31, 46, 0.05);
+  position: sticky;
+  top: 1.25rem;
 }
 
-.glass-card-hover:hover {
-  background: rgba(18, 26, 22, 0.95);
-  border-color: rgba(0, 214, 144, 0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 35px -10px rgba(0, 214, 144, 0.25);
+.text-heading {
+  color: var(--text-heading);
 }
 
-.btn-emerald-gradient {
-  background: linear-gradient(135deg, #00D690 0%, #00B377 100%);
-  color: #060A08;
-  font-weight: 700;
-  box-shadow: 0 4px 20px rgba(0, 214, 144, 0.35);
-  transition: all 0.3s ease;
+.text-body {
+  color: var(--text-body);
 }
 
-.btn-emerald-gradient:hover {
-  background: linear-gradient(135deg, #00EF9F 0%, #00C885 100%);
-  box-shadow: 0 6px 28px rgba(0, 214, 144, 0.55);
-  transform: translateY(-2px);
+.text-muted {
+  color: var(--text-muted);
 }
 
-.btn-coral-gradient {
-  background: linear-gradient(135deg, #FF6B6B 0%, #E05252 100%);
-  color: #ffffff;
-  font-weight: 700;
-  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.35);
-  transition: all 0.3s ease;
+.border-custom {
+  border-color: var(--border);
 }
 
-.btn-coral-gradient:hover {
-  background: linear-gradient(135deg, #FF8282 0%, #EE5D5D 100%);
-  box-shadow: 0 6px 25px rgba(255, 107, 107, 0.5);
-  transform: translateY(-2px);
+.bg-hero-gradient {
+  background: var(--hero-bg);
 }
 
-.text-gradient-emerald {
-  background: linear-gradient(135deg, #FFFFFF 0%, #00D690 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.bg-primary-gradient {
+  background: var(--primary-gradient);
 }
 
-/* Seat Map Custom Classes matching MOVIEGO theme */
-.seat-available {
-  background-color: #16221D;
-  color: #94A3B8;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.sidebar-link-inactive {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.seat-available:hover {
-  background-color: #23362E;
-  color: #ffffff;
-  border-color: rgba(0, 214, 144, 0.4);
+.sidebar-link-inactive:hover {
+  color: var(--primary);
+  background-color: var(--primary-light);
 }
 
-.seat-selected {
-  background-color: #00D690 !important;
-  color: #060A08 !important;
-  font-weight: 800;
-  box-shadow: 0 0 16px rgba(0, 214, 144, 0.85) !important;
-  border-color: #00FFAC !important;
+.sidebar-profile-bg {
+  background-color: var(--primary-light);
+  border: 1px solid var(--border);
 }
 
-.seat-booked {
-  background-color: #381414 !important;
-  color: #FF6B6B !important;
-  border-color: #991B1B !important;
-  cursor: not-allowed;
+.stat-icon-bg {
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
-.cinema-screen-glow-emerald {
-  box-shadow: 0 -15px 35px rgba(0, 214, 144, 0.45);
+/* Status Pills dynamically using :root variables */
+.status-confirmed, .status-coming-soon {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  font-weight: 600;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 9999px;
 }
 
-/* Keyframe animations */
+.status-pending {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  font-weight: 600;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+}
+
+.status-cancelled {
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+  font-weight: 600;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+}
+
+/* Primary Teal Buttons using var(--primary) and var(--primary-dark) */
+.btn-teal {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 4px 16px rgba(15, 165, 138, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-teal:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(15, 165, 138, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Keyframe Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }

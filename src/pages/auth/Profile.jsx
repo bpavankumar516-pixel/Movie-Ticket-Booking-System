@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { User, Mail, Phone, Calendar, ShieldCheck, Ticket, Heart, Save, Edit3, MapPin } from 'lucide-react';
+import { Mail, Save, Edit3, MapPin, Ticket, Heart } from 'lucide-react';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 import { Link } from 'react-router-dom';
@@ -25,46 +25,38 @@ export const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 py-4 animate-fade-in text-left">
+    <div className="max-w-4xl mx-auto space-y-6 py-2 animate-fade-in text-left">
       {/* Profile Header Card */}
-      <div className="glass-card-moviego rounded-3xl p-6 md:p-8 relative overflow-hidden border border-white/10">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#00D690]/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="movtego-card p-6 md:p-8 relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-          <div className="relative group">
+          <div className="relative shrink-0">
             <img
-              src={user.avatar}
+              src={user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
               alt={user.name}
-              className="w-24 h-24 md:w-28 md:h-28 rounded-3xl object-cover border-2 border-[#00D690] shadow-xl shadow-emerald-500/30"
+              className="w-24 h-24 rounded-full object-cover border-4 border-[#0FA58A] shadow-md"
             />
           </div>
 
-          <div className="text-center md:text-left space-y-1.5 flex-1">
+          <div className="text-center md:text-left space-y-1 flex-1">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-              <h1 className="text-2xl md:text-3xl font-black font-outfit text-white">
+              <h1 className="text-2xl font-bold text-[#0F1F2E]">
                 {user.name}
               </h1>
-              {user.role === 'admin' ? (
-                <span className="px-2.5 py-0.5 bg-purple-950 border border-purple-700 text-purple-300 text-[10px] font-bold rounded-full uppercase tracking-wider">
-                  Admin System
-                </span>
-              ) : (
-                <span className="px-2.5 py-0.5 bg-[#00D690]/20 border border-[#00D690]/40 text-[#00D690] text-[10px] font-bold rounded-full uppercase tracking-wider">
-                  MOVIEGO VIP Club
-                </span>
-              )}
+              <span className="px-3 py-0.5 bg-[#DFF5F0] text-[#0FA58A] text-[10px] font-bold rounded-full uppercase tracking-wider">
+                {user.role === 'admin' ? 'System Administrator' : 'MOVTEGO VIP Member'}
+              </span>
             </div>
 
-            <p className="text-xs text-slate-400 flex items-center justify-center md:justify-start gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-[#00D690]" /> {user.email}
+            <p className="text-xs text-[#8A97A6] flex items-center justify-center md:justify-start gap-1.5">
+              <Mail className="w-3.5 h-3.5 text-[#0FA58A]" /> {user.email}
             </p>
-            <p className="text-xs text-slate-400 flex items-center justify-center md:justify-start gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#00D690]" /> {user.location || 'ChengDu, Wuhou'}
+            <p className="text-xs text-[#8A97A6] flex items-center justify-center md:justify-start gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#0FA58A]" /> {user.location || 'ChengDu, Wuhou'}
             </p>
           </div>
 
           <Button
-            variant={isEditing ? 'outline' : 'emerald'}
+            variant={isEditing ? 'outline' : 'teal'}
             size="sm"
             onClick={() => setIsEditing(!isEditing)}
             icon={Edit3}
@@ -76,27 +68,27 @@ export const Profile = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass-card-moviego rounded-2xl p-4 text-center border border-white/10">
-          <p className="text-xs text-slate-400 uppercase font-bold">Total Bookings</p>
-          <p className="text-2xl font-black font-outfit text-white mt-1">
+        <div className="movtego-card p-4 text-center">
+          <p className="text-xs text-[#8A97A6] uppercase font-semibold">Total Bookings</p>
+          <p className="text-2xl font-bold text-[#0F1F2E] mt-1">
             {user.stats?.totalBookings || 18}
           </p>
         </div>
-        <div className="glass-card-moviego rounded-2xl p-4 text-center border border-white/10">
-          <p className="text-xs text-slate-400 uppercase font-bold">Confirmed</p>
-          <p className="text-2xl font-black font-outfit text-[#00D690] mt-1">
+        <div className="movtego-card p-4 text-center">
+          <p className="text-xs text-[#8A97A6] uppercase font-semibold">Confirmed</p>
+          <p className="text-2xl font-bold text-[#0FA58A] mt-1">
             {user.stats?.completedBookings || 16}
           </p>
         </div>
-        <div className="glass-card-moviego rounded-2xl p-4 text-center border border-white/10">
-          <p className="text-xs text-slate-400 uppercase font-bold">Cancelled</p>
-          <p className="text-2xl font-black font-outfit text-red-400 mt-1">
+        <div className="movtego-card p-4 text-center">
+          <p className="text-xs text-[#8A97A6] uppercase font-semibold">Cancelled</p>
+          <p className="text-2xl font-bold text-red-500 mt-1">
             {user.stats?.cancelledBookings || 2}
           </p>
         </div>
-        <div className="glass-card-moviego rounded-2xl p-4 text-center border border-white/10">
-          <p className="text-xs text-slate-400 uppercase font-bold">Favorite Genre</p>
-          <p className="text-base font-bold font-outfit text-[#00D690] mt-2">
+        <div className="movtego-card p-4 text-center">
+          <p className="text-xs text-[#8A97A6] uppercase font-semibold">Favorite Genre</p>
+          <p className="text-base font-bold text-[#0FA58A] mt-2">
             {user.stats?.favoriteGenre || 'Sci-Fi'}
           </p>
         </div>
@@ -104,8 +96,8 @@ export const Profile = () => {
 
       {/* Edit Form or Quick Action Links */}
       {isEditing ? (
-        <div className="glass-card-moviego rounded-3xl p-6 border border-white/10 space-y-6">
-          <h2 className="text-lg font-bold font-outfit text-white border-b border-white/10 pb-3">
+        <div className="movtego-card p-6 space-y-6">
+          <h2 className="text-base font-bold text-[#0F1F2E] border-b border-[#E8F0F0] pb-3">
             Update Personal Details
           </h2>
           <form onSubmit={handleSave} className="space-y-4 max-w-lg">
@@ -133,7 +125,7 @@ export const Profile = () => {
               helperText="Paste direct image URL for profile photo"
             />
             <div className="flex gap-3 pt-2">
-              <Button type="submit" variant="emerald" icon={Save}>
+              <Button type="submit" variant="teal" icon={Save}>
                 Save Changes
               </Button>
             </div>
@@ -143,34 +135,34 @@ export const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             to="/booking-history"
-            className="glass-card-moviego glass-card-hover rounded-2xl p-6 border border-white/10 flex items-center justify-between group"
+            className="movtego-card p-6 flex items-center justify-between group hover:border-[#0FA58A] transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#00D690]/20 border border-[#00D690]/40 flex items-center justify-center text-[#00D690]">
+              <div className="w-12 h-12 rounded-2xl bg-[#DFF5F0] flex items-center justify-center text-[#0FA58A]">
                 <Ticket className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white group-hover:text-[#00D690] transition-colors">
-                  My MOVIEGO E-Tickets
+                <h3 className="text-sm font-bold text-[#0F1F2E] group-hover:text-[#0FA58A] transition-colors">
+                  My MOVTEGO E-Tickets
                 </h3>
-                <p className="text-xs text-slate-400">View barcodes, seat numbers & digital tickets</p>
+                <p className="text-xs text-[#8A97A6]">View seat numbers & digital tickets</p>
               </div>
             </div>
           </Link>
 
           <Link
-            to="/favorites"
-            className="glass-card-moviego glass-card-hover rounded-2xl p-6 border border-white/10 flex items-center justify-between group"
+            to="/movies"
+            className="movtego-card p-6 flex items-center justify-between group hover:border-[#0FA58A] transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#00D690]/20 border border-[#00D690]/40 flex items-center justify-center text-[#00D690]">
+              <div className="w-12 h-12 rounded-2xl bg-[#DFF5F0] flex items-center justify-center text-[#0FA58A]">
                 <Heart className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white group-hover:text-[#00D690] transition-colors">
+                <h3 className="text-sm font-bold text-[#0F1F2E] group-hover:text-[#0FA58A] transition-colors">
                   Movie Watchlist
                 </h3>
-                <p className="text-xs text-slate-400">Saved upcoming releases and favorite blockbusters</p>
+                <p className="text-xs text-[#8A97A6]">Saved upcoming releases and favorites</p>
               </div>
             </div>
           </Link>

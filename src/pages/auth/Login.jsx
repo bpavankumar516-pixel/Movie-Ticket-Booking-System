@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Mail, Lock, Sparkles, ChevronLeft, ChevronRight, UserCheck, ArrowRight, 
-  Star, Flame, User, Phone, CheckCircle2, ArrowLeft, ShieldCheck, Play
+  Star, Flame, User, Phone, CheckCircle2, ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Input } from '../../components/common/Input';
@@ -12,7 +12,7 @@ import { Button } from '../../components/common/Button';
 const SLIDES = [
   {
     id: 1,
-    title: 'Dune: Part Two (沙丘2)',
+    title: 'Avatar: The Way of Water',
     tagline: 'Long live the fighters.',
     likes: '4,956',
     backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2400&auto=format&fit=crop&q=95',
@@ -23,12 +23,12 @@ const SLIDES = [
   },
   {
     id: 2,
-    title: 'Ready Player One',
-    tagline: 'Welcome to the OASIS.',
+    title: 'Dune: Part Two',
+    tagline: 'Long live the fighters.',
     likes: '8,920',
     backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=2400&auto=format&fit=crop&q=95',
     poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=1000&auto=format&fit=crop&q=95',
-    tag: '⚡ VR BLOCKBUSTER',
+    tag: '⚡ BLOCKBUSTER',
     rating: '9.2',
     genres: ['Sci-Fi', 'Action', '4DX'],
   },
@@ -39,7 +39,7 @@ const SLIDES = [
     likes: '9,980',
     backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=2400&auto=format&fit=crop&q=95',
     poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop&q=95',
-    tag: '⭐ ALL TIME TOP RATED',
+    tag: '⭐ TOP RATED',
     rating: '9.8',
     genres: ['Action', 'Sci-Fi', 'Dolby Atmos'],
   }
@@ -155,114 +155,107 @@ export const Login = () => {
   const slide = SLIDES[currentSlide];
 
   return (
-    <div className="w-screen min-h-screen lg:h-screen bg-[#060A08] text-white flex flex-col lg:flex-row overflow-hidden selection:bg-[#00D690] selection:text-black relative">
+    <div className="w-screen min-h-screen lg:h-screen bg-[#F3F8F8] text-[#0F1F2E] flex flex-col lg:flex-row overflow-hidden font-['Poppins',sans-serif] relative">
       
-      {/* LEFT COLUMN: Modern 2026 Cinematic Hero Slider */}
-      <div className="w-full lg:w-7/12 xl:w-7.5/12 h-[420px] sm:h-[500px] lg:h-full relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group select-none">
+      {/* LEFT COLUMN: Modern Cinematic Hero Slider */}
+      <div className="w-full lg:w-7/12 xl:w-7.5/12 h-[400px] sm:h-[480px] lg:h-full relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group select-none">
         
-        {/* Crisp Animated Backdrop */}
+        {/* Crisp Backdrop */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src={slide.backdrop}
             alt={slide.title}
-            className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-105 filter brightness-[0.7] contrast-[1.15]"
+            className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-105 filter brightness-[0.7] contrast-[1.05]"
           />
-          {/* Emerald Vignette Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060A08] via-[#060A08]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#060A08]/90 via-transparent to-[#060A08]" />
-          <div className="absolute inset-0 bg-[#00D690]/10 mix-blend-overlay pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
         </div>
 
         {/* Brand Header */}
         <div className="relative z-10 flex items-center justify-between">
-          <Link to="/dashboard" className="flex items-center gap-3 group/logo">
-            <div className="w-11 h-11 rounded-2xl bg-[#00D690] flex items-center justify-center text-[#060A08] font-black shadow-xl shadow-emerald-500/40 group-hover/logo:scale-105 transition-transform">
-              <div className="flex gap-1 items-center">
-                <div className="w-1.5 h-4.5 bg-[#060A08] rounded-full transform -rotate-12" />
-                <div className="w-1.5 h-4.5 bg-[#060A08] rounded-full transform rotate-12" />
-              </div>
+          <Link to="/dashboard" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#0FA58A] flex items-center justify-center text-white font-bold shadow-md shadow-[#0FA58A]/30 shrink-0">
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M6 4h3a1 1 0 011 1v14a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 0h3a1 1 0 011 1v14a1 1 0 01-1 1h-3a1 1 0 01-1-1V5a1 1 0 011-1z" transform="rotate(25 12 12)" />
+              </svg>
             </div>
             <div className="flex flex-col text-left">
-              <span className="font-outfit font-black text-2xl md:text-3xl tracking-wider text-white">
-                MOVIE<span className="text-[#00D690]">GO</span>
+              <span className="font-bold text-2xl tracking-tight text-white">
+                MOVTEGO
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-[#00D690] font-extrabold -mt-1">
-                Next-Gen Cinema Booking
+              <span className="text-[10px] text-[#DFF5F0] font-medium">
+                Cinema Manager
               </span>
             </div>
           </Link>
 
           {/* Tag Pill */}
-          <span className="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 bg-[#0E1411]/90 backdrop-blur-xl border border-[#00D690]/40 rounded-full text-xs font-black text-[#00D690] uppercase tracking-wider shadow-xl">
-            <Sparkles className="w-3.5 h-3.5 text-[#00D690]" /> {slide.tag}
+          <span className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 bg-[#0FA58A] text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
+            <Sparkles className="w-3.5 h-3.5" /> {slide.tag}
           </span>
         </div>
 
         {/* Movie Showcase Box */}
         <div className="relative z-10 mt-auto flex items-end gap-6 pt-6">
-          {/* Floating Poster Card */}
-          <div className="relative shrink-0 w-32 h-48 sm:w-44 sm:h-60 rounded-3xl overflow-hidden border-2 border-[#00D690]/50 shadow-[0_20px_60px_rgba(0,0,0,0.9)] transform -rotate-1 group-hover:rotate-0 transition-all duration-500">
+          <div className="relative shrink-0 w-28 h-40 sm:w-40 sm:h-56 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
             <img
               src={slide.poster}
               alt={slide.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-2.5">
-              <span className="flex items-center gap-1 text-[11px] font-black text-[#060A08] bg-[#00D690] px-2.5 py-0.5 rounded-full shadow-lg">
-                <Star className="w-3 h-3 fill-[#060A08]" /> {slide.rating}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-2">
+              <span className="flex items-center gap-1 text-[11px] font-bold text-white bg-[#0FA58A] px-2 py-0.5 rounded-full shadow-md">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {slide.rating}
               </span>
             </div>
           </div>
 
-          {/* Details & Controls */}
           <div className="flex-1 space-y-2 text-left">
             <div className="flex flex-wrap items-center gap-1.5">
               {slide.genres.map((g, i) => (
-                <span key={i} className="px-3 py-1 bg-[#00D690]/20 border border-[#00D690]/40 text-[#00D690] text-xs font-bold rounded-full">
+                <span key={i} className="px-2.5 py-0.5 bg-[#0FA58A]/30 border border-[#0FA58A]/50 text-white text-xs font-semibold rounded-full">
                   {g}
                 </span>
               ))}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black font-outfit text-white leading-tight flex items-center gap-3 drop-shadow-xl">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight flex items-center gap-2">
               {slide.title} 
-              <span className="text-xs text-[#FF6B6B] font-bold flex items-center gap-1">
-                <Flame className="w-4 h-4 fill-[#FF6B6B]" /> {slide.likes}
+              <span className="text-xs text-amber-400 font-bold flex items-center gap-1">
+                <Flame className="w-4 h-4 fill-amber-400" /> {slide.likes}
               </span>
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-300 italic max-w-md hidden sm:block">
+            <p className="text-xs text-slate-300 italic max-w-md hidden sm:block font-normal">
               "{slide.tagline}"
             </p>
 
             {/* Carousel Dots & Controls */}
-            <div className="flex items-center justify-between pt-3 max-w-md">
+            <div className="flex items-center justify-between pt-2 max-w-md">
               <div className="flex items-center gap-1.5">
                 {SLIDES.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                       currentSlide === idx 
-                        ? 'w-9 bg-[#00D690] shadow-[0_0_12px_#00D690]' 
-                        : 'w-2.5 bg-white/30 hover:bg-white/60'
+                        ? 'w-8 bg-[#0FA58A]' 
+                        : 'w-2 bg-white/40 hover:bg-white/70'
                     }`}
                   />
                 ))}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1))}
-                  className="p-2.5 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition-transform active:scale-90"
-                  title="Previous"
+                  className="p-2 rounded-full bg-black/50 hover:bg-black text-white transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev + 1) % SLIDES.length)}
-                  className="p-2.5 rounded-full bg-black/70 hover:bg-black text-white border border-white/20 transition-transform active:scale-90"
-                  title="Next"
+                  className="p-2 rounded-full bg-black/50 hover:bg-black text-white transition-all cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -271,40 +264,30 @@ export const Login = () => {
 
           </div>
         </div>
-
-        {/* Curved Divider */}
-        <div className="hidden lg:block absolute top-0 bottom-0 -right-1 z-20 w-14 pointer-events-none text-[#0E1411]">
-          <svg className="h-full w-full fill-current" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0 0 C 65 30, 65 70, 0 100 L 100 100 L 100 0 Z" />
-          </svg>
-        </div>
       </div>
 
-      {/* RIGHT COLUMN: Ultra Modern Present-Gen Auth Card */}
-      <div className="w-full lg:w-5/12 xl:w-4.5/12 h-full bg-[#0E1411] p-6 sm:p-10 lg:p-12 flex flex-col justify-center relative overflow-y-auto z-10 border-l border-white/5">
+      {/* RIGHT COLUMN: Auth Card */}
+      <div className="w-full lg:w-5/12 xl:w-4.5/12 h-full bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-center relative overflow-y-auto z-10 border-l border-[#E8F0F0]">
         
-        {/* Glow Blob */}
-        <div className="absolute top-1/4 -right-20 w-80 h-80 bg-[#00D690]/15 rounded-full blur-[120px] pointer-events-none" />
-
-        {/* Segmented Tab Switcher (Sign In vs Create Account) */}
+        {/* Segmented Tab Switcher */}
         {activeTab !== 'forgot' && (
-          <div className="w-full bg-[#141F1A] p-1.5 rounded-2xl border border-white/10 flex items-center mb-6 shadow-inner">
+          <div className="w-full bg-[#F3F8F8] p-1.5 rounded-2xl border border-[#E8F0F0] flex items-center mb-6">
             <button
               onClick={() => setActiveTab('login')}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${
+              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'login'
-                  ? 'bg-[#00D690] text-[#060A08] shadow-lg shadow-emerald-500/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/25'
+                  : 'text-[#8A97A6] hover:text-[#0F1F2E]'
               }`}
             >
               Sign In
             </button>
             <button
               onClick={() => setActiveTab('register')}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${
+              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'register'
-                  ? 'bg-[#00D690] text-[#060A08] shadow-lg shadow-emerald-500/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/25'
+                  : 'text-[#8A97A6] hover:text-[#0F1F2E]'
               }`}
             >
               Create Account
@@ -317,9 +300,9 @@ export const Login = () => {
           <button
             type="button"
             onClick={handleDemoAccess}
-            className="w-full mb-6 flex items-center justify-center gap-2.5 py-3.5 px-4 bg-gradient-to-r from-[#00D690]/20 via-[#00D690]/10 to-[#00D690]/20 hover:from-[#00D690]/30 hover:to-[#00D690]/30 border border-[#00D690]/50 text-[#00D690] rounded-2xl text-xs font-black transition-all active:scale-98 shadow-xl shadow-emerald-950/40 group"
+            className="w-full mb-6 flex items-center justify-center gap-2 py-3 px-4 bg-[#DFF5F0] hover:bg-[#C8EFE7] text-[#0FA58A] border border-[#C4EFE6] rounded-2xl text-xs font-bold transition-all cursor-pointer shadow-sm group"
           >
-            <UserCheck className="w-4 h-4 text-[#00D690] group-hover:scale-110 transition-transform" />
+            <UserCheck className="w-4 h-4 text-[#0FA58A] group-hover:scale-110 transition-transform" />
             <span>⚡ 1-Click Instant Demo Entrance</span>
           </button>
         )}
@@ -330,7 +313,7 @@ export const Login = () => {
             <Input
               label="Email Address"
               type="email"
-              placeholder="martin@moviego.com"
+              placeholder="admin@movtego.com"
               icon={Mail}
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
@@ -350,12 +333,12 @@ export const Login = () => {
             />
 
             <div className="flex items-center justify-between text-xs pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white font-medium">
+              <label className="flex items-center gap-2 cursor-pointer text-[#8A97A6] hover:text-[#0F1F2E] font-medium">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded-md border-slate-700 bg-gray-900 text-[#00D690] focus:ring-[#00D690]"
+                  className="rounded border-[#E8F0F0] text-[#0FA58A] focus:ring-[#0FA58A]"
                 />
                 <span>Remember me</span>
               </label>
@@ -366,7 +349,7 @@ export const Login = () => {
                   setActiveTab('forgot');
                   setForgotSubmitted(false);
                 }}
-                className="text-[#00D690] hover:text-[#00EF9F] font-extrabold transition-colors"
+                className="text-[#0FA58A] font-bold hover:underline cursor-pointer"
               >
                 Forgot Password?
               </button>
@@ -374,12 +357,12 @@ export const Login = () => {
 
             <Button
               type="submit"
-              variant="emerald"
+              variant="teal"
               size="lg"
               fullWidth
               isLoading={loading}
               icon={ArrowRight}
-              className="mt-3 py-4 rounded-2xl font-black text-[#060A08] shadow-xl shadow-emerald-500/30"
+              className="mt-3 py-3.5 rounded-2xl font-bold"
             >
               Sign In to Account
             </Button>
@@ -388,11 +371,11 @@ export const Login = () => {
 
         {/* TAB 2: CREATE ACCOUNT FORM */}
         {activeTab === 'register' && (
-          <form onSubmit={handleRegisterSubmit} className="space-y-3.5 text-left animate-fade-in">
+          <form onSubmit={handleRegisterSubmit} className="space-y-3 text-left animate-fade-in">
             <Input
               label="Full Name"
               type="text"
-              placeholder="Martin Gu"
+              placeholder="Admin User"
               icon={User}
               value={registerData.name}
               onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
@@ -404,7 +387,7 @@ export const Login = () => {
               <Input
                 label="Email"
                 type="email"
-                placeholder="martin@moviego.com"
+                placeholder="admin@movtego.com"
                 icon={Mail}
                 value={registerData.email}
                 onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
@@ -448,36 +431,36 @@ export const Login = () => {
               />
             </div>
 
-            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-300 pt-1">
+            <label className="flex items-start gap-2 cursor-pointer text-xs text-[#8A97A6] pt-1">
               <input
                 type="checkbox"
                 checked={registerData.acceptTerms}
                 onChange={(e) => setRegisterData({ ...registerData, acceptTerms: e.target.checked })}
-                className="mt-0.5 rounded border-slate-700 bg-gray-900 text-[#00D690] focus:ring-[#00D690]"
+                className="mt-0.5 rounded border-[#E8F0F0] text-[#0FA58A] focus:ring-[#0FA58A]"
               />
-              <span>I accept the MOVIEGO Terms of Service & Privacy Policy</span>
+              <span>I accept the MOVTEGO Terms of Service & Privacy Policy</span>
             </label>
 
             <Button
               type="submit"
-              variant="emerald"
+              variant="teal"
               size="lg"
               fullWidth
               isLoading={loading}
               icon={ArrowRight}
-              className="mt-2 py-4 rounded-2xl font-black text-[#060A08] shadow-xl shadow-emerald-500/30"
+              className="mt-2 py-3.5 rounded-2xl font-bold"
             >
               Complete Registration
             </Button>
           </form>
         )}
 
-        {/* TAB 3: INLINE FORGOT PASSWORD VIEW (NO POPUP MODALS) */}
+        {/* TAB 3: INLINE FORGOT PASSWORD VIEW */}
         {activeTab === 'forgot' && (
-          <div className="space-y-6 text-left animate-fade-in">
+          <div className="space-y-5 text-left animate-fade-in">
             <button
               onClick={() => setActiveTab('login')}
-              className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#00D690] transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8A97A6] hover:text-[#0FA58A] transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Sign In
             </button>
@@ -485,10 +468,10 @@ export const Login = () => {
             {!forgotSubmitted ? (
               <>
                 <div className="space-y-1">
-                  <h1 className="text-3xl font-black font-outfit text-white tracking-tight">
+                  <h1 className="text-2xl font-bold text-[#0F1F2E] tracking-tight">
                     Reset Password
                   </h1>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-[#8A97A6] leading-relaxed">
                     Enter your registered email address to receive password reset instructions.
                   </p>
                 </div>
@@ -497,7 +480,7 @@ export const Login = () => {
                   <Input
                     label="Email Address"
                     type="email"
-                    placeholder="martin@moviego.com"
+                    placeholder="admin@movtego.com"
                     icon={Mail}
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
@@ -507,12 +490,12 @@ export const Login = () => {
 
                   <Button
                     type="submit"
-                    variant="emerald"
+                    variant="teal"
                     size="lg"
                     fullWidth
                     isLoading={loading}
                     icon={ArrowRight}
-                    className="py-4 rounded-2xl font-black text-[#060A08] shadow-xl shadow-emerald-500/30"
+                    className="py-3.5 rounded-2xl font-bold"
                   >
                     Send Recovery Instructions
                   </Button>
@@ -520,21 +503,21 @@ export const Login = () => {
               </>
             ) : (
               <div className="space-y-4 text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-[#00D690]/20 border border-[#00D690]/40 flex items-center justify-center text-[#00D690] mx-auto shadow-xl shadow-emerald-500/20">
-                  <CheckCircle2 className="w-8 h-8" />
+                <div className="w-14 h-14 rounded-full bg-[#DFF5F0] flex items-center justify-center text-[#0FA58A] mx-auto shadow-sm">
+                  <CheckCircle2 className="w-7 h-7" />
                 </div>
-                <h2 className="text-xl font-black font-outfit text-white">Reset Link Sent!</h2>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  We have sent instructions to <strong className="text-white">{forgotEmail}</strong>.
+                <h2 className="text-lg font-bold text-[#0F1F2E]">Reset Link Sent!</h2>
+                <p className="text-xs text-[#8A97A6] leading-relaxed">
+                  We have sent instructions to <strong className="text-[#0F1F2E]">{forgotEmail}</strong>.
                 </p>
 
                 <div className="pt-2">
                   <Button
-                    variant="emerald"
+                    variant="teal"
                     size="md"
                     fullWidth
                     onClick={() => setActiveTab('login')}
-                    className="rounded-2xl font-bold text-[#060A08]"
+                    className="rounded-2xl font-bold"
                   >
                     Return to Sign In
                   </Button>

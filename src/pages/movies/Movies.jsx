@@ -8,11 +8,10 @@ import { Pagination } from '../../components/common/Pagination';
 import { Loading } from '../../components/common/Loading';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Grid, Film } from 'lucide-react';
+import { Sparkles, Film } from 'lucide-react';
 
 export const Movies = () => {
   const {
-    movies,
     loading,
     selectedCategory,
     setSelectedCategory,
@@ -55,18 +54,18 @@ export const Movies = () => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in text-left">
+    <div className="space-y-6 animate-fade-in text-left">
       
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0E1411] border border-white/10 rounded-3xl p-6 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 movtego-card p-6">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00D690]/15 border border-[#00D690]/40 rounded-full text-[11px] font-extrabold text-[#00D690] uppercase tracking-wider mb-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#DFF5F0] border border-[#C4EFE6] rounded-full text-[11px] font-bold text-[#0FA58A] uppercase tracking-wider mb-2">
             <Sparkles className="w-3.5 h-3.5" /> TMDB Cinema Discovery
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black font-outfit text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#0F1F2E]">
             Discover Blockbuster Movies
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-[#8A97A6] mt-1">
             Explore now showing releases, top rated classics, and upcoming cinema blockbusters.
           </p>
         </div>
@@ -80,10 +79,10 @@ export const Movies = () => {
       </div>
 
       {/* Category Tabs & Filter Controls */}
-      <div className="space-y-4 bg-[#0E1411] border border-white/10 rounded-3xl p-6">
+      <div className="space-y-4 movtego-card p-6">
         
         {/* Category Selector */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E8F0F0] pb-4">
           <Filter
             label="Category"
             options={categories}
@@ -94,12 +93,12 @@ export const Movies = () => {
             }}
           />
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span>Sort by:</span>
+          <div className="flex items-center gap-2 text-xs text-[#8A97A6]">
+            <span className="font-semibold text-[#0F1F2E]">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-[#141F1A] text-white border border-white/10 rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#00D690]"
+              className="bg-[#F8FAFA] text-[#0F1F2E] border border-[#E8F0F0] rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-[#0FA58A]"
             >
               <option value="rating_desc">Highest Rating</option>
               <option value="release_desc">Release Date (Newest)</option>

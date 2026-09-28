@@ -1,149 +1,149 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Bell, User, LogOut, Ticket, Heart, ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Search, Bell, ChevronDown, User, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useApp } from '../../context/AppContext';
-import { Button } from '../common/Button';
 
 export const Header = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { setIsSearchOpen, notifications } = useApp();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/dashboard':
+      case '/':
+        return 'Dashboard';
+      case '/movies':
+        return 'Movies';
+      case '/theatres':
+        return 'Theatres & Screens';
+      case '/booking-history':
+        return 'Bookings';
+      case '/reports':
+        return 'Analytics & Revenue';
+      case '/profile':
+        return 'Account Profile';
+      case '/settings':
+        return 'Settings';
+      default:
+        return 'Dashboard';
+    }
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    setIsProfileOpen(false);
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <header className="w-full bg-[#060A08]/90 backdrop-blur-xl border-b border-white/5 px-4 md:px-8 py-4 transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <header className="w-full transition-all duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         
-        {/* Left Title / Location indication */}
-        <div className="flex items-center gap-3">
-          <Link to="/dashboard" className="lg:hidden flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#00D690] flex items-center justify-center text-[#060A08] font-black">
-              M
-            </div>
-            <span className="font-outfit font-black text-xl text-white">MOVIE<span className="text-[#00D690]">GO</span></span>
-          </Link>
-          <div className="hidden lg:block text-left">
-            <h1 className="text-xl font-black font-outfit text-white capitalize">
-              {location.pathname === '/dashboard' ? 'Movies Showcase' : location.pathname.replace('/', '')}
-            </h1>
-          </div>
+        {/* Left Title & Subtitle */}
+        <div className="text-left space-y-0.5">
+          <h1 className="text-[24px] font-bold text-[#0F1F2E] tracking-tight">
+            {getPageTitle()}
+          </h1>
+          <p className="text-[12px] text-[#8A97A6] font-normal">
+            Welcome back! Here's what's happening with your cinema system today.
+          </p>
         </div>
 
-        {/* Right Search & Profile Action Bar */}
+        {/* Right Notification Bell, Search Bar & Profile Dropdown */}
         <div className="flex items-center gap-3">
           
-          {/* Search Trigger Input Box */}
-          <div 
-            onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-2 bg-[#0E1411] hover:bg-[#141E1A] border border-white/10 rounded-full px-4 py-2 text-xs text-slate-400 cursor-pointer w-44 sm:w-64 transition-all"
-          >
-            <Search className="w-3.5 h-3.5 text-slate-400" />
-            <span className="truncate">Search movies...</span>
-          </div>
-
-          {/* Notification Bell */}
+          {/* Notification Bell Circle Button */}
           <button
-            onClick={() => setIsSearchOpen(true)}
-            className="relative p-2.5 rounded-full bg-[#0E1411] hover:bg-[#141E1A] text-slate-300 hover:text-white border border-white/10 transition-colors"
+            className="relative w-9 h-9 rounded-full bg-white border border-[#E6EEF0] shadow-sm flex items-center justify-center text-[#0F1F2E] hover:text-[#0FA58A] transition-all cursor-pointer shrink-0"
             title="Notifications"
           >
-            <Bell className="w-4 h-4" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#00D690]" />
-            )}
+            <Bell className="w-4 h-4 text-[#0F1F2E]" />
+            <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#D64550] border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">
+              1
+            </span>
           </button>
 
-          {/* User Profile */}
-          {isAuthenticated ? (
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2.5 bg-[#0E1411] hover:bg-[#141E1A] border border-white/10 rounded-full p-1 pr-3 transition-all"
-              >
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full object-cover border border-[#00D690]"
-                />
-                <span className="hidden sm:inline text-xs font-bold text-white max-w-[100px] truncate">
-                  {user.name}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              </button>
+          {/* Search Bar */}
+          <div className="relative flex items-center w-56 sm:w-64">
+            <Search className="absolute left-3.5 w-3.5 h-3.5 text-[#8A97A6] pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search movies, theatres, ..."
+              className="w-full pl-9 pr-4 py-2 rounded-full bg-[#EBF3F3]/60 border border-[#E6EEF0] text-[12px] text-[#0F1F2E] placeholder:text-[#8A97A6] focus:outline-none focus:border-[#0FA58A] transition-all font-normal"
+            />
+          </div>
 
-              {/* Dropdown */}
-              {dropdownOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-56 bg-[#0E1411] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in"
-                  onMouseLeave={() => setDropdownOpen(false)}
-                >
-                  <div className="px-3 py-2 border-b border-white/10 mb-1 text-left">
-                    <p className="text-xs font-bold text-white truncate">{user.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
-                    {user.role === 'admin' && (
-                      <span className="inline-block mt-1 px-2.5 py-0.5 bg-[#00D690]/20 text-[#00D690] border border-[#00D690]/40 text-[10px] font-bold rounded-full uppercase">
-                        Admin
-                      </span>
-                    )}
-                  </div>
+          {/* User Profile Avatar with Down Arrow & Dropdown Menu */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex items-center gap-1.5 p-1 rounded-full hover:bg-[#EBF3F3]/60 transition-all cursor-pointer border border-transparent hover:border-[#E6EEF0]"
+            >
+              <img
+                src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
+                alt="User Avatar"
+                className="w-9 h-9 rounded-full object-cover border-2 border-[#0FA58A]"
+              />
+              <ChevronDown className={`w-3.5 h-3.5 text-[#8A97A6] transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-[#0FA58A]' : ''}`} />
+            </button>
 
-                  <Link
-                    to="/profile"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
-                  >
-                    <User className="w-4 h-4 text-slate-400" /> My Profile
-                  </Link>
-
-                  <Link
-                    to="/booking-history"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
-                  >
-                    <Ticket className="w-4 h-4 text-slate-400" /> My Bookings
-                  </Link>
-
-                  <Link
-                    to="/favorites"
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
-                  >
-                    <Heart className="w-4 h-4 text-slate-400" /> Watchlist
-                  </Link>
-
-                  <div className="border-t border-white/10 my-1"></div>
-
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      logout();
-                      navigate('/login');
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-950/40 rounded-xl transition-colors text-left"
-                  >
-                    <LogOut className="w-4 h-4" /> Sign Out
-                  </button>
+            {/* Profile Dropdown Menu */}
+            {isProfileOpen && (
+              <div className="absolute right-0 top-12 w-56 movtego-card p-2 shadow-lg bg-white border border-[#E6EEF0] rounded-2xl z-50 animate-fade-in text-left">
+                {/* User Info Header */}
+                <div className="p-2.5 border-b border-[#E6EEF0] mb-1">
+                  <p className="text-[13px] font-semibold text-[#0F1F2E] truncate">{user?.name || 'Admin User'}</p>
+                  <p className="text-[11px] text-[#8A97A6] truncate">{user?.email || 'admin@movtego.com'}</p>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link to="/login">
-                <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/register">
-                <Button variant="emerald" size="sm">
-                  Register
-                </Button>
-              </Link>
-            </div>
-          )}
+
+                {/* Account Link */}
+                <Link
+                  to="/profile"
+                  onClick={() => setIsProfileOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 text-[12px] font-medium text-[#0F1F2E] hover:bg-[#DFF5F0] hover:text-[#0FA58A] rounded-xl transition-all"
+                >
+                  <User className="w-4 h-4 text-[#8A97A6]" />
+                  <span>Account Profile</span>
+                </Link>
+
+                {/* Settings Link */}
+                <Link
+                  to="/settings"
+                  onClick={() => setIsProfileOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 text-[12px] font-medium text-[#0F1F2E] hover:bg-[#DFF5F0] hover:text-[#0FA58A] rounded-xl transition-all"
+                >
+                  <Settings className="w-4 h-4 text-[#8A97A6]" />
+                  <span>Settings</span>
+                </Link>
+
+                <div className="border-t border-[#E6EEF0] my-1" />
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[12px] font-semibold text-[#D64550] hover:bg-[#FADADD]/50 rounded-xl transition-all cursor-pointer text-left"
+                >
+                  <LogOut className="w-4 h-4 text-[#D64550]" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
+          </div>
 
         </div>
 

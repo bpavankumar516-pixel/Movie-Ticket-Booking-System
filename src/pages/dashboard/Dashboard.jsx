@@ -53,22 +53,22 @@ export const Dashboard = () => {
           return (
             <div key={i} className="movtego-card p-4 flex flex-col justify-between space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#DFF5F0] text-[#0FA58A] flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-[#0FA58A]" />
+                <div className="w-10 h-10 rounded-xl bg-[var(--primary-light)] border border-[var(--border)] text-[var(--primary)] flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5 text-[var(--primary)]" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-[12px] text-[#8A97A6] font-medium leading-none">{m.label}</span>
-                  <span className="text-[26px] font-semibold text-[#0F1F2E] tracking-tight leading-tight mt-0.5">
+                  <span className="text-[12px] text-[var(--text-muted)] font-medium leading-none">{m.label}</span>
+                  <span className="text-[26px] font-semibold text-[var(--text-heading)] tracking-tight leading-tight mt-0.5">
                     {m.value}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-1 border-t border-[#E6EEF0]">
-                <span className="text-[12px] text-[#0FA58A] font-medium flex items-center gap-0.5">
+              <div className="flex items-center justify-between pt-1 border-t border-[var(--border)]">
+                <span className="text-[12px] text-[var(--primary)] font-medium flex items-center gap-0.5">
                   {m.change}
                 </span>
-                <svg className="w-16 h-5 text-[#0FA58A]" viewBox="0 0 100 30">
+                <svg className="w-16 h-5 text-[var(--primary)]" viewBox="0 0 100 30">
                   <path
                     d="M0 25 Q 25 18, 50 15 T 100 5"
                     fill="none"
@@ -99,9 +99,9 @@ export const Dashboard = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
           </div>
 
-          {/* Top Tag Badge */}
+          {/* Top Tag Badge with Primary Gradient */}
           <div className="relative z-10">
-            <span className="px-3 py-1 bg-[#0FA58A] text-white text-[11px] font-semibold rounded-full uppercase tracking-wider shadow-sm">
+            <span className="px-3 py-1 bg-primary-gradient text-white text-[11px] font-semibold rounded-full uppercase tracking-wider shadow-sm">
               FEATURED
             </span>
           </div>
@@ -131,7 +131,7 @@ export const Dashboard = () => {
             <div className="pt-2 flex items-center justify-between">
               <button 
                 onClick={() => navigate('/movies')} 
-                className="bg-[#0FA58A] hover:bg-[#0B7F6C] text-white px-5 py-2.5 rounded-full text-[12px] font-semibold flex items-center gap-2 transition-all shadow-md shadow-[#0FA58A]/25 cursor-pointer"
+                className="bg-primary-gradient hover:opacity-95 text-white px-5 py-2.5 rounded-full text-[12px] font-semibold flex items-center gap-2 transition-all shadow-md shadow-[#14B8A0]/30 cursor-pointer"
               >
                 <span>View Details</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -140,7 +140,7 @@ export const Dashboard = () => {
               {/* Pagination Dots & Arrow Controls */}
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0FA58A]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-primary-gradient" />
                   <span className="w-2 h-2 rounded-full bg-white/40" />
                   <span className="w-2 h-2 rounded-full bg-white/40" />
                   <span className="w-2 h-2 rounded-full bg-white/40" />
@@ -156,9 +156,9 @@ export const Dashboard = () => {
 
         {/* Right Widget: Upcoming Movies (4 Cols) */}
         <div className="lg:col-span-4 movtego-card p-5 flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between border-b border-[#E6EEF0] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[#0F1F2E]">Upcoming Movies</h3>
-            <Link to="/movies" className="text-[12px] text-[#0FA58A] font-medium hover:underline">View All</Link>
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Upcoming Movies</h3>
+            <Link to="/movies" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
           </div>
 
           <div className="space-y-3 flex-1 flex flex-col justify-around">
@@ -167,8 +167,8 @@ export const Dashboard = () => {
                 <div className="flex items-center gap-3">
                   <img src={m.poster} alt={m.title} className="w-11 h-13 rounded-xl object-cover shadow-sm shrink-0" />
                   <div className="text-left space-y-0.5">
-                    <h4 className="text-[12px] font-semibold text-[#0F1F2E] line-clamp-1">{m.title}</h4>
-                    <p className="text-[11px] text-[#8A97A6] font-normal">{m.release} | {m.genre}</p>
+                    <h4 className="text-[12px] font-semibold text-[var(--text-heading)] line-clamp-1">{m.title}</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] font-normal">{m.release} | {m.genre}</p>
                   </div>
                 </div>
                 <span className="status-coming-soon shrink-0">
@@ -186,10 +186,10 @@ export const Dashboard = () => {
         
         {/* Panel 1: Revenue Summary Chart (4 Cols) */}
         <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#E6EEF0] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[#0F1F2E]">Revenue Summary</h3>
-            <span className="text-[11px] text-[#8A97A6] bg-[#F8FAFA] border border-[#E6EEF0] px-2.5 py-1 rounded-full cursor-pointer flex items-center gap-1 font-medium">
-              Last 7 Days <ChevronDown className="w-3 h-3 text-[#8A97A6]" />
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Revenue Summary</h3>
+            <span className="text-[11px] text-[var(--text-muted)] bg-[var(--input-bg)] border border-[var(--border)] px-2.5 py-1 rounded-full cursor-pointer flex items-center gap-1 font-medium">
+              Last 7 Days <ChevronDown className="w-3 h-3 text-[var(--text-muted)]" />
             </span>
           </div>
 
@@ -197,7 +197,7 @@ export const Dashboard = () => {
           <div className="py-1">
             <div className="flex gap-2">
               {/* Y-Axis Labels */}
-              <div className="flex flex-col justify-between text-[11px] text-[#8A97A6] font-normal h-32 py-0.5 pr-1 shrink-0 text-right">
+              <div className="flex flex-col justify-between text-[11px] text-[var(--text-muted)] font-normal h-32 py-0.5 pr-1 shrink-0 text-right">
                 <span>₹ 2.0L</span>
                 <span>₹ 1.5L</span>
                 <span>₹ 1.0L</span>
@@ -207,20 +207,20 @@ export const Dashboard = () => {
 
               {/* Chart Canvas with Smooth Curve & Nodes */}
               <div className="flex-1 relative">
-                <svg className="w-full h-32 text-[#0FA58A]" viewBox="0 0 200 80" preserveAspectRatio="none">
+                <svg className="w-full h-32 text-[var(--primary)]" viewBox="0 0 200 80" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#0FA58A" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#0FA58A" stopOpacity="0.0" />
+                      <stop offset="0%" stopColor="#14B8A0" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="#0B8F7A" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
                   
                   {/* Dashed Gridlines */}
-                  <line x1="0" y1="0" x2="200" y2="0" stroke="#E6EEF0" strokeDasharray="3 3" />
-                  <line x1="0" y1="20" x2="200" y2="20" stroke="#E6EEF0" strokeDasharray="3 3" />
-                  <line x1="0" y1="40" x2="200" y2="40" stroke="#E6EEF0" strokeDasharray="3 3" />
-                  <line x1="0" y1="60" x2="200" y2="60" stroke="#E6EEF0" strokeDasharray="3 3" />
-                  <line x1="0" y1="80" x2="200" y2="80" stroke="#E6EEF0" strokeDasharray="3 3" />
+                  <line x1="0" y1="0" x2="200" y2="0" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
+                  <line x1="0" y1="20" x2="200" y2="20" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
+                  <line x1="0" y1="40" x2="200" y2="40" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
+                  <line x1="0" y1="60" x2="200" y2="60" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
+                  <line x1="0" y1="80" x2="200" y2="80" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
 
                   {/* Gradient Area Fill */}
                   <path
@@ -231,21 +231,21 @@ export const Dashboard = () => {
                   <path
                     d="M 0 55 C 30 45, 50 15, 70 30 C 90 45, 110 35, 130 40 C 150 45, 170 15, 200 10"
                     fill="none"
-                    stroke="#0FA58A"
+                    stroke="#14B8A0"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                   />
                   {/* Data Point Circles */}
-                  <circle cx="0" cy="55" r="3.5" fill="#0FA58A" stroke="#FFFFFF" strokeWidth="1.5" />
-                  <circle cx="70" cy="30" r="3.5" fill="#0FA58A" stroke="#FFFFFF" strokeWidth="1.5" />
-                  <circle cx="130" cy="40" r="3.5" fill="#0FA58A" stroke="#FFFFFF" strokeWidth="1.5" />
-                  <circle cx="200" cy="10" r="3.5" fill="#0FA58A" stroke="#FFFFFF" strokeWidth="1.5" />
+                  <circle cx="0" cy="55" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
+                  <circle cx="70" cy="30" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
+                  <circle cx="130" cy="40" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
+                  <circle cx="200" cy="10" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
                 </svg>
               </div>
             </div>
 
             {/* X-Axis Labels */}
-            <div className="flex justify-between text-[11px] text-[#8A97A6] font-medium pt-2 pl-9">
+            <div className="flex justify-between text-[11px] text-[var(--text-muted)] font-medium pt-2 pl-9">
               <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
             </div>
           </div>
@@ -253,23 +253,23 @@ export const Dashboard = () => {
 
         {/* Panel 2: Popular Movies Ranking (4 Cols) */}
         <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#E6EEF0] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[#0F1F2E]">Popular Movies</h3>
-            <Link to="/movies" className="text-[12px] text-[#0FA58A] font-medium hover:underline">View All</Link>
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Popular Movies</h3>
+            <Link to="/movies" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
           </div>
 
           <div className="space-y-3 flex-1 flex flex-col justify-around">
             {popularMovies.map((pm) => (
               <div key={pm.rank} className="flex items-center gap-3 text-xs">
-                <span className="font-medium text-[#8A97A6] text-[12px] w-3 text-center">{pm.rank}.</span>
+                <span className="font-medium text-[var(--text-muted)] text-[12px] w-3 text-center">{pm.rank}.</span>
                 <img src={pm.poster} alt={pm.title} className="w-8 h-9 rounded-lg object-cover shrink-0" />
                 <div className="flex-1 text-left space-y-1">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-[#0F1F2E] text-[12px] truncate max-w-[110px]">{pm.title}</span>
-                    <span className="text-[11px] text-[#8A97A6] font-medium">{pm.bookings}</span>
+                    <span className="font-semibold text-[var(--text-heading)] text-[12px] truncate max-w-[110px]">{pm.title}</span>
+                    <span className="text-[11px] text-[var(--text-muted)] font-medium">{pm.bookings}</span>
                   </div>
-                  <div className="w-full h-1.5 bg-[#EAEFF4] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#0FA58A] rounded-full transition-all duration-500" style={{ width: `${pm.percent}%` }} />
+                  <div className="w-full h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                    <div className="h-full bg-primary-gradient rounded-full transition-all duration-500" style={{ width: `${pm.percent}%` }} />
                   </div>
                 </div>
               </div>
@@ -279,15 +279,15 @@ export const Dashboard = () => {
 
         {/* Panel 3: Recent Bookings Table (4 Cols) */}
         <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[#E6EEF0] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[#0F1F2E]">Recent Bookings</h3>
-            <Link to="/booking-history" className="text-[12px] text-[#0FA58A] font-medium hover:underline">View All</Link>
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Recent Bookings</h3>
+            <Link to="/booking-history" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
           </div>
 
           <div className="overflow-x-auto text-xs">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="text-[11px] text-[#8A97A6] font-semibold uppercase border-b border-[#E6EEF0]">
+                <tr className="text-[11px] text-[var(--text-muted)] font-semibold uppercase border-b border-[var(--border)]">
                   <th className="pb-1.5 font-semibold">#</th>
                   <th className="pb-1.5 font-semibold">Movie</th>
                   <th className="pb-1.5 font-semibold">Theatre</th>
@@ -296,19 +296,19 @@ export const Dashboard = () => {
                   <th className="pb-1.5 font-semibold text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E6EEF0]/60">
+              <tbody className="divide-y divide-[var(--border)]/60">
                 {recentBookings.map((rb) => (
-                  <tr key={rb.id} className="hover:bg-[#F8FAFA] transition-colors text-[11px]">
-                    <td className="py-2 font-mono text-[#8A97A6]">{rb.id}</td>
-                    <td className="py-2 font-semibold text-[#0F1F2E]">
+                  <tr key={rb.id} className="hover:bg-[var(--primary-light)]/40 transition-colors text-[11px]">
+                    <td className="py-2 font-mono text-[var(--text-muted)]">{rb.id}</td>
+                    <td className="py-2 font-semibold text-[var(--text-heading)]">
                       <div className="flex items-center gap-2">
                         <img src={rb.poster} alt={rb.movie} className="w-5 h-7 rounded object-cover shrink-0" />
                         <span className="truncate max-w-[70px]">{rb.movie}</span>
                       </div>
                     </td>
-                    <td className="py-2 text-[#8A97A6]">{rb.theatre}</td>
-                    <td className="py-2 text-[#8A97A6]">{rb.seats}</td>
-                    <td className="py-2 font-semibold text-[#0F1F2E]">{rb.amount}</td>
+                    <td className="py-2 text-[var(--text-muted)]">{rb.theatre}</td>
+                    <td className="py-2 text-[var(--text-muted)]">{rb.seats}</td>
+                    <td className="py-2 font-semibold text-[var(--text-heading)]">{rb.amount}</td>
                     <td className="py-2 text-right">
                       <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
                         rb.status === 'Confirmed' ? 'status-confirmed' :
@@ -327,13 +327,13 @@ export const Dashboard = () => {
 
       </div>
 
-      {/* 4. BOTTOM QUICK ACTION CARDS (100% FULL BLEED IMAGES OCCUPYING ENTIRE CARD BACKGROUND) */}
+      {/* 4. BOTTOM QUICK ACTION CARDS (WITH PRIMARY GRADIENT BUTTONS & TILES) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: Add Movie */}
         <div 
           onClick={() => navigate('/movies')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[#E6EEF0]"
+          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
         >
           {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -346,7 +346,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/30">
+            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
               <Film className="w-5 h-5" />
             </div>
           </div>
@@ -356,7 +356,7 @@ export const Dashboard = () => {
               <h4 className="text-[15px] font-bold text-white">Add Movie</h4>
               <p className="text-[11px] text-slate-200 font-medium">Create new movie entry</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-[#0FA58A] text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
@@ -365,7 +365,7 @@ export const Dashboard = () => {
         {/* Card 2: Add Theatre */}
         <div 
           onClick={() => navigate('/theatres')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[#E6EEF0]"
+          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
         >
           {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -378,7 +378,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/30">
+            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
               <Building2 className="w-5 h-5" />
             </div>
           </div>
@@ -388,7 +388,7 @@ export const Dashboard = () => {
               <h4 className="text-[15px] font-bold text-white">Add Theatre</h4>
               <p className="text-[11px] text-slate-200 font-medium">Register new theatre</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-[#0FA58A] text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
@@ -397,7 +397,7 @@ export const Dashboard = () => {
         {/* Card 3: Add Show */}
         <div 
           onClick={() => navigate('/theatres')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[#E6EEF0]"
+          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
         >
           {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -410,7 +410,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/30">
+            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
               <Ticket className="w-5 h-5" />
             </div>
           </div>
@@ -420,7 +420,7 @@ export const Dashboard = () => {
               <h4 className="text-[15px] font-bold text-white">Add Show</h4>
               <p className="text-[11px] text-slate-200 font-medium">Schedule show timings</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-[#0FA58A] text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
@@ -429,7 +429,7 @@ export const Dashboard = () => {
         {/* Card 4: View Reports */}
         <div 
           onClick={() => navigate('/reports')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[#E6EEF0]"
+          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
         >
           {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -442,7 +442,7 @@ export const Dashboard = () => {
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/30">
+            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
@@ -452,7 +452,7 @@ export const Dashboard = () => {
               <h4 className="text-[15px] font-bold text-white">View Reports</h4>
               <p className="text-[11px] text-slate-200 font-medium">Check analytics & revenue</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-[#0FA58A] text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>

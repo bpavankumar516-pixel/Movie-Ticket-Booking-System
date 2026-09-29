@@ -124,9 +124,9 @@ export const Register = () => {
   const slide = SLIDES[currentSlide];
 
   return (
-    <div className="w-screen min-h-screen lg:h-screen bg-[#060A08] text-white flex flex-col lg:flex-row overflow-hidden selection:bg-[#00D690] selection:text-black relative">
+    <div className="w-screen min-h-screen lg:h-screen bg-[var(--bg-page)] text-[var(--text-heading)] flex flex-col lg:flex-row overflow-hidden relative transition-colors duration-300">
       
-      {/* LEFT COLUMN: Cinematic Movie Hero Banner (Identical to Login Page) */}
+      {/* LEFT COLUMN: Cinematic Movie Hero Banner */}
       <div className="w-full lg:w-7/12 xl:w-7.5/12 h-[420px] sm:h-[500px] lg:h-full relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group select-none">
         
         {/* Backdrop Image */}
@@ -136,40 +136,45 @@ export const Register = () => {
             alt={slide.title}
             className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-105 filter brightness-[0.75] contrast-[1.08]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060A08] via-[#060A08]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#060A08]/80 via-transparent to-[#060A08]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
         </div>
 
         {/* Brand Header */}
         <div className="relative z-10 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#00D690] flex items-center justify-center text-[#060A08] font-black shadow-xl shadow-emerald-500/40">
+            <div className="w-10 h-10 rounded-2xl bg-primary-gradient flex items-center justify-center text-white font-bold shadow-md shrink-0">
               <div className="flex gap-1 items-center">
-                <div className="w-1.5 h-4 bg-[#060A08] rounded-full transform -rotate-12" />
-                <div className="w-1.5 h-4 bg-[#060A08] rounded-full transform rotate-12" />
+                <div className="w-1.5 h-4 bg-white rounded-full transform -rotate-12" />
+                <div className="w-1.5 h-4 bg-white rounded-full transform rotate-12" />
               </div>
             </div>
-            <span className="font-outfit font-black text-2xl tracking-wider text-white">
-              MOVIE<span className="text-[#00D690]">GO</span>
-            </span>
+            <div className="flex flex-col text-left">
+              <span className="font-bold text-2xl tracking-tight text-white">
+                MOVTEGO
+              </span>
+              <span className="text-[10px] text-slate-200 font-medium">
+                Cinema Manager
+              </span>
+            </div>
           </Link>
 
-          <span className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 bg-[#0E1411]/90 backdrop-blur-md border border-[#00D690]/30 rounded-full text-xs font-bold text-[#00D690] uppercase">
+          <span className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 bg-primary-gradient text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
             <Sparkles className="w-3.5 h-3.5" /> {slide.tag}
           </span>
         </div>
 
         {/* Movie Details Box */}
         <div className="relative z-10 mt-auto flex items-center gap-6 pt-6">
-          <div className="relative shrink-0 w-32 h-48 sm:w-40 sm:h-56 rounded-3xl overflow-hidden border-2 border-[#00D690]/40 shadow-2xl">
+          <div className="relative shrink-0 w-32 h-48 sm:w-40 sm:h-56 rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl">
             <img
               src={slide.poster}
               alt={slide.title}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
-              <span className="flex items-center gap-1 text-[11px] font-black text-[#060A08] bg-[#00D690] px-2 py-0.5 rounded-full">
-                <Star className="w-3 h-3 fill-[#060A08]" /> {slide.rating}
+              <span className="flex items-center gap-1 text-[11px] font-bold text-white bg-primary-gradient px-2 py-0.5 rounded-full">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {slide.rating}
               </span>
             </div>
           </div>
@@ -177,14 +182,14 @@ export const Register = () => {
           <div className="flex-1 space-y-2 text-left">
             <div className="flex flex-wrap items-center gap-1.5">
               {slide.genres.map((g, i) => (
-                <span key={i} className="px-2.5 py-0.5 bg-[#00D690]/15 border border-[#00D690]/30 text-[#00D690] text-xs font-bold rounded-full">
+                <span key={i} className="px-2.5 py-0.5 bg-[#14B8A0]/30 border border-[#14B8A0]/50 text-white text-xs font-semibold rounded-full">
                   {g}
                 </span>
               ))}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black font-outfit text-white flex items-center gap-2">
-              {slide.title} <span className="text-xs text-[#FF6B6B] font-bold flex items-center gap-1"><Flame className="w-3.5 h-3.5 fill-[#FF6B6B]" /> {slide.likes}</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2">
+              {slide.title} <span className="text-xs text-amber-400 font-bold flex items-center gap-1"><Flame className="w-3.5 h-3.5 fill-amber-400" /> {slide.likes}</span>
             </h2>
 
             {/* Slider Navigation */}
@@ -195,7 +200,7 @@ export const Register = () => {
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      currentSlide === idx ? 'w-8 bg-[#00D690]' : 'w-2 bg-white/30'
+                      currentSlide === idx ? 'w-8 bg-primary-gradient' : 'w-2 bg-white/30'
                     }`}
                   />
                 ))}
@@ -218,27 +223,17 @@ export const Register = () => {
             </div>
           </div>
         </div>
-
-        {/* Curved Divider */}
-        <div className="hidden lg:block absolute top-0 bottom-0 -right-1 z-20 w-12 pointer-events-none text-[#0E1411]">
-          <svg className="h-full w-full fill-current" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0 0 C 65 30, 65 70, 0 100 L 100 100 L 100 0 Z" />
-          </svg>
-        </div>
       </div>
 
-      {/* RIGHT COLUMN: Clean Sleek Signup Panel (Identical to Login Panel Structure) */}
-      <div className="w-full lg:w-5/12 xl:w-4.5/12 h-full bg-[#0E1411] p-6 sm:p-10 lg:p-14 flex flex-col justify-center relative overflow-y-auto z-10 border-l border-white/5">
+      {/* RIGHT COLUMN: Clean Sleek Signup Panel */}
+      <div className="w-full lg:w-5/12 xl:w-4.5/12 h-full bg-[var(--bg-card)] p-6 sm:p-10 lg:p-14 flex flex-col justify-center relative overflow-y-auto z-10 border-l border-[var(--border)] transition-colors duration-300">
         
-        {/* Glow Background */}
-        <div className="absolute top-1/4 -right-20 w-72 h-72 bg-[#00D690]/10 rounded-full blur-[100px] pointer-events-none" />
-
         {/* Header Title */}
         <div className="mb-6 space-y-1 text-left">
-          <h1 className="text-3xl font-black font-outfit text-white tracking-tight">
+          <h1 className="text-3xl font-extrabold text-[var(--text-heading)] tracking-tight">
             Create Account
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[var(--text-muted)]">
             Sign up to book seats and get digital cinema passes.
           </p>
         </div>
@@ -249,7 +244,7 @@ export const Register = () => {
             label="Full Name"
             name="name"
             type="text"
-            placeholder="Martin Gu"
+            placeholder="Admin User"
             icon={User}
             value={formData.name}
             onChange={handleChange}
@@ -262,7 +257,7 @@ export const Register = () => {
               label="Email Address"
               name="email"
               type="email"
-              placeholder="martin@moviego.com"
+              placeholder="admin@movtego.com"
               icon={Mail}
               value={formData.email}
               onChange={handleChange}
@@ -310,17 +305,17 @@ export const Register = () => {
           </div>
 
           <div className="pt-1">
-            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-300">
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-[var(--text-muted)]">
               <input
                 type="checkbox"
                 name="acceptTerms"
                 checked={formData.acceptTerms}
                 onChange={handleChange}
-                className="mt-0.5 rounded border-slate-700 bg-gray-900 text-[#00D690] focus:ring-[#00D690]"
+                className="mt-0.5 rounded border-[var(--border)] text-[#0FA58A] focus:ring-[#0FA58A]"
               />
               <span>
-                I agree to the <span className="text-white font-semibold underline">Terms of Service</span> and{' '}
-                <span className="text-white font-semibold underline">Privacy Policy</span>.
+                I agree to the <span className="text-[var(--text-heading)] font-semibold underline">Terms of Service</span> and{' '}
+                <span className="text-[var(--text-heading)] font-semibold underline">Privacy Policy</span>.
               </span>
             </label>
             {errors.acceptTerms && (
@@ -330,11 +325,11 @@ export const Register = () => {
 
           <Button
             type="submit"
-            variant="emerald"
+            variant="teal"
             size="lg"
             fullWidth
             isLoading={loading}
-            className="mt-3 py-3.5 rounded-2xl font-black text-[#060A08] shadow-lg shadow-emerald-500/30"
+            className="mt-3 py-3.5 rounded-2xl font-bold"
             icon={ArrowRight}
           >
             Create Account
@@ -342,10 +337,10 @@ export const Register = () => {
         </form>
 
         {/* Switch to Login */}
-        <div className="mt-6 pt-4 border-t border-white/10 text-center">
-          <p className="text-xs text-slate-400">
+        <div className="mt-6 pt-4 border-t border-[var(--border)] text-center">
+          <p className="text-xs text-[var(--text-muted)]">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#00D690] hover:text-[#00EF9F] font-bold transition-colors">
+            <Link to="/login" className="text-[#0FA58A] hover:underline font-bold transition-colors">
               Sign In
             </Link>
           </p>

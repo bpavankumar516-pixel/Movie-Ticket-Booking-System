@@ -5,17 +5,17 @@ import { toast } from 'react-toastify';
 const AuthContext = createContext();
 
 const MOCK_DEMO_USER = {
-  id: 'usr_moviego123',
-  name: 'Martin Gu',
-  email: 'martin@moviego.com',
-  phone: '+1 (555) 345-6789',
+  id: 'usr_pavan123',
+  name: 'Pavan Cinema Admin',
+  email: 'pavan@movtego.com',
+  phone: '+91 98765 43210',
   avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80',
-  location: 'ChengDu, Wuhou',
-  role: 'user', // 'user' or 'admin'
+  location: 'Hyderabad, India',
+  role: 'admin', // 'user' or 'admin'
   joinedDate: '2025-01-15',
   stats: {
-    totalBookings: 18,
-    completedBookings: 16,
+    totalBookings: 24,
+    completedBookings: 22,
     cancelledBookings: 2,
     favoriteGenre: 'Sci-Fi'
   }

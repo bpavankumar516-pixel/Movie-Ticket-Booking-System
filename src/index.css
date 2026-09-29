@@ -1,22 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #0FA58A;        /* teal, active menu, buttons, links */
-  --primary-dark: #0B7F6C;
-  --primary-light: #DFF5F0;  /* icon tiles, badges, soft backgrounds */
+  --primary: #14B8A0;        /* MOVTEGO teal, active menu, buttons, links */
+  --primary-dark: #0B8F7A;
+  --primary-light: #E6F7F5;  /* icon tiles, badges, soft backgrounds */
   --primary-gradient: linear-gradient(135deg, #14B8A0, #0B8F7A);
-  --bg-page: #F3F8F8;        /* page background, very light teal-gray */
+  --bg-page: #F8FAFC;        /* crisp light slate page background */
   --bg-card: #FFFFFF;
-  --text-heading: #0F1F2E;
-  --text-body: #4B5B6B;
-  --text-muted: #8A97A6;
-  --border: #E6EEF0;
+  --text-heading: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --border: #E2E8F0;
   --success-bg: #D8F3EA;  --success-text: #0B8F6C;   /* Confirmed / Coming Soon */
   --warning-bg: #FDEFC7;  --warning-text: #C58A00;   /* Pending */
   --danger-bg:  #FADADD;  --danger-text:  #D64550;   /* Cancelled */
   --star: #F5B301;
   --hero-bg: linear-gradient(120deg, #0B3B45, #0A5A5F);
   --font-poppins: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+  --input-bg: #F1F5F9;
+  --input-border: #CBD5E1;
+  --dropdown-bg: #FFFFFF;
+  --dropdown-border: #E2E8F0;
+}
+
+html.dark, .dark {
+  --primary: #14B8A0;
+  --primary-dark: #0B8F7A;
+  --primary-light: rgba(20, 184, 160, 0.12);  /* sleek dark teal accent background */
+  --primary-gradient: linear-gradient(135deg, #14B8A0, #0B8F7A);
+  --bg-page: #000000;        /* pure black page background */
+  --bg-card: #000000;        /* pure black card background */
+  --text-heading: #FFFFFF;    /* pure white headers and stat numbers */
+  --text-body: #9CB0B1;      /* light teal body text */
+  --text-muted: #627A7C;     /* muted text */
+  --border: #0F282A;         /* crisp dark teal border framing the black cards */
+  --success-bg: #092825;     --success-text: #14B8A0;
+  --warning-bg: #27200D;     --warning-text: #F5B301;
+  --danger-bg:  #2A1015;     --danger-text:  #F87171;
+  --star: #F5B301;
+  --hero-bg: linear-gradient(120deg, #052024, #073437);
+  --input-bg: #051314;
+  --input-border: #0F282A;
+  --dropdown-bg: #051314;
+  --dropdown-border: #0F282A;
 }
 
 @theme {
@@ -107,8 +133,15 @@
   background: var(--hero-bg);
 }
 
+/* Primary Gradient Utilities */
 .bg-primary-gradient {
-  background: var(--primary-gradient);
+  background: var(--primary-gradient) !important;
+}
+
+.sidebar-link-active {
+  background: var(--primary-gradient) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(20, 184, 160, 0.3);
 }
 
 .sidebar-link-inactive {
@@ -160,19 +193,19 @@
   border-radius: 9999px;
 }
 
-/* Primary Teal Buttons using var(--primary) and var(--primary-dark) */
+/* Primary Teal Buttons using var(--primary-gradient) */
 .btn-teal {
-  background-color: var(--primary);
+  background: var(--primary-gradient);
   color: #FFFFFF;
   font-weight: 600;
   font-size: 12px;
-  box-shadow: 0 4px 16px rgba(15, 165, 138, 0.25);
+  box-shadow: 0 4px 16px rgba(20, 184, 160, 0.3);
   transition: all 0.2s ease;
 }
 
 .btn-teal:hover {
-  background-color: var(--primary-dark);
-  box-shadow: 0 6px 20px rgba(15, 165, 138, 0.4);
+  background: linear-gradient(135deg, #18C7AD, #0B7F6C);
+  box-shadow: 0 6px 20px rgba(20, 184, 160, 0.45);
   transform: translateY(-1px);
 }
 

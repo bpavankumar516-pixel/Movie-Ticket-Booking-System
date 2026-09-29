@@ -14,15 +14,15 @@ export const BookingHistory = () => {
     <div className="space-y-6 text-left animate-fade-in">
       <div className="movtego-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#0F1F2E]">Bookings & E-Tickets</h1>
-          <p className="text-xs text-[#8A97A6]">View all recent customer transactions, seat assignments, and reservation statuses.</p>
+          <h1 className="text-2xl font-bold text-[var(--text-heading)]">Bookings & E-Tickets</h1>
+          <p className="text-xs text-[var(--text-muted)]">View all recent customer transactions, seat assignments, and reservation statuses.</p>
         </div>
       </div>
 
       <div className="movtego-card p-6 overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-xs text-[#8A97A6] uppercase border-b border-[#E8F0F0] pb-3">
+            <tr className="text-xs text-[var(--text-muted)] uppercase border-b border-[var(--border)] pb-3">
               <th className="pb-3 font-semibold">Booking ID</th>
               <th className="pb-3 font-semibold">Movie Title</th>
               <th className="pb-3 font-semibold">Theatre</th>
@@ -32,15 +32,15 @@ export const BookingHistory = () => {
               <th className="pb-3 font-semibold">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F4F4] text-xs">
+          <tbody className="divide-y divide-[var(--border)]/60 text-xs">
             {bookings.map((b) => (
-              <tr key={b.id} className="hover:bg-[#F8FAFA] transition-colors">
-                <td className="py-3.5 font-mono font-bold text-[#0F1F2E]">{b.id}</td>
-                <td className="py-3.5 font-bold text-[#0F1F2E]">{b.movie}</td>
-                <td className="py-3.5 text-[#8A97A6]">{b.theatre}</td>
-                <td className="py-3.5 text-[#8A97A6] font-medium">{b.seats}</td>
-                <td className="py-3.5 text-[#8A97A6]">{b.date}</td>
-                <td className="py-3.5 font-bold text-[#0F1F2E]">{b.amount}</td>
+              <tr key={b.id} className="hover:bg-[var(--primary-light)]/40 transition-colors">
+                <td className="py-3.5 font-mono font-bold text-[var(--text-heading)]">{b.id}</td>
+                <td className="py-3.5 font-bold text-[var(--text-heading)]">{b.movie}</td>
+                <td className="py-3.5 text-[var(--text-muted)]">{b.theatre}</td>
+                <td className="py-3.5 text-[var(--text-muted)] font-medium">{b.seats}</td>
+                <td className="py-3.5 text-[var(--text-muted)]">{b.date}</td>
+                <td className="py-3.5 font-bold text-[var(--text-heading)]">{b.amount}</td>
                 <td className="py-3.5">
                   <span className={`px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${
                     b.status === 'Confirmed' ? 'status-confirmed' :

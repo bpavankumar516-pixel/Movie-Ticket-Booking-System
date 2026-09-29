@@ -17,14 +17,14 @@ export const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-full transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] cursor-pointer';
 
   const variants = {
-    primary: 'bg-[#0FA58A] hover:bg-[#0D947B] text-white shadow-md shadow-[#0FA58A]/25',
-    emerald: 'bg-[#0FA58A] hover:bg-[#0D947B] text-white shadow-md shadow-[#0FA58A]/25',
-    teal: 'bg-[#0FA58A] hover:bg-[#0D947B] text-white shadow-md shadow-[#0FA58A]/25',
-    coral: 'bg-[#0FA58A] hover:bg-[#0D947B] text-white shadow-md shadow-[#0FA58A]/25',
-    secondary: 'bg-[#DFF5F0] hover:bg-[#C8EFE7] text-[#0FA58A] font-bold',
-    outline: 'bg-transparent text-[#0FA58A] border border-[#0FA58A] hover:bg-[#DFF5F0]',
-    ghost: 'bg-transparent text-[#8A97A6] hover:text-[#0F1F2E] hover:bg-[#E8F0F0]',
-    danger: 'bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/20',
+    primary: 'bg-primary-gradient hover:opacity-95 text-white shadow-md shadow-[#14B8A0]/30',
+    emerald: 'bg-primary-gradient hover:opacity-95 text-white shadow-md shadow-[#14B8A0]/30',
+    teal: 'bg-primary-gradient hover:opacity-95 text-white shadow-md shadow-[#14B8A0]/30',
+    coral: 'bg-primary-gradient hover:opacity-95 text-white shadow-md shadow-[#14B8A0]/30',
+    secondary: 'bg-[var(--primary-light)] hover:opacity-90 text-[var(--primary)] border border-[var(--border)] font-semibold',
+    outline: 'bg-transparent text-[var(--primary)] border border-[var(--primary)] hover:bg-[var(--primary-light)]',
+    ghost: 'bg-transparent text-[var(--text-muted)] hover:text-[var(--text-heading)] hover:bg-[var(--primary-light)]',
+    danger: 'bg-[#D64550] hover:bg-red-600 text-white shadow-md shadow-red-500/20',
   };
 
   const sizes = {

@@ -10,14 +10,14 @@ export const Layout = () => {
 
   if (isAuthPage) {
     return (
-      <div className="min-h-screen bg-[#F3F8F8] text-[#0F1F2E] flex flex-col justify-center p-4">
+      <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-heading)] transition-colors duration-300 flex flex-col justify-center p-4">
         <Outlet />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F8F8] text-[#0F1F2E] flex font-['Poppins','Inter',sans-serif]">
+    <div className="min-h-screen bg-[var(--bg-page)] text-[var(--text-heading)] transition-colors duration-300 flex font-['Poppins','Inter',sans-serif]">
       <div className="flex w-full max-w-[1700px] mx-auto p-4 sm:p-5 lg:p-6 gap-6 items-start">
         {/* Floating Sticky Sidebar */}
         <Sidebar />

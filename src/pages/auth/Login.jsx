@@ -1,47 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
-  Mail, Lock, Sparkles, ChevronLeft, ChevronRight, UserCheck, ArrowRight, 
-  Star, Flame, User, Phone, CheckCircle2, ArrowLeft
+  Mail, Lock, ChevronLeft, ChevronRight, UserCheck, ArrowRight, 
+  Star, User, Phone, CheckCircle2, ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 
-// High-Impact Present Generation Movie Showcase Slider
+// Multi-Color Official Google Icon
+const GoogleIcon = () => (
+  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+    <path
+      fill="#4285F4"
+      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.15C3.26 21.3 7.31 24 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.28 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.39l3.99-3.15z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.61l3.99 3.15c.95-2.85 3.6-4.96 6.72-4.96z"
+    />
+  </svg>
+);
+
+// 100% Authentic Movie Asset Matching with Dedicated Dual-Source URLs
 const SLIDES = [
   {
     id: 1,
     title: 'Avatar: The Way of Water',
-    tagline: 'Long live the fighters.',
-    likes: '4,956',
-    backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2400&auto=format&fit=crop&q=95',
-    poster: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=1000&auto=format&fit=crop&q=95',
-    tag: '🔥 #1 BOX OFFICE',
+    tagline: 'Return to Pandora in IMAX 3D.',
+    backdrop: 'https://image.tmdb.org/t/p/original/s16H6tpK2utvwDtzZ8Qy4qm5Emw.jpg',
+    fallbackBackdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1920&auto=format&fit=crop&q=90',
+    poster: 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
+    fallbackPoster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=90',
     rating: '9.6',
-    genres: ['Sci-Fi', 'Drama', 'IMAX 3D'],
+    genres: ['Sci-Fi', 'IMAX 3D'],
   },
   {
     id: 2,
     title: 'Dune: Part Two',
-    tagline: 'Long live the fighters.',
-    likes: '8,920',
-    backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=2400&auto=format&fit=crop&q=95',
-    poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=1000&auto=format&fit=crop&q=95',
-    tag: '⚡ BLOCKBUSTER',
+    tagline: 'Beyond fear, destiny awaits across the desert sands.',
+    backdrop: 'https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
+    fallbackBackdrop: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1920&auto=format&fit=crop&q=90',
+    poster: 'https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjxh2CZjjYroq.jpg',
+    fallbackPoster: 'https://images.unsplash.com/photo-1547234935-80c7145ec969?w=800&auto=format&fit=crop&q=90',
     rating: '9.2',
-    genres: ['Sci-Fi', 'Action', '4DX'],
+    genres: ['Sci-Fi', '4DX'],
   },
   {
     id: 3,
-    title: 'Avengers: Endgame',
-    tagline: 'A part of the journey is the end.',
-    likes: '9,980',
-    backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=2400&auto=format&fit=crop&q=95',
-    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1000&auto=format&fit=crop&q=95',
-    tag: '⭐ TOP RATED',
-    rating: '9.8',
-    genres: ['Action', 'Sci-Fi', 'Dolby Atmos'],
+    title: 'Interstellar',
+    tagline: 'Mankind was born on Earth. It was never meant to die here.',
+    backdrop: 'https://image.tmdb.org/t/p/original/pbrkL8a4c8yF4vBwFToKC7vg2x.jpg',
+    fallbackBackdrop: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=90',
+    poster: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
+    fallbackPoster: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&auto=format&fit=crop&q=90',
+    rating: '9.5',
+    genres: ['Sci-Fi', 'Dolby Cinema'],
   }
 ];
 
@@ -52,16 +74,15 @@ export const Login = () => {
 
   const from = location.state?.from?.pathname || '/dashboard';
 
-  // Active Tab: 'login' | 'register' | 'forgot'
-  const [activeTab, setActiveTab] = useState('login');
+  // Active View Mode: 'login' | 'register' | 'forgot'
+  const [mode, setMode] = useState('login');
 
-  // Login Form State
+  // Form States
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [loginErrors, setLoginErrors] = useState({});
 
-  // Register Form State
   const [registerData, setRegisterData] = useState({
     name: '',
     email: '',
@@ -72,20 +93,40 @@ export const Login = () => {
   });
   const [registerErrors, setRegisterErrors] = useState({});
 
-  // Forgot Password State
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
 
-  // Slider State
+  // Slider State & Auto-Play Management
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
+  // Smooth Auto-Play Slider with Pause-on-Hover
   useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
-    }, 6000);
+    }, 5500);
     return () => clearInterval(timer);
+  }, [isPaused]);
+
+  // Preload image assets into browser cache
+  useEffect(() => {
+    SLIDES.forEach((item) => {
+      const imgBackdrop = new Image();
+      imgBackdrop.src = item.backdrop;
+      const imgPoster = new Image();
+      imgPoster.src = item.poster;
+    });
   }, []);
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
+  };
 
   // Login Handler
   const handleLoginSubmit = async (e) => {
@@ -105,9 +146,21 @@ export const Login = () => {
     }
   };
 
-  // Demo Login Handler
-  const handleDemoAccess = async () => {
-    const res = await loginAsDemo('user');
+  // Demo Auto-Fill State
+  const [demoFilledNotice, setDemoFilledNotice] = useState(false);
+
+  // Demo Fill Handler - Auto-fills Pavan's credentials for user-friendly 1-click access
+  const handleDemoAccess = () => {
+    setLoginEmail('pavan@movtego.com');
+    setLoginPassword('pavandemo123');
+    setLoginErrors({});
+    setDemoFilledNotice(true);
+    setTimeout(() => setDemoFilledNotice(false), 4000);
+  };
+
+  // Google Sign In Handler
+  const handleGoogleSignIn = async () => {
+    const res = await loginAsDemo('google');
     if (res.success) {
       navigate(from, { replace: true });
     }
@@ -152,110 +205,134 @@ export const Login = () => {
     setForgotSubmitted(true);
   };
 
-  const slide = SLIDES[currentSlide];
+  const activeMovie = SLIDES[currentSlide];
 
   return (
-    <div className="w-screen min-h-screen lg:h-screen bg-[#F3F8F8] text-[#0F1F2E] flex flex-col lg:flex-row overflow-hidden font-['Poppins',sans-serif] relative">
+    <div className="w-full min-h-screen lg:h-screen bg-[var(--bg-page)] text-[var(--text-heading)] flex flex-col lg:flex-row overflow-x-hidden font-['Poppins',sans-serif] relative transition-colors duration-300 select-none">
       
-      {/* LEFT COLUMN: Modern Cinematic Hero Slider */}
-      <div className="w-full lg:w-7/12 xl:w-7.5/12 h-[400px] sm:h-[480px] lg:h-full relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group select-none">
+      {/* LEFT COLUMN: 70% Width - Smooth Preloaded Hero Carousel Showcase */}
+      <div 
+        className="w-full lg:w-[70%] xl:w-[70%] shrink-0 h-[460px] sm:h-[560px] lg:h-full relative flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden bg-slate-950 group"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         
-        {/* Crisp Backdrop */}
+        {/* PRE-RENDERED HIGH-CLARITY BACKDROP CAROUSEL - SYNCHRONIZED WITH ACTIVE MOVIE */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <img
-            src={slide.backdrop}
-            alt={slide.title}
-            className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-105 filter brightness-[0.7] contrast-[1.05]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
+          {SLIDES.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
+            >
+              <img
+                src={slide.backdrop}
+                onError={(e) => { e.target.src = slide.fallbackBackdrop; }}
+                alt={slide.title}
+                className="w-full h-full object-cover filter brightness-[0.85] contrast-[1.1] saturate-[1.15]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/15 to-slate-950/30" />
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-transparent" />
+            </div>
+          ))}
         </div>
 
         {/* Brand Header */}
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="relative z-20 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#0FA58A] flex items-center justify-center text-white font-bold shadow-md shadow-[#0FA58A]/30 shrink-0">
-              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                <path d="M6 4h3a1 1 0 011 1v14a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1zm9 0h3a1 1 0 011 1v14a1 1 0 01-1 1h-3a1 1 0 01-1-1V5a1 1 0 011-1z" transform="rotate(25 12 12)" />
-              </svg>
+            <div className="w-11 h-11 rounded-2xl bg-primary-gradient flex items-center justify-center text-white font-bold shadow-lg shadow-[#14B8A0]/35 shrink-0">
+              <div className="flex gap-1 items-center">
+                <div className="w-1.5 h-4 bg-white rounded-full transform -rotate-12" />
+                <div className="w-1.5 h-4 bg-white rounded-full transform rotate-12" />
+              </div>
             </div>
             <div className="flex flex-col text-left">
-              <span className="font-bold text-2xl tracking-tight text-white">
+              <span className="font-extrabold text-2xl tracking-tight text-white drop-shadow-sm">
                 MOVTEGO
               </span>
-              <span className="text-[10px] text-[#DFF5F0] font-medium">
+              <span className="text-[10px] text-teal-300 font-semibold tracking-wider uppercase">
                 Cinema Manager
               </span>
             </div>
           </Link>
-
-          {/* Tag Pill */}
-          <span className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 bg-[#0FA58A] text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" /> {slide.tag}
-          </span>
         </div>
 
-        {/* Movie Showcase Box */}
-        <div className="relative z-10 mt-auto flex items-end gap-6 pt-6">
-          <div className="relative shrink-0 w-28 h-40 sm:w-40 sm:h-56 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
-            <img
-              src={slide.poster}
-              alt={slide.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex items-end p-2">
-              <span className="flex items-center gap-1 text-[11px] font-bold text-white bg-[#0FA58A] px-2 py-0.5 rounded-full shadow-md">
-                <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {slide.rating}
-              </span>
-            </div>
+        {/* MOVIE SHOWCASE AT BOTTOM: Vertical Poster Card + Synchronized Movie Details */}
+        <div className="relative z-20 mt-auto flex items-end gap-6 pt-6">
+          
+          {/* VERTICAL MOVIE POSTER CARD - SYNCHRONIZED WITH ACTIVE MOVIE */}
+          <div className="relative shrink-0 w-32 h-48 sm:w-40 sm:h-56 rounded-2xl overflow-hidden border-2 border-white/25 shadow-2xl bg-slate-900 cursor-pointer group/card">
+            {SLIDES.map((slide, index) => (
+              <div
+                key={slide.id}
+                onClick={handleNextSlide}
+                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                  index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
+              >
+                <img
+                  src={slide.poster}
+                  onError={(e) => { e.target.src = slide.fallbackPoster; }}
+                  alt={slide.title}
+                  className="w-full h-full object-cover filter brightness-[1.02] contrast-[1.08] group-hover/card:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-center justify-start">
+                  <span className="flex items-center gap-1 text-[11px] font-bold text-white bg-primary-gradient px-2.5 py-0.5 rounded-full shadow-md">
+                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {slide.rating}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div className="flex-1 space-y-2 text-left">
-            <div className="flex flex-wrap items-center gap-1.5">
-              {slide.genres.map((g, i) => (
-                <span key={i} className="px-2.5 py-0.5 bg-[#0FA58A]/30 border border-[#0FA58A]/50 text-white text-xs font-semibold rounded-full">
+          {/* Synchronized Movie Details Beside Poster Card */}
+          <div className="flex-1 space-y-3 text-left">
+            <div className="flex flex-wrap items-center gap-2">
+              {activeMovie.genres.map((g, i) => (
+                <span key={i} className="px-3 py-1 bg-slate-900/80 border border-white/15 text-teal-300 text-xs font-semibold rounded-full backdrop-blur-md">
                   {g}
                 </span>
               ))}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight flex items-center gap-2">
-              {slide.title} 
-              <span className="text-xs text-amber-400 font-bold flex items-center gap-1">
-                <Flame className="w-4 h-4 fill-amber-400" /> {slide.likes}
-              </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight drop-shadow-md transition-all duration-300">
+              {activeMovie.title}
             </h2>
 
-            <p className="text-xs text-slate-300 italic max-w-md hidden sm:block font-normal">
-              "{slide.tagline}"
+            <p className="text-xs sm:text-sm text-slate-200 italic max-w-lg hidden sm:block font-normal transition-all duration-300">
+              "{activeMovie.tagline}"
             </p>
 
-            {/* Carousel Dots & Controls */}
+            {/* Slide Pagination Dots & Navigation Controls */}
             <div className="flex items-center justify-between pt-2 max-w-md">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 {SLIDES.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    aria-label={`Go to slide ${idx + 1}`}
+                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                       currentSlide === idx 
-                        ? 'w-8 bg-[#0FA58A]' 
-                        : 'w-2 bg-white/40 hover:bg-white/70'
+                        ? 'w-8 bg-primary-gradient' 
+                        : 'w-2.5 bg-white/40 hover:bg-white/70'
                     }`}
                   />
                 ))}
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setCurrentSlide((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1))}
-                  className="p-2 rounded-full bg-black/50 hover:bg-black text-white transition-all cursor-pointer"
+                  onClick={handlePrevSlide}
+                  aria-label="Previous slide"
+                  className="p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white border border-white/20 transition-all cursor-pointer shadow-md hover:scale-105 active:scale-95"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setCurrentSlide((prev) => (prev + 1) % SLIDES.length)}
-                  className="p-2 rounded-full bg-black/50 hover:bg-black text-white transition-all cursor-pointer"
+                  onClick={handleNextSlide}
+                  aria-label="Next slide"
+                  className="p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white border border-white/20 transition-all cursor-pointer shadow-md hover:scale-105 active:scale-95"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -264,56 +341,71 @@ export const Login = () => {
 
           </div>
         </div>
+
       </div>
 
-      {/* RIGHT COLUMN: Auth Card */}
-      <div className="w-full lg:w-5/12 xl:w-4.5/12 h-full bg-white p-6 sm:p-10 lg:p-12 flex flex-col justify-center relative overflow-y-auto z-10 border-l border-[#E8F0F0]">
+      {/* RIGHT COLUMN: 30% Width - Clean Minimal Auth Form Panel */}
+      <div className="w-full lg:w-[30%] xl:w-[30%] h-full bg-[var(--bg-card)] px-6 sm:px-8 py-8 lg:py-10 flex flex-col overflow-y-auto relative z-20 border-l border-[var(--border)] transition-colors duration-300">
         
-        {/* Segmented Tab Switcher */}
-        {activeTab !== 'forgot' && (
-          <div className="w-full bg-[#F3F8F8] p-1.5 rounded-2xl border border-[#E8F0F0] flex items-center mb-6">
+        {/* Centered Form Wrapper */}
+        <div className="w-full max-w-sm mx-auto my-auto flex flex-col py-2">
+        
+        {/* Header Title */}
+        <div className="mb-6 space-y-1.5 text-left">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-heading)] tracking-tight">
+            {mode === 'login' ? 'Sign In to MOVTEGO' : mode === 'register' ? 'Create Account' : 'Reset Password'}
+          </h1>
+          <p className="text-xs text-[var(--text-muted)] font-normal">
+            {mode === 'login' ? 'Manage multiplex shows, box office bookings & reports.' : mode === 'register' ? 'Register to manage cinema screens and timings.' : 'Enter your email to receive recovery instructions.'}
+          </p>
+        </div>
+
+        {/* AUTHENTICATION BUTTONS */}
+        {mode !== 'forgot' && (
+          <div className="space-y-3 mb-6">
             <button
-              onClick={() => setActiveTab('login')}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'login'
-                  ? 'bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/25'
-                  : 'text-[#8A97A6] hover:text-[#0F1F2E]'
-              }`}
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-2xl bg-[var(--input-bg)] hover:bg-[var(--primary-light)] border border-[var(--border)] text-[var(--text-heading)] text-xs font-semibold transition-all duration-200 cursor-pointer shadow-sm"
             >
-              Sign In
+              <GoogleIcon />
+              <span>Continue with Google</span>
             </button>
+
             <button
-              onClick={() => setActiveTab('register')}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'register'
-                  ? 'bg-[#0FA58A] text-white shadow-md shadow-[#0FA58A]/25'
-                  : 'text-[#8A97A6] hover:text-[#0F1F2E]'
-              }`}
+              type="button"
+              onClick={handleDemoAccess}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[var(--primary-light)] hover:opacity-90 text-[var(--primary)] border border-[var(--primary)]/30 rounded-2xl text-xs font-bold transition-all cursor-pointer shadow-sm group hover:scale-[1.01]"
             >
-              Create Account
+              <UserCheck className="w-4 h-4 text-[var(--primary)] group-hover:scale-110 transition-transform" />
+              <span>⚡ 1-Click Pavan Demo Auto-Fill</span>
             </button>
+
+            {/* OR DIVIDER */}
+            <div className="relative flex items-center justify-center pt-2">
+              <div className="w-full border-t border-[var(--border)]" />
+              <span className="absolute px-3 bg-[var(--bg-card)] text-[10px] font-extrabold text-[var(--text-muted)] uppercase tracking-widest">
+                OR
+              </span>
+            </div>
           </div>
         )}
 
-        {/* 1-CLICK INSTANT DEMO LOGIN BUTTON */}
-        {activeTab !== 'forgot' && (
-          <button
-            type="button"
-            onClick={handleDemoAccess}
-            className="w-full mb-6 flex items-center justify-center gap-2 py-3 px-4 bg-[#DFF5F0] hover:bg-[#C8EFE7] text-[#0FA58A] border border-[#C4EFE6] rounded-2xl text-xs font-bold transition-all cursor-pointer shadow-sm group"
-          >
-            <UserCheck className="w-4 h-4 text-[#0FA58A] group-hover:scale-110 transition-transform" />
-            <span>⚡ 1-Click Instant Demo Entrance</span>
-          </button>
+        {/* DEMO FILLED SUCCESS NOTIFICATION BANNER */}
+        {demoFilledNotice && (
+          <div className="mb-4 p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-medium flex items-center gap-2.5 animate-fade-in shadow-sm">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+            <span>Filled <strong>pavan@movtego.com</strong>! Click "Sign In" below.</span>
+          </div>
         )}
 
-        {/* TAB 1: SIGN IN FORM */}
-        {activeTab === 'login' && (
+        {/* MODE 1: SIGN IN FORM */}
+        {mode === 'login' && (
           <form onSubmit={handleLoginSubmit} className="space-y-4 text-left animate-fade-in">
             <Input
               label="Email Address"
               type="email"
-              placeholder="admin@movtego.com"
+              placeholder="pavan@movtego.com"
               icon={Mail}
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
@@ -333,12 +425,12 @@ export const Login = () => {
             />
 
             <div className="flex items-center justify-between text-xs pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-[#8A97A6] hover:text-[#0F1F2E] font-medium">
+              <label className="flex items-center gap-2 cursor-pointer text-[var(--text-muted)] hover:text-[var(--text-heading)] font-medium">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-[#E8F0F0] text-[#0FA58A] focus:ring-[#0FA58A]"
+                  className="rounded border-[var(--border)] text-[#14B8A0] focus:ring-[#14B8A0]"
                 />
                 <span>Remember me</span>
               </label>
@@ -346,10 +438,10 @@ export const Login = () => {
               <button
                 type="button"
                 onClick={() => {
-                  setActiveTab('forgot');
+                  setMode('forgot');
                   setForgotSubmitted(false);
                 }}
-                className="text-[#0FA58A] font-bold hover:underline cursor-pointer"
+                className="text-[#14B8A0] font-semibold hover:underline cursor-pointer"
               >
                 Forgot Password?
               </button>
@@ -362,16 +454,28 @@ export const Login = () => {
               fullWidth
               isLoading={loading}
               icon={ArrowRight}
-              className="mt-3 py-3.5 rounded-2xl font-bold"
+              className="mt-3 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-[#14B8A0]/25"
             >
               Sign In to Account
             </Button>
+
+            {/* Switch to Register */}
+            <p className="text-center text-xs text-[var(--text-muted)] pt-3 font-medium">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={() => setMode('register')}
+                className="text-[#14B8A0] font-bold hover:underline cursor-pointer"
+              >
+                Create Account
+              </button>
+            </p>
           </form>
         )}
 
-        {/* TAB 2: CREATE ACCOUNT FORM */}
-        {activeTab === 'register' && (
-          <form onSubmit={handleRegisterSubmit} className="space-y-3 text-left animate-fade-in">
+        {/* MODE 2: CREATE ACCOUNT FORM */}
+        {mode === 'register' && (
+          <form onSubmit={handleRegisterSubmit} className="space-y-3.5 text-left animate-fade-in">
             <Input
               label="Full Name"
               type="text"
@@ -383,62 +487,58 @@ export const Login = () => {
               required
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label="Email"
-                type="email"
-                placeholder="admin@movtego.com"
-                icon={Mail}
-                value={registerData.email}
-                onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                error={registerErrors.email}
-                required
-              />
+            <Input
+              label="Email"
+              type="email"
+              placeholder="admin@movtego.com"
+              icon={Mail}
+              value={registerData.email}
+              onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+              error={registerErrors.email}
+              required
+            />
 
-              <Input
-                label="Phone"
-                type="tel"
-                placeholder="+1 555-345-6789"
-                icon={Phone}
-                value={registerData.phone}
-                onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                error={registerErrors.phone}
-                required
-              />
-            </div>
+            <Input
+              label="Phone"
+              type="tel"
+              placeholder="+1 555-345-6789"
+              icon={Phone}
+              value={registerData.phone}
+              onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
+              error={registerErrors.phone}
+              required
+            />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label="Password"
-                type="password"
-                placeholder="••••••••"
-                icon={Lock}
-                value={registerData.password}
-                onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                error={registerErrors.password}
-                required
-              />
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              icon={Lock}
+              value={registerData.password}
+              onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+              error={registerErrors.password}
+              required
+            />
 
-              <Input
-                label="Confirm Password"
-                type="password"
-                placeholder="••••••••"
-                icon={Lock}
-                value={registerData.confirmPassword}
-                onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                error={registerErrors.confirmPassword}
-                required
-              />
-            </div>
+            <Input
+              label="Confirm Password"
+              type="password"
+              placeholder="••••••••"
+              icon={Lock}
+              value={registerData.confirmPassword}
+              onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+              error={registerErrors.confirmPassword}
+              required
+            />
 
-            <label className="flex items-start gap-2 cursor-pointer text-xs text-[#8A97A6] pt-1">
+            <label className="flex items-start gap-2 cursor-pointer text-xs text-[var(--text-muted)] pt-1">
               <input
                 type="checkbox"
                 checked={registerData.acceptTerms}
                 onChange={(e) => setRegisterData({ ...registerData, acceptTerms: e.target.checked })}
-                className="mt-0.5 rounded border-[#E8F0F0] text-[#0FA58A] focus:ring-[#0FA58A]"
+                className="mt-0.5 rounded border-[var(--border)] text-[#14B8A0] focus:ring-[#14B8A0]"
               />
-              <span>I accept the MOVTEGO Terms of Service & Privacy Policy</span>
+              <span>I accept the Terms & Conditions</span>
             </label>
 
             <Button
@@ -448,67 +548,68 @@ export const Login = () => {
               fullWidth
               isLoading={loading}
               icon={ArrowRight}
-              className="mt-2 py-3.5 rounded-2xl font-bold"
+              className="mt-3 py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-[#14B8A0]/25"
             >
               Complete Registration
             </Button>
+
+            {/* Switch to Login */}
+            <p className="text-center text-xs text-[var(--text-muted)] pt-3 font-medium">
+              Already have an account?{' '}
+              <button
+                type="button"
+                onClick={() => setMode('login')}
+                className="text-[#14B8A0] font-bold hover:underline cursor-pointer"
+              >
+                Sign In
+              </button>
+            </p>
           </form>
         )}
 
-        {/* TAB 3: INLINE FORGOT PASSWORD VIEW */}
-        {activeTab === 'forgot' && (
-          <div className="space-y-5 text-left animate-fade-in">
+        {/* MODE 3: FORGOT PASSWORD */}
+        {mode === 'forgot' && (
+          <div className="space-y-4 text-left animate-fade-in">
             <button
-              onClick={() => setActiveTab('login')}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8A97A6] hover:text-[#0FA58A] transition-colors cursor-pointer"
+              onClick={() => setMode('login')}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[#14B8A0] transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Sign In
             </button>
 
             {!forgotSubmitted ? (
-              <>
-                <div className="space-y-1">
-                  <h1 className="text-2xl font-bold text-[#0F1F2E] tracking-tight">
-                    Reset Password
-                  </h1>
-                  <p className="text-xs text-[#8A97A6] leading-relaxed">
-                    Enter your registered email address to receive password reset instructions.
-                  </p>
-                </div>
+              <form onSubmit={handleForgotSubmit} className="space-y-4 pt-1">
+                <Input
+                  label="Email Address"
+                  type="email"
+                  placeholder="admin@movtego.com"
+                  icon={Mail}
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  error={forgotError}
+                  required
+                />
 
-                <form onSubmit={handleForgotSubmit} className="space-y-4 pt-2">
-                  <Input
-                    label="Email Address"
-                    type="email"
-                    placeholder="admin@movtego.com"
-                    icon={Mail}
-                    value={forgotEmail}
-                    onChange={(e) => setForgotEmail(e.target.value)}
-                    error={forgotError}
-                    required
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="teal"
-                    size="lg"
-                    fullWidth
-                    isLoading={loading}
-                    icon={ArrowRight}
-                    className="py-3.5 rounded-2xl font-bold"
-                  >
-                    Send Recovery Instructions
-                  </Button>
-                </form>
-              </>
+                <Button
+                  type="submit"
+                  variant="teal"
+                  size="lg"
+                  fullWidth
+                  isLoading={loading}
+                  icon={ArrowRight}
+                  className="py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-[#14B8A0]/25"
+                >
+                  Send Recovery Instructions
+                </Button>
+              </form>
             ) : (
               <div className="space-y-4 text-center py-4">
-                <div className="w-14 h-14 rounded-full bg-[#DFF5F0] flex items-center justify-center text-[#0FA58A] mx-auto shadow-sm">
+                <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-[var(--primary)] mx-auto shadow-sm">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
-                <h2 className="text-lg font-bold text-[#0F1F2E]">Reset Link Sent!</h2>
-                <p className="text-xs text-[#8A97A6] leading-relaxed">
-                  We have sent instructions to <strong className="text-[#0F1F2E]">{forgotEmail}</strong>.
+                <h2 className="text-lg font-bold text-[var(--text-heading)]">Reset Link Sent!</h2>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                  Instructions sent to <strong className="text-[var(--text-heading)]">{forgotEmail}</strong>.
                 </p>
 
                 <div className="pt-2">
@@ -516,8 +617,8 @@ export const Login = () => {
                     variant="teal"
                     size="md"
                     fullWidth
-                    onClick={() => setActiveTab('login')}
-                    className="rounded-2xl font-bold"
+                    onClick={() => setMode('login')}
+                    className="rounded-2xl font-semibold"
                   >
                     Return to Sign In
                   </Button>
@@ -526,6 +627,8 @@ export const Login = () => {
             )}
           </div>
         )}
+
+        </div>
 
       </div>
 

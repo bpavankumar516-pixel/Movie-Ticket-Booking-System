@@ -1,29 +1,63 @@
 import { api } from './api';
 
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY || 'fake_key_fallback';
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY || 'a07e22bc18f5cb106bfe4cc1f83ad8ed';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+const TMDB_IMAGE_ORIGINAL = 'https://image.tmdb.org/t/p/original';
 
-// Comprehensive Authentic Movie Database matching MOVTEGO Design System & Reference Screenshot
+const GENRE_MAP = {
+  28: 'Action',
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Sci-Fi',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10752: 'War',
+  37: 'Western'
+};
+
+const LANG_CODE_MAP = {
+  Telugu: 'te',
+  Hindi: 'hi',
+  Tamil: 'ta',
+  French: 'fr',
+  English: 'en',
+  Spanish: 'es',
+  Japanese: 'ja'
+};
+
+// Authentic Multilingual Movie Catalog (English, Telugu, Hindi, Tamil, French)
 export const MOCK_MOVIES = [
+  // ENGLISH FLAGSHIP FAMOUS MOVIES
   {
     id: 1,
     tmdbId: 76600,
-    title: 'Avatar',
-    originalTitle: 'Avatar: The Way of Water',
+    title: 'Avatar: The Way of Water',
+    originalTitle: 'Avatar 2',
     tagline: 'Return to Pandora in IMAX 3D.',
-    overview: 'A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.',
+    overview: 'Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na\'vi race.',
     poster: 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
     backdrop: 'https://image.tmdb.org/t/p/original/s16H6tpK2utvwDtzZ8Qy4qm5Emw.jpg',
     rating: 7.8,
     voteCount: 18400,
     likes: 18400,
-    runtime: 162,
-    releaseDate: '2009-12-18',
+    runtime: 192,
+    releaseDate: '2022-12-16',
     language: 'English',
     status: 'Now Showing',
     category: 'now_showing',
-    activeShows: 12,
+    activeShows: 16,
     genres: ['Sci-Fi', 'Action', 'Adventure'],
     formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
     cast: [
@@ -31,15 +65,15 @@ export const MOCK_MOVIES = [
       { name: 'Sam Worthington', role: 'As Jake Sully', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
       { name: 'Zoe Saldana', role: 'As Neytiri', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
     ],
-    trailerUrl: 'https://www.youtube.com/embed/5PSNL1qE6VY'
+    trailerUrl: 'https://www.youtube.com/embed/d9MyW72ELq0'
   },
   {
     id: 2,
     tmdbId: 693134,
-    title: 'Dune 2',
-    originalTitle: 'Dune: Part Two',
+    title: 'Dune: Part Two',
+    originalTitle: 'Dune 2',
     tagline: 'Long live the fighters across the desert sands.',
-    overview: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between love and fate.',
+    overview: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
     poster: 'https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjxh2CZjjYroq.jpg',
     backdrop: 'https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
     rating: 8.7,
@@ -62,295 +96,99 @@ export const MOCK_MOVIES = [
   },
   {
     id: 3,
-    tmdbId: 889737,
-    title: 'Joker: Folie à Deux',
-    originalTitle: 'Joker 2',
-    tagline: 'The world is a stage for chaos.',
-    overview: 'Failed comedian Arthur Fleck meets the love of his life, Harley Quinn, while incarcerated at Arkham State Hospital.',
-    poster: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1920&auto=format&fit=crop&q=95',
-    rating: 5.6,
-    voteCount: 3200,
-    likes: 3200,
-    runtime: 138,
-    releaseDate: '2024-10-04',
-    language: 'French',
-    status: 'Upcoming',
-    category: 'upcoming',
-    activeShows: 6,
-    genres: ['Drama', 'Crime', 'Thriller'],
-    formats: ['Dolby Cinema', 'Standard 2D'],
-    cast: [
-      { name: 'Todd Phillips', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Joaquin Phoenix', role: 'As Arthur Fleck / Joker', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Lady Gaga', role: 'As Harleen Quinzel', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/_OKAwz22TYg'
-  },
-  {
-    id: 4,
-    tmdbId: 558449,
-    title: 'Gladiator II',
-    tagline: 'What we do in life echoes in eternity.',
-    overview: 'Years after witnessing the death of Maximus at the hands of his uncle, Lucius must enter the Colosseum after his home is conquered by tyrant emperors.',
-    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920&auto=format&fit=crop&q=95',
-    rating: 7.2,
-    voteCount: 4100,
-    likes: 4100,
-    runtime: 148,
-    releaseDate: '2024-11-22',
-    language: 'English',
-    status: 'Published',
-    category: 'published',
-    activeShows: 14,
-    genres: ['Action', 'Drama', 'History'],
-    formats: ['IMAX 3D', '4DX', 'Dolby Atmos'],
-    cast: [
-      { name: 'Ridley Scott', role: 'Director', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Paul Mescal', role: 'As Lucius Verus', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Pedro Pascal', role: 'As Marcus Acacius', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/4rgYUipGJNo'
-  },
-  {
-    id: 5,
-    tmdbId: 533535,
-    title: 'Deadpool & Wolverine',
-    tagline: 'Everyone deserves a happy ending.',
-    overview: 'Wolverine is recovering from his injuries when he crosses paths with the loudmouth Deadpool. They team up to defeat a common enemy.',
-    poster: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.1,
-    voteCount: 9400,
-    likes: 9400,
-    runtime: 128,
-    releaseDate: '2024-07-26',
+    tmdbId: 157336,
+    title: 'Interstellar',
+    originalTitle: 'Interstellar',
+    tagline: 'Mankind was born on Earth. It was never meant to die here.',
+    overview: 'The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel.',
+    poster: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
+    backdrop: 'https://image.tmdb.org/t/p/original/xJHokMbljvjADYdit5fKSuVQwio.jpg',
+    rating: 8.6,
+    voteCount: 34000,
+    likes: 34000,
+    runtime: 169,
+    releaseDate: '2014-11-05',
     language: 'English',
     status: 'Now Showing',
     category: 'now_showing',
-    activeShows: 16,
-    genres: ['Action', 'Comedy', 'Sci-Fi'],
-    formats: ['IMAX 3D', 'Dolby Atmos'],
-    cast: [
-      { name: 'Shawn Levy', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Ryan Reynolds', role: 'As Wade Wilson / Deadpool', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Hugh Jackman', role: 'As Logan / Wolverine', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/73_1biulkYk'
-  },
-  {
-    id: 6,
-    tmdbId: 414906,
-    title: 'The Batman',
-    tagline: 'Unmask the truth.',
-    overview: 'When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city hidden corruption.',
-    poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1920&auto=format&fit=crop&q=95',
-    rating: 7.8,
-    voteCount: 7800,
-    likes: 7800,
-    runtime: 176,
-    releaseDate: '2022-03-04',
-    language: 'English',
-    status: 'Unpublished',
-    category: 'unpublished',
-    activeShows: 8,
-    genres: ['Thriller', 'Crime', 'Action'],
-    formats: ['Dolby Atmos', 'Standard 2D'],
-    cast: [
-      { name: 'Matt Reeves', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Robert Pattinson', role: 'As Bruce Wayne / Batman', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/mqqft2x_Aa4'
-  },
-  {
-    id: 7,
-    tmdbId: 299536,
-    title: 'Avengers: Endgame',
-    tagline: 'Part of the journey is the end.',
-    overview: 'After devastating events of Infinity War, the universe is in ruins. With remaining allies, the Avengers assemble once more to undo Thanos actions.',
-    poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.4,
-    voteCount: 22000,
-    likes: 22000,
-    runtime: 181,
-    releaseDate: '2019-04-26',
-    language: 'English',
-    status: 'Published',
-    category: 'published',
-    activeShows: 20,
-    genres: ['Action', 'Sci-Fi', 'Adventure'],
-    formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
-    cast: [
-      { name: 'Anthony Russo', role: 'Director', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Robert Downey Jr.', role: 'As Tony Stark / Iron Man', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/TcMBFSGVi1c'
-  },
-  {
-    id: 8,
-    tmdbId: 157336,
-    title: 'Interstellar',
-    tagline: 'Mankind was born on Earth. It was never meant to die here.',
-    overview: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity survival as Earth resources deplete.',
-    poster: 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
-    backdrop: 'https://image.tmdb.org/t/p/original/pbrkL8a4c8yF4vBwFToKC7vg2x.jpg',
-    rating: 8.6,
-    voteCount: 16900,
-    likes: 16900,
-    runtime: 169,
-    releaseDate: '2014-11-07',
-    language: 'English',
-    status: 'Archived',
-    category: 'archived',
-    activeShows: 4,
+    activeShows: 14,
     genres: ['Sci-Fi', 'Drama', 'Adventure'],
-    formats: ['70MM IMAX', 'Dolby Cinema'],
+    formats: ['IMAX 70MM', 'Dolby Cinema', 'VIP Lounge'],
     cast: [
-      { name: 'Christopher Nolan', role: 'Director', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Matthew McConaughey', role: 'As Cooper', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
+      { name: 'Christopher Nolan', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Matthew McConaughey', role: 'As Cooper', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Anne Hathaway', role: 'As Brand', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
     ],
     trailerUrl: 'https://www.youtube.com/embed/zSWdZVtXT7E'
   },
+
+  // TELUGU FAMOUS MOVIES
   {
-    id: 9,
-    tmdbId: 155,
-    title: 'The Dark Knight',
-    tagline: 'Welcome to a world without rules.',
-    overview: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests.',
-    poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920&auto=format&fit=crop&q=95',
-    rating: 9.0,
-    voteCount: 28900,
-    likes: 28900,
-    runtime: 152,
-    releaseDate: '2008-07-18',
-    language: 'English',
-    status: 'Published',
-    category: 'published',
-    activeShows: 15,
-    genres: ['Action', 'Crime', 'Drama'],
-    formats: ['IMAX 70MM', 'Dolby Atmos'],
-    cast: [
-      { name: 'Christopher Nolan', role: 'Director', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Christian Bale', role: 'As Bruce Wayne / Batman', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/EXeTwQWrcwY'
-  },
-  {
-    id: 10,
-    tmdbId: 634649,
-    title: 'Spider-Man: No Way Home',
-    tagline: 'The Multiverse unleashed.',
-    overview: 'With Spider-Man identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.',
-    poster: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.2,
-    voteCount: 15200,
-    likes: 15200,
-    runtime: 148,
-    releaseDate: '2021-12-17',
-    language: 'English',
-    status: 'Draft',
-    category: 'draft',
-    activeShows: 3,
-    genres: ['Action', 'Adventure', 'Sci-Fi'],
-    formats: ['IMAX 3D', '4DX'],
-    cast: [
-      { name: 'Jon Watts', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Tom Holland', role: 'As Peter Parker / Spider-Man', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/RmX-w16Lnhg'
-  },
-  {
-    id: 11,
-    tmdbId: 475557,
-    title: 'Joker',
-    tagline: 'Put on a happy face.',
-    overview: 'During the 1980s, a failed stand-up comedian is driven insane and turns to a life of crime and chaos in Gotham City while becoming an infamous figure.',
-    poster: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.5,
-    voteCount: 19800,
-    likes: 19800,
-    runtime: 122,
-    releaseDate: '2019-10-03',
-    language: 'English',
-    status: 'Published',
-    category: 'published',
-    activeShows: 11,
-    genres: ['Thriller', 'Crime', 'Drama'],
-    formats: ['Dolby Cinema', 'Standard 2D'],
-    cast: [
-      { name: 'Todd Phillips', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Joaquin Phoenix', role: 'As Arthur Fleck / Joker', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
-    ],
-    trailerUrl: 'https://www.youtube.com/embed/zAGVQLHvwOY'
-  },
-  {
-    id: 12,
-    tmdbId: 361743,
-    title: 'Top Gun: Maverick',
-    tagline: 'Feel the need for speed.',
-    overview: 'After thirty years of service as a top naval aviator, Pete Maverick Mitchell is where he belongs, pushing the envelope as a courageous test pilot.',
-    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.3,
-    voteCount: 11400,
-    likes: 11400,
-    runtime: 130,
-    releaseDate: '2022-05-27',
-    language: 'English',
+    id: 101,
+    tmdbId: 579974,
+    title: 'RRR',
+    originalTitle: 'RRR',
+    tagline: 'Rise, Roar, Revolt.',
+    overview: 'A fictitious story about two legendary revolutionaries and their journey away from home before they started fighting for their country in the 1920s.',
+    poster: 'https://image.tmdb.org/t/p/w500/nEuF0D9ZwaMyfiAHbaH9y89C3hT.jpg',
+    backdrop: 'https://image.tmdb.org/t/p/original/m2vFuG2yG63q0u1d2s0Zp0y44mY.jpg',
+    rating: 8.9,
+    voteCount: 22000,
+    likes: 22000,
+    runtime: 187,
+    releaseDate: '2022-03-25',
+    language: 'Telugu',
     status: 'Now Showing',
     category: 'now_showing',
-    activeShows: 17,
-    genres: ['Action', 'Drama'],
-    formats: ['IMAX 4DX', 'Dolby Cinema'],
+    activeShows: 28,
+    genres: ['Action', 'Drama', 'History'],
+    formats: ['IMAX 3D', 'Dolby Cinema'],
     cast: [
-      { name: 'Joseph Kosinski', role: 'Director', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Tom Cruise', role: 'As Pete Maverick Mitchell', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
+      { name: 'S.S. Rajamouli', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'N.T. Rama Rao Jr.', role: 'As Komaram Bheem', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Ram Charan', role: 'As Alluri Sitarama Raju', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' }
     ],
-    trailerUrl: 'https://www.youtube.com/embed/giXco2jaZ_4'
+    trailerUrl: 'https://www.youtube.com/embed/NgBoT17G0hI'
   },
   {
-    id: 13,
-    tmdbId: 823464,
+    id: 102,
+    tmdbId: 822119,
     title: 'Kalki 2898 AD',
-    tagline: 'When the world is consumed by darkness, a hero rises.',
-    overview: 'A modern avatar of Lord Vishnu, believed to have descended to Earth to protect the world from evil forces in the post-apocalyptic year 2898 AD.',
+    originalTitle: 'Kalki 2898 AD',
+    tagline: 'The future of humanity begins in Kashi.',
+    overview: 'A modern avatar of Lord Vishnu, believed to have descended to Earth to protect the world from evil forces in a dystopian world.',
     poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1920&auto=format&fit=crop&q=95',
     rating: 8.4,
-    voteCount: 8900,
-    likes: 8900,
+    voteCount: 14200,
+    likes: 14200,
     runtime: 180,
     releaseDate: '2024-06-27',
     language: 'Telugu',
     status: 'Now Showing',
     category: 'now_showing',
-    activeShows: 25,
-    genres: ['Sci-Fi', 'Action', 'Mythology'],
+    activeShows: 24,
+    genres: ['Sci-Fi', 'Action', 'Fantasy'],
     formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
     cast: [
-      { name: 'Nag Ashwin', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Prabhas', role: 'As Bhairava / Karna', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Amitabh Bachchan', role: 'As Ashwatthama', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' }
+      { name: 'Nag Ashwin', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Prabhas', role: 'As Bhairava', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Amitabh Bachchan', role: 'As Ashwatthama', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' }
     ],
     trailerUrl: 'https://www.youtube.com/embed/kQDd1AhGIHk'
   },
   {
-    id: 14,
-    tmdbId: 912649,
+    id: 103,
+    tmdbId: 940551,
     title: 'Pushpa 2: The Rule',
-    tagline: 'Wildfire spreads across the nation.',
-    overview: 'The clash continues between Pushpa Raj and Bhanwar Singh Shekhawat in the red sandalwood smuggling empire of Seshachalam.',
-    poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&auto=format&fit=crop&q=95',
-    backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1920&auto=format&fit=crop&q=95',
-    rating: 8.9,
-    voteCount: 14500,
-    likes: 14500,
+    originalTitle: 'Pushpa 2: The Rule',
+    tagline: 'Wildfire takes over the syndicate.',
+    overview: 'The clash between Pushpa Raj and Bhanwar Singh Shekhawat continues as Pushpa consolidates his sandalwood smuggling empire.',
+    poster: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1920&auto=format&fit=crop&q=95',
+    rating: 8.8,
+    voteCount: 16500,
+    likes: 16500,
     runtime: 175,
     releaseDate: '2024-12-05',
     language: 'Telugu',
@@ -360,7 +198,7 @@ export const MOCK_MOVIES = [
     genres: ['Action', 'Crime', 'Drama'],
     formats: ['IMAX', 'Dolby Atmos'],
     cast: [
-      { name: 'Sukumar', role: 'Director', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Sukumar', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
       { name: 'Allu Arjun', role: 'As Pushpa Raj', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
       { name: 'Rashmika Mandanna', role: 'As Srivalli', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
     ],
@@ -369,102 +207,169 @@ export const MOCK_MOVIES = [
 ];
 
 export const movieApi = {
-  // Get Movies List with Category filter & Search
-  getMovies: async (category = 'all', search = '') => {
+  // Fetch Most Famous Blockbuster Movies sorted by popularity and high vote count
+  getMovies: async (category = 'all', search = '', language = 'All') => {
     try {
-      if (TMDB_API_KEY && TMDB_API_KEY !== 'fake_key_fallback') {
-        const endpoint = category === 'now_showing' ? '/movie/now_playing' 
-          : category === 'popular' ? '/movie/popular'
-          : category === 'top_rated' ? '/movie/top_rated'
-          : category === 'upcoming' ? '/movie/upcoming'
-          : '/movie/now_playing';
-
+      if (search && search.trim()) {
+        const response = await api.get(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(search)}&page=1`);
+        if (response.data && response.data.results && response.data.results.length > 0) {
+          let list = response.data.results.map((m) => movieApi.formatTmdbMovie(m));
+          if (language && language !== 'All') {
+            const langCode = LANG_CODE_MAP[language];
+            if (langCode) {
+              list = list.filter(m => m.language === language || m.originalLanguage === langCode);
+            }
+          }
+          return list;
+        }
+      } else if (language && language !== 'All') {
+        const langCode = LANG_CODE_MAP[language] || 'en';
+        // Discover by vote_count.desc to get the MOST FAMOUS blockbuster movies first!
+        const response = await api.get(`${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_original_language=${langCode}&sort_by=vote_count.desc&page=1`);
+        if (response.data && response.data.results && response.data.results.length > 0) {
+          let list = response.data.results.map((m) => movieApi.formatTmdbMovie(m, category, language));
+          
+          if (language === 'English') {
+            const flagship = MOCK_MOVIES.filter(m => m.language === 'English');
+            const existingIds = new Set(list.map(m => m.tmdbId));
+            const toAdd = flagship.filter(m => !existingIds.has(m.tmdbId));
+            list = [...toAdd, ...list];
+          }
+          return list;
+        }
+      } else {
+        // Fetch top rated / most famous movies globally
+        const endpoint = '/movie/top_rated';
         const response = await api.get(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
         
         if (response.data && response.data.results && response.data.results.length > 0) {
-          const apiMovies = response.data.results.map((m, idx) => ({
-            id: m.id,
-            tmdbId: m.id,
-            title: m.title,
-            originalTitle: m.original_title,
-            overview: m.overview,
-            poster: m.poster_path ? `${TMDB_IMAGE_BASE}${m.poster_path}` : MOCK_MOVIES[idx % MOCK_MOVIES.length].poster,
-            backdrop: m.backdrop_path ? `${TMDB_IMAGE_BASE}${m.backdrop_path}` : MOCK_MOVIES[idx % MOCK_MOVIES.length].backdrop,
-            rating: m.vote_average ? Number(m.vote_average.toFixed(1)) : 8.2,
-            voteCount: m.vote_count || 1400,
-            likes: m.vote_count || 1400,
-            runtime: 142,
-            releaseDate: m.release_date || '2024-03-01',
-            language: m.original_language === 'te' ? 'Telugu' : m.original_language === 'hi' ? 'Hindi' : 'English',
-            status: category === 'upcoming' ? 'Upcoming' : idx % 2 === 0 ? 'Now Showing' : 'Published',
-            category: category,
-            activeShows: (idx % 12) + 6,
-            genres: ['Sci-Fi', 'Action', 'Drama'],
-            formats: ['IMAX 3D', 'Dolby Atmos', 'VIP Lounge'],
-            cast: MOCK_MOVIES[0].cast,
-            trailerUrl: 'https://www.youtube.com/embed/Way9Dexny3w'
-          }));
-
-          if (search) {
-            return apiMovies.filter((m) => m.title.toLowerCase().includes(search.toLowerCase()));
-          }
-          return apiMovies;
+          let list = response.data.results.map((m) => movieApi.formatTmdbMovie(m, category));
+          
+          // Prepend flagship movies (Avatar 2, Dune 2, Interstellar)
+          const flagship = MOCK_MOVIES.filter(m => [76600, 693134, 157336].includes(m.tmdbId));
+          const existingIds = new Set(list.map(m => m.tmdbId));
+          const toAdd = flagship.filter(m => !existingIds.has(m.tmdbId));
+          return [...toAdd, ...list];
         }
       }
     } catch (error) {
-      console.warn('TMDB API Unavailable, switching to local MOCK_MOVIES service');
+      console.warn('TMDB Network API fallback triggered:', error);
     }
 
-    // Fallback Mock Filtering
+    // Fallback Mock Filtering if offline (sorted by rating descending)
     let results = [...MOCK_MOVIES];
     if (category !== 'all') {
       results = results.filter((m) => m.category === category || m.status.toLowerCase().replace(/\s+/g, '_') === category);
     }
+    if (language !== 'All') {
+      results = results.filter((m) => m.language.toLowerCase() === language.toLowerCase());
+    }
     if (search) {
       results = results.filter((m) => m.title.toLowerCase().includes(search.toLowerCase()));
     }
+    results.sort((a, b) => b.rating - a.rating);
     return results;
   },
 
-  // Get single Movie by ID
-  getMovieById: async (id) => {
-    const numericId = Number(id);
-    const mock = MOCK_MOVIES.find((m) => m.id === numericId || m.tmdbId === numericId);
-    if (mock) return mock;
+  // Helper to format TMDB JSON response to app model
+  formatTmdbMovie: (m, category = 'popular', enforcedLanguage = null) => {
+    const genreNames = m.genre_ids ? m.genre_ids.map(id => GENRE_MAP[id]).filter(Boolean) : [];
+    if (genreNames.length === 0) genreNames.push('Sci-Fi', 'Action');
 
+    const posterUrl = m.poster_path 
+      ? `${TMDB_IMAGE_BASE}${m.poster_path}` 
+      : 'https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg';
+
+    const backdropUrl = m.backdrop_path 
+      ? `${TMDB_IMAGE_ORIGINAL}${m.backdrop_path}` 
+      : 'https://image.tmdb.org/t/p/original/s16H6tpK2utvwDtzZ8Qy4qm5Emw.jpg';
+
+    const langMap = {
+      te: 'Telugu',
+      hi: 'Hindi',
+      ta: 'Tamil',
+      fr: 'French',
+      en: 'English',
+      es: 'Spanish',
+      ja: 'Japanese',
+      ko: 'Korean'
+    };
+
+    const movieLang = enforcedLanguage || langMap[m.original_language] || 'English';
+
+    return {
+      id: m.id,
+      tmdbId: m.id,
+      title: m.title,
+      originalTitle: m.original_title || m.title,
+      overview: m.overview || 'Experience this remarkable cinematic masterpiece in theaters and IMAX formats.',
+      poster: posterUrl,
+      backdrop: backdropUrl,
+      rating: m.vote_average ? Number(m.vote_average.toFixed(1)) : 8.2,
+      voteCount: m.vote_count || 3200,
+      likes: m.vote_count || 3200,
+      runtime: 135 + (m.id % 35),
+      releaseDate: m.release_date || '2024-03-01',
+      language: movieLang,
+      originalLanguage: m.original_language,
+      status: category === 'upcoming' ? 'Upcoming' : m.vote_average > 7.5 ? 'Now Showing' : 'Published',
+      category: category,
+      activeShows: (m.id % 15) + 6,
+      genres: genreNames,
+      formats: ['IMAX 3D', 'Dolby Atmos', '4DX', 'VIP Lounge'],
+      cast: [
+        { name: 'Lead Director', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+        { name: 'Featured Star', role: 'Protagonist', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+        { name: 'Co-Star', role: 'Supporting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
+      ],
+      trailerUrl: 'https://www.youtube.com/embed/d9MyW72ELq0'
+    };
+  },
+
+  // Get single Movie by ID with real TMDB videos & credits
+  getMovieById: async (id) => {
     try {
-      if (TMDB_API_KEY && TMDB_API_KEY !== 'fake_key_fallback') {
-        const response = await api.get(`${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=en-US`);
-        const m = response.data;
-        if (m) {
-          return {
-            id: m.id,
-            tmdbId: m.id,
-            title: m.title,
-            originalTitle: m.original_title,
-            overview: m.overview,
-            poster: m.poster_path ? `${TMDB_IMAGE_BASE}${m.poster_path}` : MOCK_MOVIES[0].poster,
-            backdrop: m.backdrop_path ? `${TMDB_IMAGE_BASE}${m.backdrop_path}` : MOCK_MOVIES[0].backdrop,
-            rating: m.vote_average ? Number(m.vote_average.toFixed(1)) : 8.5,
-            voteCount: m.vote_count || 4000,
-            likes: m.vote_count || 4000,
-            runtime: m.runtime || 150,
-            releaseDate: m.release_date || '2024-03-01',
-            language: m.original_language?.toUpperCase() || 'English',
-            status: 'Now Showing',
-            category: 'now_showing',
-            activeShows: 12,
-            genres: m.genres ? m.genres.map(g => g.name) : ['Sci-Fi', 'Drama'],
-            formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
-            cast: MOCK_MOVIES[0].cast,
-            trailerUrl: 'https://www.youtube.com/embed/Way9Dexny3w'
-          };
-        }
+      const response = await api.get(`${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=en-US&append_to_response=videos,credits`);
+      const m = response.data;
+      if (m) {
+        const trailerObj = m.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+        const trailerLink = trailerObj ? `https://www.youtube.com/embed/${trailerObj.key}` : 'https://www.youtube.com/embed/Way9Dexny3w';
+
+        const castList = m.credits?.cast?.slice(0, 4).map(c => ({
+          name: c.name,
+          role: `As ${c.character}`,
+          avatar: c.profile_path ? `${TMDB_IMAGE_BASE}${c.profile_path}` : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80'
+        })) || MOCK_MOVIES[0].cast;
+
+        return {
+          id: m.id,
+          tmdbId: m.id,
+          title: m.title,
+          originalTitle: m.original_title,
+          tagline: m.tagline || 'Experience the cinematic spectacle.',
+          overview: m.overview,
+          poster: m.poster_path ? `${TMDB_IMAGE_BASE}${m.poster_path}` : MOCK_MOVIES[0].poster,
+          backdrop: m.backdrop_path ? `${TMDB_IMAGE_ORIGINAL}${m.backdrop_path}` : MOCK_MOVIES[0].backdrop,
+          rating: m.vote_average ? Number(m.vote_average.toFixed(1)) : 8.5,
+          voteCount: m.vote_count || 4000,
+          likes: m.vote_count || 4000,
+          runtime: m.runtime || 150,
+          releaseDate: m.release_date || '2024-03-01',
+          language: m.spoken_languages?.[0]?.english_name || 'English',
+          status: 'Now Showing',
+          category: 'now_showing',
+          activeShows: 14,
+          genres: m.genres ? m.genres.map(g => g.name) : ['Sci-Fi', 'Action'],
+          formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
+          cast: castList,
+          trailerUrl: trailerLink
+        };
       }
     } catch (e) {
       console.warn('TMDB movie detail fetch failed, returning mock default');
     }
 
-    return MOCK_MOVIES[0];
+    const numericId = Number(id);
+    return MOCK_MOVIES.find((m) => m.id === numericId || m.tmdbId === numericId) || MOCK_MOVIES[0];
   }
 };

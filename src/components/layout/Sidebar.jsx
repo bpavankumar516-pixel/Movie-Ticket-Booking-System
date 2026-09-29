@@ -16,7 +16,6 @@ export const Sidebar = () => {
     { label: 'Bookings', icon: Ticket, path: '/booking-history' },
     { label: 'Theatres', icon: Building2, path: '/theatres' },
     { label: 'Screens', icon: Monitor, path: '/theatres' },
-    { label: 'Seats', icon: Armchair, path: '/theatres' },
     { label: 'Analytics', icon: TrendingUp, path: '/reports' },
   ];
 
@@ -24,6 +23,16 @@ export const Sidebar = () => {
     { label: 'Settings', icon: SettingsIcon, path: '/settings' },
     { label: 'Account', icon: User, path: '/profile' },
   ];
+
+  const checkIsActive = (item) => {
+    if (item.label === 'Dashboard') {
+      return location.pathname === '/dashboard' || location.pathname === '/';
+    }
+    if (item.path === '/theatres') {
+      return location.pathname === '/theatres' && item.label === 'Theatres';
+    }
+    return location.pathname === item.path;
+  };
 
   return (
     <aside className="hidden lg:flex flex-col justify-between w-[240px] movtego-sidebar p-4 shrink-0 select-none sticky top-5 self-start h-[calc(100vh-2.5rem)] max-h-[calc(100vh-2.5rem)] z-30 transition-all duration-300">
@@ -53,9 +62,7 @@ export const Sidebar = () => {
         <div className="space-y-0.5 pt-1">
           <p className="px-3 text-[12px] font-semibold uppercase tracking-[0.5px] text-[var(--text-muted)] text-left mb-1.5">MAIN</p>
           {mainItems.map((item, idx) => {
-            const isActive = item.label === 'Dashboard' 
-              ? location.pathname === '/dashboard' || location.pathname === '/'
-              : location.pathname === item.path;
+            const isActive = checkIsActive(item);
             const Icon = item.icon;
 
             return (
@@ -94,7 +101,7 @@ export const Sidebar = () => {
                     : 'sidebar-link-inactive hover:bg-[var(--primary-light)] hover:text-[#0FA58A]'}
                 `}
               >
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
                 <span>{item.label}</span>
               </Link>
             );

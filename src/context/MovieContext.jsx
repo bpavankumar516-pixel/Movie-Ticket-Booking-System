@@ -30,14 +30,28 @@ export const MovieProvider = ({ children }) => {
     localStorage.setItem('movtego_movies_catalog', JSON.stringify(movies));
   }, [movies]);
 
+  // Fetch movies from API or service on mount and whenever language changes
+  useEffect(() => {
+    refreshMoviesFromAPI(selectedCategory, searchQuery, selectedLanguage);
+  }, [selectedLanguage]);
+
   // Fetch movies from API or service
-  const refreshMoviesFromAPI = async () => {
+  const refreshMoviesFromAPI = async (cat = selectedCategory, search = searchQuery, lang = selectedLanguage) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await movieApi.getMovies(selectedCategory, searchQuery);
+      const data = await movieApi.getMovies(cat, search, lang);
       if (data && data.length > 0) {
-        setMovies(data);
+        // Merge API movies with any locally added/edited movies
+        const savedLocal = localStorage.getItem('movtego_movies_catalog');
+        if (savedLocal) {
+          const parsed = JSON.parse(savedLocal);
+          // If user added custom movies locally, retain them at top
+          const customAdded = parsed.filter(m => typeof m.id === 'number' && m.id > 10000000);
+          setMovies([...customAdded, ...data]);
+        } else {
+          setMovies(data);
+        }
       }
     } catch (e) {
       console.error('Failed to fetch movies from API', e);

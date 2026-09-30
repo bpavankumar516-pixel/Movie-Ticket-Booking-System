@@ -68,6 +68,8 @@ export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null
     }
     onSubmit({
       ...formData,
+      image: formData.image || 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1000&auto=format&fit=crop&q=80',
+      brandLogo: formData.brandLogo || 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=200&auto=format&fit=crop&q=80',
       screensCount: Number(formData.screensCount),
       totalSeats: Number(formData.totalSeats),
       contact: {

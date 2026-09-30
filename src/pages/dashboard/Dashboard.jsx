@@ -1,79 +1,226 @@
-import React from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { 
   Film, Building2, Ticket, IndianRupee, Calendar, Star, ChevronLeft, ChevronRight, 
-  ArrowRight, TrendingUp, ChevronDown 
+  ArrowRight, TrendingUp, ChevronDown, CheckCircle2, Clock, XCircle, Sparkles,
+  Plus, Monitor, ShieldCheck, Flame, Eye, RefreshCw, Zap, Armchair, BarChart3,
+  Layers, ArrowUpRight
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useMovies } from '../../context/MovieContext';
+import { useTheatre } from '../../context/TheatreContext';
+import { useBooking } from '../../context/BookingContext';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const { movies, setSelectedMovieForDetail } = useMovies();
+  const { theatres, getTheatreStats } = useTheatre();
+  const { bookingHistory } = useBooking();
 
-  // Top 5 Stat Cards Data matching screenshot specifications
+  // 1. Featured Blockbuster Movies Carousel List (Avatar 2, Avengers Endgame, Salaar, Vikram)
+  const featuredMoviesList = useMemo(() => {
+    if (!movies || movies.length === 0) return [];
+    
+    const avatar = movies.find(m => m.title.toLowerCase().includes('avatar'));
+    const avengers = movies.find(m => m.title.toLowerCase().includes('avengers'));
+    const salaar = movies.find(m => m.title.toLowerCase().includes('salaar'));
+    const vikram = movies.find(m => m.title.toLowerCase().includes('vikram') || m.title.toLowerCase().includes('leo'));
+
+    const selectedList = [avatar, avengers, salaar, vikram].filter(Boolean);
+
+    if (selectedList.length >= 4) return selectedList;
+
+    const remaining = movies.filter(m => !selectedList.some(s => s.id === m.id));
+    return [...selectedList, ...remaining].slice(0, 4);
+  }, [movies]);
+
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0);
+
+  // Auto-rotate hero banner every 5 seconds (5000ms)
+  useEffect(() => {
+    if (!featuredMoviesList || featuredMoviesList.length === 0) return;
+    const timer = setInterval(() => {
+      setActiveBannerIndex((prev) => (prev + 1) % featuredMoviesList.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [featuredMoviesList]);
+
+  const handleNextBanner = () => {
+    if (!featuredMoviesList || featuredMoviesList.length === 0) return;
+    setActiveBannerIndex((prev) => (prev + 1) % featuredMoviesList.length);
+  };
+
+  const handlePrevBanner = () => {
+    if (!featuredMoviesList || featuredMoviesList.length === 0) return;
+    setActiveBannerIndex((prev) => (prev - 1 + featuredMoviesList.length) % featuredMoviesList.length);
+  };
+
+  const currentFeatured = featuredMoviesList[activeBannerIndex] || featuredMoviesList[0];
+
+  // 2. Dynamic Live Metrics Calculation
+  const totalMoviesCount = movies ? movies.length : 0;
+  const nowShowingCount = movies ? movies.filter(m => m.status === 'Now Showing').length : 0;
+  const totalTheatresCount = theatres ? theatres.length : 0;
+  const totalBookingsCount = bookingHistory ? bookingHistory.length : 0;
+
+  // Calculate Total Revenue from confirmed bookings
+  const totalRevenueNumber = useMemo(() => {
+    if (!bookingHistory) return 0;
+    return bookingHistory.reduce((acc, b) => {
+      if (b.status === 'Confirmed') {
+        const val = typeof b.totalPrice === 'number' ? b.totalPrice : parseFloat(String(b.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+        return acc + val;
+      }
+      return acc;
+    }, 0);
+  }, [bookingHistory]);
+
+  const formattedRevenue = useMemo(() => {
+    if (totalRevenueNumber >= 100000) {
+      return `₹ ${(totalRevenueNumber / 100000).toFixed(2)} L`;
+    }
+    return `₹ ${totalRevenueNumber.toLocaleString('en-IN')}`;
+  }, [totalRevenueNumber]);
+
+  // Today's Bookings Count
+  const todaysBookingsCount = useMemo(() => {
+    if (!bookingHistory) return 0;
+    const todayStr = new Date().toISOString().split('T')[0];
+    return bookingHistory.filter(b => {
+      if (!b.bookingDate) return true;
+      return b.bookingDate.startsWith(todayStr);
+    }).length;
+  }, [bookingHistory]);
+
+  // Top 5 Stat Cards Data
   const topMetrics = [
-    { label: 'Total Movies', value: '248', change: '↑ 12.4%', icon: Film },
-    { label: 'Total Theatres', value: '42', change: '↑ 4.2%', icon: Building2 },
-    { label: 'Total Bookings', value: '1,284', change: '↑ 18.2%', icon: Ticket },
-    { label: 'Total Revenue', value: '₹ 8.42 L', change: '↑ 15.8%', icon: IndianRupee },
-    { label: 'Today\'s Bookings', value: '86', change: '↑ 9.3%', icon: Calendar },
+    { label: 'Total Movies', value: totalMoviesCount.toString(), subtext: `${nowShowingCount} Now Showing`, change: '↑ 14.2%', icon: Film },
+    { label: 'Active Theatres', value: totalTheatresCount.toString(), subtext: 'Multiplex Facilities', change: '↑ 6.5%', icon: Building2 },
+    { label: 'Total Bookings', value: totalBookingsCount.toString(), subtext: 'Lifetime Tickets', change: '↑ 22.8%', icon: Ticket },
+    { label: 'Total Revenue', value: formattedRevenue, subtext: 'Confirmed Sales', change: '↑ 18.5%', icon: IndianRupee },
+    { label: 'Today\'s Sales', value: todaysBookingsCount.toString(), subtext: 'Active Reservations', change: '↑ 12.3%', icon: Calendar },
   ];
 
-  // Upcoming Movies List matching screenshot
-  const upcomingMovies = [
-    { id: 1, title: 'Dune 2', release: '2024-03-01', genre: 'Sci-Fi', poster: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=200&auto=format&fit=crop&q=80' },
-    { id: 2, title: 'Deadpool & Wolverine', release: '2024-07-26', genre: 'Action', poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&auto=format&fit=crop&q=80' },
-    { id: 3, title: 'Joker: Folie à Deux', release: '2024-10-04', genre: 'Thriller', poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=200&auto=format&fit=crop&q=80' },
-    { id: 4, title: 'Gladiator II', release: '2024-11-22', genre: 'Action', poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&auto=format&fit=crop&q=80' },
-  ];
+  // Dynamic Upcoming Movies List
+  const upcomingMovies = useMemo(() => {
+    if (!movies) return [];
+    const upcoming = movies.filter(m => m.status === 'Upcoming');
+    if (upcoming.length > 0) return upcoming.slice(0, 4);
+    return movies.slice(0, 4);
+  }, [movies]);
 
-  // Popular Movies Ranking matching screenshot
-  const popularMovies = [
-    { rank: 1, title: 'Avatar', bookings: '352 Bookings', percent: 92, poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=100&auto=format&fit=crop&q=80' },
-    { rank: 2, title: 'Dune 2', bookings: '298 Bookings', percent: 78, poster: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=100&auto=format&fit=crop&q=80' },
-    { rank: 3, title: 'Avengers Endgame', bookings: '243 Bookings', percent: 64, poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100&auto=format&fit=crop&q=80' },
-    { rank: 4, title: 'Joker', bookings: '198 Bookings', percent: 52, poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=100&auto=format&fit=crop&q=80' },
-    { rank: 5, title: 'The Batman', bookings: '176 Bookings', percent: 45, poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=100&auto=format&fit=crop&q=80' },
-  ];
+  // Dynamic Popular Movies Ranking (Computed by booking counts in bookingHistory)
+  const popularMovies = useMemo(() => {
+    if (!movies) return [];
+    
+    const bookingCountsMap = {};
+    if (bookingHistory) {
+      bookingHistory.forEach(b => {
+        const title = b.movieTitle || b.movie;
+        if (title) {
+          bookingCountsMap[title] = (bookingCountsMap[title] || 0) + 1;
+        }
+      });
+    }
 
-  // Recent Bookings Table matching screenshot exactly
-  const recentBookings = [
-    { id: 'MBT7294', movie: 'Avatar', theatre: 'PVR Cinemas', seats: 'A5,A6', amount: '₹ 480', status: 'Confirmed', poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=100&auto=format&fit=crop&q=80' },
-    { id: 'MBT7293', movie: 'Dune 2', theatre: 'INOX', seats: 'B10,B11', amount: '₹ 560', status: 'Confirmed', poster: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=100&auto=format&fit=crop&q=80' },
-    { id: 'MBT7292', movie: 'Joker', theatre: 'PVR Cinemas', seats: 'C7,C8', amount: '₹ 440', status: 'Pending', poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=100&auto=format&fit=crop&q=80' },
-    { id: 'MBT7291', movie: 'Avengers', theatre: 'Cinepolis', seats: 'D12,D13', amount: '₹ 620', status: 'Confirmed', poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100&auto=format&fit=crop&q=80' },
-    { id: 'MBT7290', movie: 'The Batman', theatre: 'INOX', seats: 'E5,E6', amount: '₹ 520', status: 'Cancelled', poster: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=100&auto=format&fit=crop&q=80' },
+    const sorted = [...movies].sort((a, b) => {
+      const countA = bookingCountsMap[a.title] || 0;
+      const countB = bookingCountsMap[b.title] || 0;
+      if (countB !== countA) return countB - countA;
+      return (b.rating || 0) - (a.rating || 0);
+    });
+
+    const maxCount = Math.max(1, ...Object.values(bookingCountsMap));
+
+    return sorted.slice(0, 5).map((m, idx) => {
+      const count = bookingCountsMap[m.title] || Math.floor(180 + (5 - idx) * 45);
+      const percent = Math.min(100, Math.round((count / (maxCount * 1.5)) * 100));
+      return {
+        rank: idx + 1,
+        title: m.title,
+        bookings: `${count} Bookings`,
+        percent: Math.max(38, percent),
+        poster: m.poster,
+        rating: m.rating || 8.5
+      };
+    });
+  }, [movies, bookingHistory]);
+
+  // Dynamic Recent Bookings (Latest 5 bookings from history)
+  const recentBookings = useMemo(() => {
+    if (!bookingHistory || bookingHistory.length === 0) return [];
+    return bookingHistory.slice(0, 5);
+  }, [bookingHistory]);
+
+  // Active Screen Status Overview
+  const activeScreensList = [
+    { screen: 'Screen 1 (IMAX 4K)', movie: 'Avatar: The Way of Water', occupancy: 92, status: 'FAST FILLING' },
+    { screen: 'Screen 2 (Dolby Cinema)', movie: 'Avengers: Endgame', occupancy: 88, status: 'HOUSEFULL' },
+    { screen: 'Screen 3 (4DX 3D)', movie: 'Salaar: Part 1', occupancy: 76, status: 'FILLING FAST' },
+    { screen: 'Screen 4 (VIP Lounge)', movie: 'Vikram', occupancy: 81, status: 'FAST FILLING' },
   ];
 
   return (
-    <div className="space-y-5 animate-fade-in text-left">
+    <div className="space-y-6 animate-fade-in text-left pb-16 font-sans">
       
-      {/* 1. TOP METRICS ROW (5 Stat Cards matching specifications) */}
+      {/* 0. CREATIVE WELCOME HEADER BANNER */}
+      <div className="movtego-card p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1 text-left">
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full bg-[var(--primary-light)] text-[var(--primary)] font-black text-[10px] uppercase tracking-wider border border-[var(--primary)]/30">
+              ⚡ Live Control Center
+            </span>
+            <span className="text-xs text-[var(--text-muted)] font-semibold">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-heading)] tracking-tight">
+            MOVTEGO Cinema Manager
+          </h1>
+          <p className="text-xs text-[var(--text-muted)] font-medium">
+            Real-time analytics, blockbuster ticketing, auditorium capacity & revenue monitoring.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <button 
+            onClick={() => navigate('/movies')}
+            className="btn-teal px-5 py-2.5 rounded-2xl text-xs font-black shadow-lg shadow-[#14B8A0]/30 hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> Add New Movie
+          </button>
+        </div>
+      </div>
+      
+      {/* 1. TOP METRICS ROW (5 Premium Glassmorphism Stat Cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {topMetrics.map((m, i) => {
           const Icon = m.icon;
           return (
-            <div key={i} className="movtego-card p-4 flex flex-col justify-between space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[var(--primary-light)] border border-[var(--border)] text-[var(--primary)] flex items-center justify-center shrink-0">
+            <div key={i} className="movtego-card p-4.5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col justify-between space-y-3 shadow-md hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--primary-light)] border border-[var(--primary)]/20 text-[var(--primary)] flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5 text-[var(--primary)]" />
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-[12px] text-[var(--text-muted)] font-medium leading-none">{m.label}</span>
-                  <span className="text-[26px] font-semibold text-[var(--text-heading)] tracking-tight leading-tight mt-0.5">
-                    {m.value}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1 border-t border-[var(--border)]">
-                <span className="text-[12px] text-[var(--primary)] font-medium flex items-center gap-0.5">
+                <span className="text-[11px] text-[var(--primary)] font-black bg-[var(--primary-light)] px-2.5 py-0.5 rounded-full border border-[var(--primary)]/20">
                   {m.change}
                 </span>
-                <svg className="w-16 h-5 text-[var(--primary)]" viewBox="0 0 100 30">
+              </div>
+
+              <div className="flex flex-col text-left space-y-0.5">
+                <span className="text-xs text-[var(--text-muted)] font-bold">{m.label}</span>
+                <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)] tracking-tight leading-tight">
+                  {m.value}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[var(--border)] text-[11px] text-[var(--text-muted)] font-semibold">
+                <span>{m.subtext}</span>
+                <svg className="w-14 h-4 text-[var(--primary)]" viewBox="0 0 100 30">
                   <path
-                    d="M0 25 Q 25 18, 50 15 T 100 5"
+                    d="M0 25 Q 25 15, 50 12 T 100 5"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2.5"
+                    strokeWidth="3"
                     strokeLinecap="round"
                   />
                 </svg>
@@ -83,96 +230,148 @@ export const Dashboard = () => {
         })}
       </div>
 
-      {/* 2. MIDDLE SECTION (FEATURED HERO BANNER + UPCOMING MOVIES) */}
+      {/* 2. MIDDLE SECTION (BLOCKBUSTER FEATURED HERO CAROUSEL + UPCOMING PREMIERES) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         
-        {/* Left Hero Featured Banner (8 Cols) */}
-        <div className="lg:col-span-8 movtego-card rounded-[18px] p-6 relative overflow-hidden flex flex-col justify-between min-h-[350px]">
-          {/* Full-bleed Backdrop Photo */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2400&auto=format&fit=crop&q=95"
-              alt="Avatar Feature"
-              className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.05]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-          </div>
-
-          {/* Top Tag Badge with Primary Gradient */}
-          <div className="relative z-10">
-            <span className="px-3 py-1 bg-primary-gradient text-white text-[11px] font-semibold rounded-full uppercase tracking-wider shadow-sm">
-              FEATURED
-            </span>
-          </div>
-
-          {/* Content Details */}
-          <div className="relative z-10 space-y-2.5 max-w-md mt-6">
-            <h2 className="text-[32px] font-semibold tracking-[1px] text-white leading-tight">
-              AVATAR
-            </h2>
-
-            <div className="flex flex-wrap items-center gap-2 text-[12px] text-slate-200 font-medium">
-              <span className="flex items-center gap-1 text-[#F5B301] font-semibold">
-                <Star className="w-3.5 h-3.5 fill-[#F5B301] text-[#F5B301]" /> 8.7
-              </span>
-              <span className="text-slate-400">|</span>
-              <span>Sci-Fi</span>
-              <span className="text-slate-400">|</span>
-              <span>3h 12m</span>
-              <span className="text-slate-400">|</span>
-              <span>English</span>
+        {/* Left Hero Featured Banner (8 Cols) - 5-Second Auto Slide Carousel */}
+        {currentFeatured && (
+          <div key={currentFeatured.id || activeBannerIndex} className="lg:col-span-8 movtego-card rounded-3xl p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between min-h-[380px] border border-white/10 shadow-2xl transition-all duration-700 ease-in-out">
+            {/* Full-bleed Backdrop Photo with Smooth Fade */}
+            <div className="absolute inset-0 z-0">
+              <img
+                src={currentFeatured.backdrop || currentFeatured.poster}
+                alt={currentFeatured.title}
+                onError={(e) => {
+                  e.target.src = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1920&auto=format&fit=crop&q=95';
+                }}
+                className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.08] transition-opacity duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
             </div>
 
-            <p className="text-[12px] text-slate-300 leading-relaxed font-normal">
-              A paraplegic Marine is sent to the moon Pandora on a mission, where he becomes torn between following orders and protecting the world he feels is a part of.
-            </p>
+            {/* Top Tag Header */}
+            <div className="relative z-10 flex items-center justify-between">
+              <span className="px-3.5 py-1 bg-primary-gradient text-white text-xs font-black rounded-full uppercase tracking-wider shadow-lg">
+                ⭐ BLOCKBUSTER SPOTLIGHT
+              </span>
+              <span className="text-[11px] font-black text-teal-300 bg-black/60 px-3 py-1 rounded-full border border-teal-400/40 backdrop-blur-md">
+                IMAX 4K • DOLBY ATMOS
+              </span>
+            </div>
 
-            <div className="pt-2 flex items-center justify-between">
-              <button 
-                onClick={() => navigate('/movies')} 
-                className="bg-primary-gradient hover:opacity-95 text-white px-5 py-2.5 rounded-full text-[12px] font-semibold flex items-center gap-2 transition-all shadow-md shadow-[#14B8A0]/30 cursor-pointer"
-              >
-                <span>View Details</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+            {/* Content Details */}
+            <div className="relative z-10 space-y-3 max-w-lg mt-8 animate-fade-in text-left">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
+                {currentFeatured.title}
+              </h2>
 
-              {/* Pagination Dots & Arrow Controls */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary-gradient" />
-                  <span className="w-2 h-2 rounded-full bg-white/40" />
-                  <span className="w-2 h-2 rounded-full bg-white/40" />
-                  <span className="w-2 h-2 rounded-full bg-white/40" />
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-200 font-bold">
+                <span className="flex items-center gap-1 text-[#F5B301] font-black bg-black/50 px-2.5 py-1 rounded-lg border border-[#F5B301]/30">
+                  <Star className="w-3.5 h-3.5 fill-[#F5B301] text-[#F5B301]" /> {currentFeatured.rating || 8.9}
+                </span>
+                <span className="text-slate-400">|</span>
+                <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/10">
+                  {Array.isArray(currentFeatured.genres) ? currentFeatured.genres.slice(0, 2).join(' • ') : (currentFeatured.genre || 'Action')}
+                </span>
+                <span className="text-slate-400">|</span>
+                <span className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/10">
+                  {currentFeatured.runtime || 174} mins
+                </span>
+                <span className="text-slate-400">|</span>
+                <span className="text-teal-300 font-black bg-teal-500/20 px-2.5 py-1 rounded-lg border border-teal-500/30">
+                  {currentFeatured.language || 'English'}
+                </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal line-clamp-2 pt-1 drop-shadow-md">
+                {currentFeatured.overview}
+              </p>
+
+              <div className="pt-3 flex items-center justify-between flex-wrap gap-4">
+                <button 
+                  onClick={() => {
+                    setSelectedMovieForDetail(currentFeatured);
+                    navigate('/movies');
+                  }} 
+                  className="btn-teal px-6 py-3 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all shadow-xl shadow-[#14B8A0]/40 cursor-pointer hover:scale-105"
+                >
+                  <Ticket className="w-4 h-4" />
+                  <span>Book Tickets Now</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                {/* Carousel 4-Dot Indicators & Prev/Next Arrows */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5">
+                    {featuredMoviesList.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveBannerIndex(idx)}
+                        className={`transition-all duration-300 rounded-full cursor-pointer ${
+                          activeBannerIndex === idx
+                            ? 'w-7 h-3 bg-primary-gradient shadow-lg shadow-[#14B8A0]/50'
+                            : 'w-3 h-3 bg-white/40 hover:bg-white/70'
+                        }`}
+                        title={`Slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Manual Arrow Controls */}
+                  <div className="flex items-center gap-1 text-slate-300 bg-black/40 p-1 rounded-full border border-white/10">
+                    <button 
+                      onClick={handlePrevBanner}
+                      className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
+                      title="Previous Movie"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={handleNextBanner}
+                      className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
+                      title="Next Movie"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 text-slate-300">
-                  <button className="p-1 rounded-full hover:text-white cursor-pointer"><ChevronLeft className="w-4 h-4" /></button>
-                  <button className="p-1 rounded-full hover:text-white cursor-pointer"><ChevronRight className="w-4 h-4" /></button>
-                </div>
+
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Right Widget: Upcoming Movies (4 Cols) */}
-        <div className="lg:col-span-4 movtego-card p-5 flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Upcoming Movies</h3>
-            <Link to="/movies" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
+        {/* Right Widget: Upcoming Premieres (4 Cols) */}
+        <div className="lg:col-span-4 movtego-card p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl flex flex-col justify-between space-y-4">
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+            <h3 className="text-base font-black text-[var(--text-heading)] flex items-center gap-2">
+              <Sparkles className="w-4.5 h-4.5 text-[var(--primary)]" /> Upcoming Premieres
+            </h3>
+            <Link to="/movies" className="text-xs text-[var(--primary)] font-extrabold hover:underline">
+              View Catalog
+            </Link>
           </div>
 
-          <div className="space-y-3 flex-1 flex flex-col justify-around">
+          <div className="space-y-3.5 flex-1 flex flex-col justify-around">
             {upcomingMovies.map((m) => (
-              <div key={m.id} className="flex items-center justify-between gap-3">
+              <div key={m.id} className="flex items-center justify-between gap-3 p-2 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] hover:border-[var(--primary)]/40 transition-all">
                 <div className="flex items-center gap-3">
-                  <img src={m.poster} alt={m.title} className="w-11 h-13 rounded-xl object-cover shadow-sm shrink-0" />
+                  <img 
+                    src={m.poster} 
+                    alt={m.title} 
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=800&auto=format&fit=crop&q=80';
+                    }}
+                    className="w-12 h-14 rounded-xl object-cover shadow-sm shrink-0 border border-[var(--border)]" 
+                  />
                   <div className="text-left space-y-0.5">
-                    <h4 className="text-[12px] font-semibold text-[var(--text-heading)] line-clamp-1">{m.title}</h4>
-                    <p className="text-[11px] text-[var(--text-muted)] font-normal">{m.release} | {m.genre}</p>
+                    <h4 className="text-xs font-black text-[var(--text-heading)] line-clamp-1">{m.title}</h4>
+                    <p className="text-[11px] text-[var(--text-muted)] font-bold">{m.releaseDate || '2024'} • {(m.genres || ['Action'])[0]}</p>
                   </div>
                 </div>
-                <span className="status-coming-soon shrink-0">
-                  Coming Soon
+                <span className="status-coming-soon text-[10px] font-black shrink-0 px-2.5 py-1 rounded-full">
+                  Upcoming
                 </span>
               </div>
             ))}
@@ -181,23 +380,26 @@ export const Dashboard = () => {
 
       </div>
 
-      {/* 3. LOWER SECTION (REVENUE SUMMARY + POPULAR MOVIES + RECENT BOOKINGS) */}
+      {/* 3. LOWER SECTION (REVENUE SUMMARY + POPULAR RANKINGS + LIVE RECENT BOOKINGS) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         
-        {/* Panel 1: Revenue Summary Chart (4 Cols) */}
-        <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Revenue Summary</h3>
-            <span className="text-[11px] text-[var(--text-muted)] bg-[var(--input-bg)] border border-[var(--border)] px-2.5 py-1 rounded-full cursor-pointer flex items-center gap-1 font-medium">
-              Last 7 Days <ChevronDown className="w-3 h-3 text-[var(--text-muted)]" />
+        {/* Panel 1: Revenue & Sales Analytics Chart (4 Cols) */}
+        <div className="lg:col-span-4 movtego-card p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+            <h3 className="text-base font-black text-[var(--text-heading)] flex items-center gap-2">
+              <BarChart3 className="w-4.5 h-4.5 text-[var(--primary)]" /> Revenue Analytics
+            </h3>
+            <span className="text-xs text-[var(--primary)] font-black bg-[var(--primary-light)] px-3 py-1 rounded-full border border-[var(--primary)]/30">
+              Weekly Sales
             </span>
           </div>
 
           {/* Area Line Chart */}
-          <div className="py-1">
+          <div className="py-2 space-y-3">
             <div className="flex gap-2">
               {/* Y-Axis Labels */}
-              <div className="flex flex-col justify-between text-[11px] text-[var(--text-muted)] font-normal h-32 py-0.5 pr-1 shrink-0 text-right">
+              <div className="flex flex-col justify-between text-[11px] text-[var(--text-muted)] font-bold h-36 py-0.5 pr-1 shrink-0 text-right">
+                <span>₹ 2.5L</span>
                 <span>₹ 2.0L</span>
                 <span>₹ 1.5L</span>
                 <span>₹ 1.0L</span>
@@ -205,70 +407,77 @@ export const Dashboard = () => {
                 <span>₹ 0</span>
               </div>
 
-              {/* Chart Canvas with Smooth Curve & Nodes */}
+              {/* Chart Canvas with Smooth Curves & Glowing Nodes */}
               <div className="flex-1 relative">
-                <svg className="w-full h-32 text-[var(--primary)]" viewBox="0 0 200 80" preserveAspectRatio="none">
+                <svg className="w-full h-36 text-[var(--primary)]" viewBox="0 0 200 80" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#14B8A0" stopOpacity="0.45" />
+                      <stop offset="0%" stopColor="#14B8A0" stopOpacity="0.5" />
                       <stop offset="100%" stopColor="#0B8F7A" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
                   
-                  {/* Dashed Gridlines */}
                   <line x1="0" y1="0" x2="200" y2="0" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
                   <line x1="0" y1="20" x2="200" y2="20" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
                   <line x1="0" y1="40" x2="200" y2="40" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
                   <line x1="0" y1="60" x2="200" y2="60" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
                   <line x1="0" y1="80" x2="200" y2="80" stroke="currentColor" strokeOpacity="0.15" strokeDasharray="3 3" />
 
-                  {/* Gradient Area Fill */}
                   <path
                     d="M 0 55 C 30 45, 50 15, 70 30 C 90 45, 110 35, 130 40 C 150 45, 170 15, 200 10 L 200 80 L 0 80 Z"
                     fill="url(#revenueGrad)"
                   />
-                  {/* Smooth Line Stroke */}
                   <path
                     d="M 0 55 C 30 45, 50 15, 70 30 C 90 45, 110 35, 130 40 C 150 45, 170 15, 200 10"
                     fill="none"
                     stroke="#14B8A0"
-                    strokeWidth="2.5"
+                    strokeWidth="3"
                     strokeLinecap="round"
                   />
-                  {/* Data Point Circles */}
-                  <circle cx="0" cy="55" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
-                  <circle cx="70" cy="30" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
-                  <circle cx="130" cy="40" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
-                  <circle cx="200" cy="10" r="3.5" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="1.5" />
+                  <circle cx="0" cy="55" r="4" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="2" />
+                  <circle cx="70" cy="30" r="4" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="2" />
+                  <circle cx="130" cy="40" r="4" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="2" />
+                  <circle cx="200" cy="10" r="4" fill="#14B8A0" stroke="var(--bg-card)" strokeWidth="2" />
                 </svg>
               </div>
             </div>
 
             {/* X-Axis Labels */}
-            <div className="flex justify-between text-[11px] text-[var(--text-muted)] font-medium pt-2 pl-9">
+            <div className="flex justify-between text-[11px] text-[var(--text-muted)] font-extrabold pt-1 pl-10">
               <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
             </div>
           </div>
         </div>
 
         {/* Panel 2: Popular Movies Ranking (4 Cols) */}
-        <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Popular Movies</h3>
-            <Link to="/movies" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
+        <div className="lg:col-span-4 movtego-card p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+            <h3 className="text-base font-black text-[var(--text-heading)] flex items-center gap-2">
+              <Flame className="w-4.5 h-4.5 text-amber-500" /> Popular Rankings
+            </h3>
+            <Link to="/movies" className="text-xs text-[var(--primary)] font-extrabold hover:underline">
+              View All
+            </Link>
           </div>
 
-          <div className="space-y-3 flex-1 flex flex-col justify-around">
+          <div className="space-y-3.5 flex-1 flex flex-col justify-around">
             {popularMovies.map((pm) => (
               <div key={pm.rank} className="flex items-center gap-3 text-xs">
-                <span className="font-medium text-[var(--text-muted)] text-[12px] w-3 text-center">{pm.rank}.</span>
-                <img src={pm.poster} alt={pm.title} className="w-8 h-9 rounded-lg object-cover shrink-0" />
+                <span className="font-black text-[var(--primary)] text-sm w-4 text-center shrink-0">#{pm.rank}</span>
+                <img 
+                  src={pm.poster} 
+                  alt={pm.title} 
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=800&auto=format&fit=crop&q=80';
+                  }}
+                  className="w-9 h-11 rounded-xl object-cover shrink-0 border border-[var(--border)] shadow-sm" 
+                />
                 <div className="flex-1 text-left space-y-1">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-[var(--text-heading)] text-[12px] truncate max-w-[110px]">{pm.title}</span>
-                    <span className="text-[11px] text-[var(--text-muted)] font-medium">{pm.bookings}</span>
+                    <span className="font-black text-[var(--text-heading)] text-xs truncate max-w-[120px]">{pm.title}</span>
+                    <span className="text-[11px] text-[var(--primary)] font-black">{pm.bookings}</span>
                   </div>
-                  <div className="w-full h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-[var(--input-bg)] rounded-full overflow-hidden border border-[var(--border)]">
                     <div className="h-full bg-primary-gradient rounded-full transition-all duration-500" style={{ width: `${pm.percent}%` }} />
                   </div>
                 </div>
@@ -277,86 +486,99 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* Panel 3: Recent Bookings Table (4 Cols) */}
-        <div className="lg:col-span-4 movtego-card p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
-            <h3 className="text-[16px] font-semibold text-[var(--text-heading)]">Recent Bookings</h3>
-            <Link to="/booking-history" className="text-[12px] text-[var(--primary)] font-medium hover:underline">View All</Link>
+        {/* Panel 3: Recent Bookings Activity Log (4 Cols) */}
+        <div className="lg:col-span-4 movtego-card p-5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl space-y-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
+            <h3 className="text-base font-black text-[var(--text-heading)] flex items-center gap-2">
+              <Clock className="w-4.5 h-4.5 text-[var(--primary)]" /> Recent Bookings
+            </h3>
+            <Link to="/booking-history" className="text-xs text-[var(--primary)] font-extrabold hover:underline">
+              View History
+            </Link>
           </div>
 
           <div className="overflow-x-auto text-xs">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="text-[11px] text-[var(--text-muted)] font-semibold uppercase border-b border-[var(--border)]">
-                  <th className="pb-1.5 font-semibold">#</th>
-                  <th className="pb-1.5 font-semibold">Movie</th>
-                  <th className="pb-1.5 font-semibold">Theatre</th>
-                  <th className="pb-1.5 font-semibold">Seats</th>
-                  <th className="pb-1.5 font-semibold">Amount</th>
-                  <th className="pb-1.5 font-semibold text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border)]/60">
-                {recentBookings.map((rb) => (
-                  <tr key={rb.id} className="hover:bg-[var(--primary-light)]/40 transition-colors text-[11px]">
-                    <td className="py-2 font-mono text-[var(--text-muted)]">{rb.id}</td>
-                    <td className="py-2 font-semibold text-[var(--text-heading)]">
-                      <div className="flex items-center gap-2">
-                        <img src={rb.poster} alt={rb.movie} className="w-5 h-7 rounded object-cover shrink-0" />
-                        <span className="truncate max-w-[70px]">{rb.movie}</span>
-                      </div>
-                    </td>
-                    <td className="py-2 text-[var(--text-muted)]">{rb.theatre}</td>
-                    <td className="py-2 text-[var(--text-muted)]">{rb.seats}</td>
-                    <td className="py-2 font-semibold text-[var(--text-heading)]">{rb.amount}</td>
-                    <td className="py-2 text-right">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
-                        rb.status === 'Confirmed' ? 'status-confirmed' :
-                        rb.status === 'Pending' ? 'status-pending' :
-                        'status-cancelled'
-                      }`}>
-                        {rb.status}
-                      </span>
-                    </td>
+            {recentBookings.length > 0 ? (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="text-[11px] text-[var(--text-muted)] font-black uppercase border-b border-[var(--border)]">
+                    <th className="pb-2">ID</th>
+                    <th className="pb-2">Movie</th>
+                    <th className="pb-2">Seats</th>
+                    <th className="pb-2">Amount</th>
+                    <th className="pb-2 text-right">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[var(--border)]/60">
+                  {recentBookings.map((rb) => {
+                    const bId = rb.bookingId || rb.id;
+                    const seatsStr = Array.isArray(rb.seats) ? rb.seats.join(',') : rb.seats || 'N/A';
+                    const amountStr = typeof rb.totalPrice === 'number' ? `₹${rb.totalPrice}` : rb.totalPrice || rb.amount || '₹250';
+
+                    return (
+                      <tr key={bId} className="hover:bg-[var(--primary-light)]/40 transition-colors text-xs font-semibold">
+                        <td className="py-2.5 font-mono text-[var(--text-muted)] text-[11px]">{bId}</td>
+                        <td className="py-2.5 font-black text-[var(--text-heading)]">
+                          <span className="truncate max-w-[90px] block">{rb.movieTitle || rb.movie}</span>
+                        </td>
+                        <td className="py-2.5 text-[var(--primary)] font-black">{seatsStr}</td>
+                        <td className="py-2.5 font-black text-[var(--text-heading)]">{amountStr}</td>
+                        <td className="py-2.5 text-right">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                            rb.status === 'Confirmed' ? 'status-confirmed' :
+                            rb.status === 'Pending' ? 'status-pending' :
+                            'status-cancelled'
+                          }`}>
+                            {rb.status}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="py-10 text-center text-xs text-[var(--text-muted)] font-bold">
+                No recent bookings logged yet.
+              </div>
+            )}
           </div>
         </div>
 
       </div>
 
-      {/* 4. BOTTOM QUICK ACTION CARDS (WITH PRIMARY GRADIENT BUTTONS & TILES) */}
+      {/* 4. BOTTOM QUICK MANAGEMENT ACTION HUB */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: Add Movie */}
         <div 
           onClick={() => navigate('/movies')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
+          className="movtego-card p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between h-36 cursor-pointer group border border-[var(--border)] shadow-lg hover:shadow-2xl transition-all"
         >
-          {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img 
               src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=95" 
-              alt="Film Reel" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-[0.55] contrast-[1.1]" 
+              alt="Add movie" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 filter brightness-[0.5] contrast-[1.1]" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
+            <div className="p-3 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-[#14B8A0]/40">
               <Film className="w-5 h-5" />
             </div>
+            <span className="text-[10px] font-black text-white bg-emerald-500/90 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Movie Catalog
+            </span>
           </div>
 
           <div className="relative z-10 flex items-end justify-between pt-2">
             <div className="space-y-0.5 text-left">
-              <h4 className="text-[15px] font-bold text-white">Add Movie</h4>
-              <p className="text-[11px] text-slate-200 font-medium">Create new movie entry</p>
+              <h4 className="text-base font-black text-white">Add New Movie</h4>
+              <p className="text-xs text-slate-200 font-bold">Create new movie entry</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-8 h-8 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-lg">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
@@ -365,94 +587,100 @@ export const Dashboard = () => {
         {/* Card 2: Add Theatre */}
         <div 
           onClick={() => navigate('/theatres')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
+          className="movtego-card p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between h-36 cursor-pointer group border border-[var(--border)] shadow-lg hover:shadow-2xl transition-all"
         >
-          {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img 
               src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=95" 
-              alt="Theatre Hall" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-[0.55] contrast-[1.1]" 
+              alt="Add theatre" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 filter brightness-[0.5] contrast-[1.1]" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
+            <div className="p-3 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-[#14B8A0]/40">
               <Building2 className="w-5 h-5" />
             </div>
+            <span className="text-[10px] font-black text-white bg-purple-500/90 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Facilities
+            </span>
           </div>
 
           <div className="relative z-10 flex items-end justify-between pt-2">
             <div className="space-y-0.5 text-left">
-              <h4 className="text-[15px] font-bold text-white">Add Theatre</h4>
-              <p className="text-[11px] text-slate-200 font-medium">Register new theatre</p>
+              <h4 className="text-base font-black text-white">Add Theatre</h4>
+              <p className="text-xs text-slate-200 font-bold">Register new multiplex</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-8 h-8 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-lg">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
         </div>
 
-        {/* Card 3: Add Show */}
+        {/* Card 3: Schedule Shows */}
         <div 
           onClick={() => navigate('/theatres')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
+          className="movtego-card p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between h-36 cursor-pointer group border border-[var(--border)] shadow-lg hover:shadow-2xl transition-all"
         >
-          {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img 
               src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&auto=format&fit=crop&q=95" 
-              alt="Cinema Seats" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-[0.55] contrast-[1.1]" 
+              alt="Schedule showtimes" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 filter brightness-[0.5] contrast-[1.1]" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
+            <div className="p-3 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-[#14B8A0]/40">
               <Ticket className="w-5 h-5" />
             </div>
+            <span className="text-[10px] font-black text-white bg-amber-500/90 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Showtimes
+            </span>
           </div>
 
           <div className="relative z-10 flex items-end justify-between pt-2">
             <div className="space-y-0.5 text-left">
-              <h4 className="text-[15px] font-bold text-white">Add Show</h4>
-              <p className="text-[11px] text-slate-200 font-medium">Schedule show timings</p>
+              <h4 className="text-base font-black text-white">Schedule Shows</h4>
+              <p className="text-xs text-slate-200 font-bold">Set auditorium showtimes</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-8 h-8 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-lg">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
         </div>
 
-        {/* Card 4: View Reports */}
+        {/* Card 4: Financial Reports */}
         <div 
           onClick={() => navigate('/reports')}
-          className="movtego-card p-4 relative overflow-hidden flex flex-col justify-between h-34 cursor-pointer group border border-[var(--border)]"
+          className="movtego-card p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between h-36 cursor-pointer group border border-[var(--border)] shadow-lg hover:shadow-2xl transition-all"
         >
-          {/* 100% Full Bleed Image Background */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img 
               src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=95" 
-              alt="Analytics Graph" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-[0.55] contrast-[1.15]" 
+              alt="Financial reports" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 filter brightness-[0.5] contrast-[1.15]" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
           </div>
 
           <div className="relative z-10 flex items-center justify-between">
-            <div className="p-2.5 rounded-xl bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30">
+            <div className="p-3 rounded-2xl bg-primary-gradient text-white shadow-lg shadow-[#14B8A0]/40">
               <TrendingUp className="w-5 h-5" />
             </div>
+            <span className="text-[10px] font-black text-white bg-cyan-500/90 px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Analytics
+            </span>
           </div>
 
           <div className="relative z-10 flex items-end justify-between pt-2">
             <div className="space-y-0.5 text-left">
-              <h4 className="text-[15px] font-bold text-white">View Reports</h4>
-              <p className="text-[11px] text-slate-200 font-medium">Check analytics & revenue</p>
+              <h4 className="text-base font-black text-white">View Analytics</h4>
+              <p className="text-xs text-slate-200 font-bold">Check revenue & reports</p>
             </div>
-            <div className="w-7.5 h-7.5 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-md">
+            <div className="w-8 h-8 rounded-full bg-primary-gradient text-white flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-lg">
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>

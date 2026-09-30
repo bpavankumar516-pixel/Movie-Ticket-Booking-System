@@ -11,12 +11,14 @@ export const TheatreDetailsModal = ({ theatre, onClose, onBookShow }) => {
   if (selectedShowForBooking) {
     return (
       <SeatSelectionView
-        movieTitle={selectedShowForBooking.movieTitle || 'Dune: Part Two'}
+        movieTitle={selectedShowForBooking.movieTitle || 'Resident Evil'}
         theatreName={theatre.name}
-        showtime={selectedShowForBooking.time || '06:30 PM'}
+        showtime={selectedShowForBooking.time || '07:30 PM'}
         dateStr="Today, 30 Sep"
-        format={selectedShowForBooking.format || 'IMAX 3D'}
-        pricePerSeat={selectedShowForBooking.price || 250}
+        format={selectedShowForBooking.format || 'Screen 1 (IMAX 4K)'}
+        genre={selectedShowForBooking.genre || 'Horror'}
+        moviePoster={selectedShowForBooking.poster}
+        pricePerSeat={selectedShowForBooking.price || 16}
         onBack={() => setSelectedShowForBooking(null)}
         onBookingComplete={(bookingData) => {
           if (onBookShow) {

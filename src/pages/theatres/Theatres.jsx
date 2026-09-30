@@ -139,31 +139,9 @@ export const Theatres = () => {
         </div>
       )}
 
-      {/* 1. Page Header matching media_1790751385598.jpg */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/30 flex items-center justify-center shrink-0 shadow-sm">
-            <Building2 className="w-6 h-6" />
-          </div>
-          <div className="space-y-0.5">
-            <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-heading)] tracking-tight">
-              Theatres
-            </h1>
-            <p className="text-xs sm:text-sm text-[var(--text-muted)] font-normal">
-              Manage all cinema theatres, locations, and their details.
-            </p>
-          </div>
-        </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          className="btn-teal px-5 py-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 shadow-lg shadow-[#14B8A0]/30 hover:scale-105 transition-transform cursor-pointer shrink-0"
-        >
-          <Plus className="w-4.5 h-4.5" /> + Add New Theatre
-        </button>
-      </div>
 
-      {/* 2. Stats Summary Row (5 KPI Cards matching media_1790751385598.jpg) */}
+      {/* 2. Stats Summary Row (5 Cards grid with full-image Add New Theatre card) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {/* Card 1: Total Theatres */}
         <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
@@ -180,22 +158,7 @@ export const Theatres = () => {
           </div>
         </div>
 
-        {/* Card 2: Active Theatres */}
-        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[var(--text-muted)]">Active Theatres</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <MapPin className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.activeTheatres}</div>
-          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
-            <TrendingUp className="w-3 h-3" />
-            <span>↑ 16.7%</span>
-          </div>
-        </div>
-
-        {/* Card 3: Inactive Theatres */}
+        {/* Card 2: Inactive Theatres */}
         <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Inactive Theatres</span>
@@ -209,7 +172,7 @@ export const Theatres = () => {
           </div>
         </div>
 
-        {/* Card 4: Total Screens */}
+        {/* Card 3: Total Screens */}
         <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Total Screens</span>
@@ -224,8 +187,8 @@ export const Theatres = () => {
           </div>
         </div>
 
-        {/* Card 5: Total Seats */}
-        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm col-span-2 sm:col-span-1">
+        {/* Card 4: Total Seats */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Total Seats</span>
             <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
@@ -236,6 +199,41 @@ export const Theatres = () => {
           <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
             <TrendingUp className="w-3 h-3" />
             <span>↑ 18.2%</span>
+          </div>
+        </div>
+
+        {/* Card 5: Action - Add New Theatre Card with 100% Image Background */}
+        <div 
+          onClick={handleOpenAddModal}
+          className="movtego-card relative overflow-hidden rounded-2xl border border-[var(--primary)]/60 p-4.5 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl hover:border-[var(--primary)] group col-span-2 sm:col-span-1 flex flex-col justify-between min-h-[105px]"
+        >
+          {/* High Clarity Cinema Background Image covering 100% of the complete card */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80" 
+              alt="Add theatre artwork" 
+              className="w-full h-full object-cover filter brightness-[0.70] contrast-[1.15] saturate-[1.1] group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/50 to-slate-950/30" />
+            <div className="absolute inset-0 bg-[var(--primary)]/20 group-hover:bg-[var(--primary)]/30 transition-colors duration-300" />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between">
+            <span className="text-[10px] font-black text-white bg-emerald-500/90 px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm border border-emerald-400/40">
+              Action
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-primary-gradient text-white flex items-center justify-center font-bold shadow-lg shadow-[#14B8A0]/40 group-hover:scale-110 transition-transform border border-white/30">
+              <Plus className="w-4.5 h-4.5" />
+            </div>
+          </div>
+
+          <div className="relative z-10 space-y-0.5 pt-2 text-left">
+            <div className="text-base font-black text-white drop-shadow-md">
+              + Add New Theatre
+            </div>
+            <p className="text-[11px] font-bold text-teal-200 truncate">
+              Create multiplex or single screen
+            </p>
           </div>
         </div>
       </div>

@@ -25,225 +25,7 @@ export const AMENITIES_LIST = [
 ];
 
 export const INITIAL_THEATRES = [
-  {
-    id: 'th-101',
-    name: 'PVR Cinemas - Nexus Mall',
-    city: 'Hyderabad',
-    address: 'Kukatpally, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Multiplex',
-    rating: 4.8,
-    reviewsCount: 2890,
-    screensCount: 6,
-    totalSeats: 1856,
-    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80',
-    amenities: ['IMAX 3D', 'Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
-    contact: {
-      phone: '+91 40 4567 8901',
-      email: 'nexus.pvr@pvrcinemas.com',
-      website: 'https://pvrcinemas.com',
-      mapUrl: 'https://maps.google.com/?q=PVR+Nexus+Mall+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-101', name: 'Audi 1 - IMAX 3D', type: 'IMAX 3D', totalSeats: 350 },
-      { id: 'sc-102', name: 'Audi 2 - Dolby Atmos VIP', type: 'VIP Recliner', totalSeats: 220 },
-      { id: 'sc-103', name: 'Audi 3 - Premium Screen', type: 'Dolby Atmos', totalSeats: 280 }
-    ],
-    shows: [
-      { id: 'sh-101', movieId: 101, movieTitle: 'Dune: Part Two', time: '10:30 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 290, totalSeats: 120, bookedCount: 45 },
-      { id: 'sh-102', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:15 PM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 290, totalSeats: 120, bookedCount: 98 },
-      { id: 'sh-103', movieId: 106, movieTitle: 'Interstellar', time: '06:00 PM', screen: 'Audi 2 - Dolby Atmos VIP', format: 'Dolby Atmos', price: 350, totalSeats: 60, bookedCount: 58 }
-    ]
-  },
-  {
-    id: 'th-102',
-    name: 'Cinepolis - Manjeera Mall',
-    city: 'Hyderabad',
-    address: 'Kukatpally, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Multiplex',
-    rating: 4.7,
-    reviewsCount: 2410,
-    screensCount: 5,
-    totalSeats: 1240,
-    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80',
-    amenities: ['Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
-    contact: {
-      phone: '+91 40 2345 6789',
-      email: 'manjeera@cinepolis.com',
-      website: 'https://cinepolisindia.com',
-      mapUrl: 'https://maps.google.com/?q=Cinepolis+Manjeera+Mall+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-201', name: 'Screen 1 - MacroXE', type: 'Dolby Atmos', totalSeats: 300 },
-      { id: 'sc-202', name: 'Screen 2 - VIP Lounge', type: 'VIP Recliner', totalSeats: 120 }
-    ],
-    shows: [
-      { id: 'sh-201', movieId: 101, movieTitle: 'Dune: Part Two', time: '11:00 AM', screen: 'Screen 1 - MacroXE', format: 'Dolby Atmos', price: 260, totalSeats: 100, bookedCount: 42 },
-      { id: 'sh-202', movieId: 105, movieTitle: 'Avatar: The Way of Water', time: '03:15 PM', screen: 'Screen 1 - MacroXE', format: 'Dolby Atmos', price: 260, totalSeats: 100, bookedCount: 78 }
-    ]
-  },
-  {
-    id: 'th-103',
-    name: 'INOX - GVK One',
-    city: 'Hyderabad',
-    address: 'Banjara Hills, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Multiplex',
-    rating: 4.9,
-    reviewsCount: 3820,
-    screensCount: 8,
-    totalSeats: 2368,
-    brandLogo: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
-    amenities: ['IMAX 3D', '4DX 3D', 'VIP Recliners', 'Valet Parking'],
-    contact: {
-      phone: '+91 40 3987 6543',
-      email: 'gvk.inox@inoxmovies.com',
-      website: 'https://inoxmovies.com',
-      mapUrl: 'https://maps.google.com/?q=INOX+GVK+One+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-301', name: 'Screen 1 - Insignia', type: 'VIP Recliner', totalSeats: 80 },
-      { id: 'sc-302', name: 'Screen 2 - MX4D', type: '4DX 3D', totalSeats: 140 }
-    ],
-    shows: [
-      { id: 'sh-301', movieId: 106, movieTitle: 'Interstellar', time: '11:30 AM', screen: 'Screen 1 - Insignia', format: 'Laser 4K', price: 380, totalSeats: 80, bookedCount: 76 }
-    ]
-  },
-  {
-    id: 'th-104',
-    name: 'Asian Cinemas - Ameerpet',
-    city: 'Hyderabad',
-    address: 'Ameerpet, Hyderabad, Telangana',
-    status: 'Inactive',
-    type: 'Single Screen',
-    rating: 4.2,
-    reviewsCount: 1120,
-    screensCount: 4,
-    totalSeats: 892,
-    brandLogo: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80',
-    amenities: ['Dolby Atmos', 'Gourmet Food'],
-    contact: {
-      phone: '+91 40 2233 4455',
-      email: 'contact@asiancinemas.in',
-      website: 'https://asiancinemas.in',
-      mapUrl: 'https://maps.google.com/?q=Asian+Cinemas+Ameerpet+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-401', name: 'Screen 1', type: 'Dolby 7.1', totalSeats: 400 }
-    ],
-    shows: []
-  },
-  {
-    id: 'th-105',
-    name: 'SSS Cinemas - Kukatpally',
-    city: 'Hyderabad',
-    address: 'Kukatpally, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Multiplex',
-    rating: 4.6,
-    reviewsCount: 1650,
-    screensCount: 5,
-    totalSeats: 1050,
-    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80',
-    amenities: ['Dolby Atmos', 'Laser 4K'],
-    contact: {
-      phone: '+91 40 6677 8899',
-      email: 'info@ssscinemas.com',
-      website: 'https://ssscinemas.com',
-      mapUrl: 'https://maps.google.com/?q=SSS+Cinemas+Kukatpally+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-501', name: 'Audi 1', type: 'Dolby Atmos', totalSeats: 250 }
-    ],
-    shows: [
-      { id: 'sh-501', movieId: 101, movieTitle: 'Dune: Part Two', time: '01:00 PM', screen: 'Audi 1', format: 'Dolby Atmos', price: 200, totalSeats: 100, bookedCount: 55 }
-    ]
-  },
-  {
-    id: 'th-106',
-    name: 'Sudarshan 35mm',
-    city: 'Hyderabad',
-    address: 'RTC Cross Roads, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Single Screen',
-    rating: 4.7,
-    reviewsCount: 2900,
-    screensCount: 3,
-    totalSeats: 620,
-    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80',
-    amenities: ['Laser 4K', 'Dolby 7.1'],
-    contact: {
-      phone: '+91 40 2765 4321',
-      email: 'sudarshan35mm@gmail.com',
-      website: 'https://sudarshancinemas.com',
-      mapUrl: 'https://maps.google.com/?q=Sudarshan+35mm+RTC+Cross+Roads'
-    },
-    screens: [
-      { id: 'sc-601', name: 'Main Screen 35mm', type: 'Laser 4K', totalSeats: 620 }
-    ],
-    shows: [
-      { id: 'sh-601', movieId: 101, movieTitle: 'Dune: Part Two', time: '11:15 AM', screen: 'Main Screen 35mm', format: 'Laser 4K', price: 180, totalSeats: 200, bookedCount: 180 }
-    ]
-  },
-  {
-    id: 'th-107',
-    name: 'Prasads IMAX',
-    city: 'Hyderabad',
-    address: 'NRT, Hyderabad, Telangana',
-    status: 'Active',
-    type: 'Multiplex',
-    rating: 4.9,
-    reviewsCount: 4500,
-    screensCount: 7,
-    totalSeats: 1892,
-    brandLogo: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80',
-    amenities: ['IMAX 3D', 'Laser 4K', 'Dolby Atmos', 'Valet Parking'],
-    contact: {
-      phone: '+91 40 2322 1122',
-      email: 'contact@prasads.net',
-      website: 'https://prasads.net',
-      mapUrl: 'https://maps.google.com/?q=Prasads+IMAX+Hyderabad'
-    },
-    screens: [
-      { id: 'sc-701', name: 'IMAX Large Screen 70mm', type: 'Laser 4K 70MM', totalSeats: 500 }
-    ],
-    shows: [
-      { id: 'sh-701', movieId: 106, movieTitle: 'Interstellar', time: '02:30 PM', screen: 'IMAX Large Screen 70mm', format: 'Laser 4K', price: 300, totalSeats: 200, bookedCount: 195 }
-    ]
-  },
-  {
-    id: 'th-108',
-    name: 'AMB Cinemas - Gachibowli',
-    city: 'Hyderabad',
-    address: 'Gachibowli, Hyderabad, Telangana',
-    status: 'Upcoming',
-    type: 'Multiplex',
-    rating: 4.9,
-    reviewsCount: 3900,
-    screensCount: 6,
-    totalSeats: 1450,
-    brandLogo: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
-    amenities: ['IMAX 3D', 'Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
-    contact: {
-      phone: '+91 40 2345 6789',
-      email: 'support@ambcinemas.com',
-      website: 'https://ambcinemas.com',
-      mapUrl: 'https://maps.google.com/?q=AMB+Cinemas+Gachibowli'
-    },
-    screens: [
-      { id: 'sc-801', name: 'Audi 1 - Superplex', type: 'IMAX 3D', totalSeats: 350 }
-    ],
-    shows: []
-  },
+  // BENGALURU THEATRES (6 Total - Majority)
   {
     id: 'th-109',
     name: 'PVR Orion Mall IMAX',
@@ -253,16 +35,187 @@ export const INITIAL_THEATRES = [
     type: 'IMAX',
     rating: 4.9,
     reviewsCount: 3100,
-    screensCount: 11,
-    totalSeats: 2450,
-    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
+    screensCount: 4,
+    totalSeats: 180,
+    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1000&auto=format&fit=crop&q=80',
     amenities: ['IMAX 3D', '4DX 3D', 'VIP Recliners', 'Valet Parking'],
     contact: { phone: '+91 80 4123 4567', email: 'orion@pvrcinemas.com' },
+    screens: [
+      { id: 'sc-901', name: 'Audi 1 - IMAX 3D', type: 'IMAX 3D', totalSeats: 180 },
+      { id: 'sc-902', name: 'Audi 2 - 4DX 3D', type: '4DX 3D', totalSeats: 150 }
+    ],
     shows: [
-      { id: 'sh-901', movieId: 101, movieTitle: 'Dune: Part Two', time: '11:00 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 350, totalSeats: 150, bookedCount: 90 }
+      { id: 'sh-901', movieId: 101, movieTitle: 'Dune: Part Two', time: '11:00 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 350, totalSeats: 180, bookedCount: 32 },
+      { id: 'sh-902', movieId: 106, movieTitle: 'Interstellar', time: '03:15 PM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 380, totalSeats: 180, bookedCount: 45 }
     ]
   },
+  {
+    id: 'th-115',
+    name: 'INOX Mantri Square',
+    city: 'Bengaluru',
+    address: 'Sampige Rd, Malleshwaram, Bengaluru, Karnataka',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 2680,
+    screensCount: 3,
+    totalSeats: 160,
+    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
+    contact: { phone: '+91 80 2345 6789', email: 'mantri.inox@inoxmovies.com' },
+    screens: [
+      { id: 'sc-115-1', name: 'Screen 1 - Insignia', type: 'VIP Recliner', totalSeats: 160 }
+    ],
+    shows: [
+      { id: 'sh-115-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '01:30 PM', screen: 'Screen 1 - Insignia', format: 'Laser 4K', price: 320, totalSeats: 160, bookedCount: 28 }
+    ]
+  },
+  {
+    id: 'th-116',
+    name: 'Cinepolis Forum Shantiniketan',
+    city: 'Bengaluru',
+    address: 'ITPL Main Rd, Whitefield, Bengaluru, Karnataka',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.7,
+    reviewsCount: 2150,
+    screensCount: 3,
+    totalSeats: 150,
+    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['Dolby Atmos', 'MacroXE', 'VIP Recliners'],
+    contact: { phone: '+91 80 6789 0123', email: 'whitefield@cinepolis.com' },
+    screens: [
+      { id: 'sc-116-1', name: 'Screen 1 - MacroXE', type: 'Dolby Atmos', totalSeats: 150 }
+    ],
+    shows: [
+      { id: 'sh-116-1', movieId: 105, movieTitle: 'Avatar: The Way of Water', time: '04:00 PM', screen: 'Screen 1 - MacroXE', format: 'Dolby Atmos', price: 290, totalSeats: 150, bookedCount: 36 }
+    ]
+  },
+  {
+    id: 'th-117',
+    name: 'PVR Vega City Gold Class',
+    city: 'Bengaluru',
+    address: 'Bannerghatta Main Rd, BTM Layout, Bengaluru, Karnataka',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.9,
+    reviewsCount: 3400,
+    screensCount: 4,
+    totalSeats: 180,
+    brandLogo: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['VIP Recliners', 'Gourmet Food', 'Laser 4K', 'Valet Parking'],
+    contact: { phone: '+91 80 9876 5432', email: 'vegacity@pvrcinemas.com' },
+    screens: [
+      { id: 'sc-117-1', name: 'Gold Class Audi 1', type: 'VIP Recliner', totalSeats: 180 }
+    ],
+    shows: [
+      { id: 'sh-117-1', movieId: 106, movieTitle: 'Interstellar', time: '07:30 PM', screen: 'Gold Class Audi 1', format: 'Laser 4K', price: 450, totalSeats: 180, bookedCount: 40 }
+    ]
+  },
+  {
+    id: 'th-118',
+    name: 'Urvashi Theatre 4K Dolby Atmos',
+    city: 'Bengaluru',
+    address: 'Lalbagh Main Rd, Sudhama Nagar, Bengaluru, Karnataka',
+    status: 'Active',
+    type: 'Single Screen',
+    rating: 4.8,
+    reviewsCount: 4100,
+    screensCount: 1,
+    totalSeats: 195,
+    brandLogo: 'https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['Dolby Atmos', 'Laser 4K', '4K 3D'],
+    contact: { phone: '+91 80 2222 3333', email: 'contact@urvashitheatre.in' },
+    screens: [
+      { id: 'sc-118-1', name: 'Main Screen 4K', type: 'Laser 4K', totalSeats: 195 }
+    ],
+    shows: [
+      { id: 'sh-118-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:00 PM', screen: 'Main Screen 4K', format: 'Laser 4K', price: 220, totalSeats: 195, bookedCount: 42 }
+    ]
+  },
+  {
+    id: 'th-119',
+    name: 'PVR Forum Mall Koramangala',
+    city: 'Bengaluru',
+    address: 'Hosur Rd, Koramangala, Bengaluru, Karnataka',
+    status: 'Upcoming',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 2900,
+    screensCount: 4,
+    totalSeats: 175,
+    brandLogo: 'https://images.unsplash.com/photo-1586899028174-e7098604235b?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1586899028174-e7098604235b?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['IMAX 3D', 'VIP Recliners', 'Gourmet Food'],
+    contact: { phone: '+91 80 4455 6677', email: 'koramangala@pvrcinemas.com' },
+    screens: [],
+    shows: []
+  },
+
+  // HYDERABAD THEATRES (2 Total - Exactly as requested)
+  {
+    id: 'th-101',
+    name: 'PVR Cinemas - Nexus Mall',
+    city: 'Hyderabad',
+    address: 'Kukatpally, Hyderabad, Telangana',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 2890,
+    screensCount: 4,
+    totalSeats: 180,
+    brandLogo: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['IMAX 3D', 'Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
+    contact: {
+      phone: '+91 40 4567 8901',
+      email: 'nexus.pvr@pvrcinemas.com',
+      website: 'https://pvrcinemas.com',
+      mapUrl: 'https://maps.google.com/?q=PVR+Nexus+Mall+Hyderabad'
+    },
+    screens: [
+      { id: 'sc-101', name: 'Audi 1 - IMAX 3D', type: 'IMAX 3D', totalSeats: 180 },
+      { id: 'sc-102', name: 'Audi 2 - Dolby Atmos VIP', type: 'VIP Recliner', totalSeats: 160 }
+    ],
+    shows: [
+      { id: 'sh-101', movieId: 101, movieTitle: 'Dune: Part Two', time: '10:30 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 290, totalSeats: 180, bookedCount: 32 },
+      { id: 'sh-103', movieId: 106, movieTitle: 'Interstellar', time: '06:00 PM', screen: 'Audi 2 - Dolby Atmos VIP', format: 'Dolby Atmos', price: 350, totalSeats: 160, bookedCount: 25 }
+    ]
+  },
+  {
+    id: 'th-108',
+    name: 'AMB Cinemas - Gachibowli',
+    city: 'Hyderabad',
+    address: 'Gachibowli, Hyderabad, Telangana',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.9,
+    reviewsCount: 3900,
+    screensCount: 4,
+    totalSeats: 190,
+    brandLogo: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['IMAX 3D', 'Dolby Atmos', 'VIP Recliners', 'Gourmet Food'],
+    contact: {
+      phone: '+91 40 2345 6789',
+      email: 'support@ambcinemas.com',
+      website: 'https://ambcinemas.com',
+      mapUrl: 'https://maps.google.com/?q=AMB+Cinemas+Gachibowli'
+    },
+    screens: [
+      { id: 'sc-801', name: 'Audi 1 - Superplex', type: 'IMAX 3D', totalSeats: 190 }
+    ],
+    shows: [
+      { id: 'sh-801', movieId: 101, movieTitle: 'Dune: Part Two', time: '03:00 PM', screen: 'Audi 1 - Superplex', format: 'IMAX 3D', price: 320, totalSeats: 190, bookedCount: 38 }
+    ]
+  },
+
+  // REMAINING CITIES (1 Theatre Each - Exactly as requested)
   {
     id: 'th-110',
     name: 'PVR Maison JWO BKC',
@@ -272,14 +225,14 @@ export const INITIAL_THEATRES = [
     type: 'Multiplex',
     rating: 4.9,
     reviewsCount: 2950,
-    screensCount: 6,
-    totalSeats: 1600,
-    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80',
+    screensCount: 3,
+    totalSeats: 160,
+    brandLogo: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1000&auto=format&fit=crop&q=80',
     amenities: ['VIP Recliners', 'Laser 4K', 'Gourmet Food'],
     contact: { phone: '+91 22 6789 0123', email: 'bkc@pvrcinemas.com' },
     shows: [
-      { id: 'sh-1001', movieId: 106, movieTitle: 'Interstellar', time: '02:00 PM', screen: 'Luxe Screen 1', format: 'Laser 4K', price: 420, totalSeats: 100, bookedCount: 80 }
+      { id: 'sh-1001', movieId: 106, movieTitle: 'Interstellar', time: '02:00 PM', screen: 'Luxe Screen 1', format: 'Laser 4K', price: 420, totalSeats: 160, bookedCount: 30 }
     ]
   },
   {
@@ -291,14 +244,14 @@ export const INITIAL_THEATRES = [
     type: 'Multiplex',
     rating: 4.9,
     reviewsCount: 4200,
-    screensCount: 6,
-    totalSeats: 1950,
-    brandLogo: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80',
+    screensCount: 4,
+    totalSeats: 185,
+    brandLogo: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'Laser 4K', 'Gourmet Food'],
     contact: { phone: '+91 44 2811 1111', email: 'support@spicinemas.in' },
     shows: [
-      { id: 'sh-1101', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:30 PM', screen: 'Sathyam Main Audi', format: 'Dolby Atmos', price: 250, totalSeats: 250, bookedCount: 220 }
+      { id: 'sh-1101', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:30 PM', screen: 'Sathyam Main Audi', format: 'Dolby Atmos', price: 250, totalSeats: 185, bookedCount: 35 }
     ]
   },
   {
@@ -310,33 +263,33 @@ export const INITIAL_THEATRES = [
     type: 'IMAX',
     rating: 4.9,
     reviewsCount: 3500,
-    screensCount: 4,
-    totalSeats: 650,
-    brandLogo: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80',
+    screensCount: 2,
+    totalSeats: 140,
+    brandLogo: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?w=1000&auto=format&fit=crop&q=80',
     amenities: ['VIP Recliners', 'Gourmet Food', 'Valet Parking'],
     contact: { phone: '+91 11 4567 8900', email: 'directorscut@pvrcinemas.com' },
     shows: [
-      { id: 'sh-1201', movieId: 106, movieTitle: 'Interstellar', time: '08:00 PM', screen: 'Director Audi 1', format: 'Laser 4K', price: 500, totalSeats: 80, bookedCount: 78 }
+      { id: 'sh-1201', movieId: 106, movieTitle: 'Interstellar', time: '08:00 PM', screen: 'Director Audi 1', format: 'Laser 4K', price: 500, totalSeats: 140, bookedCount: 22 }
     ]
   },
   {
     id: 'th-113',
-    name: 'Inox Leawood Vijayawada',
+    name: 'Inox Leawood Trendset Mall',
     city: 'Vijayawada',
     address: 'MG Road, Vijayawada, Andhra Pradesh',
     status: 'Active',
     type: 'Multiplex',
     rating: 4.7,
     reviewsCount: 1890,
-    screensCount: 5,
-    totalSeats: 1200,
-    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80',
+    screensCount: 3,
+    totalSeats: 150,
+    brandLogo: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'VIP Recliners'],
     contact: { phone: '+91 866 2434 567', email: 'vijayawada@inoxmovies.com' },
     shows: [
-      { id: 'sh-1301', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:30 PM', screen: 'Audi 1', format: 'Dolby Atmos', price: 190, totalSeats: 150, bookedCount: 95 }
+      { id: 'sh-1301', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:30 PM', screen: 'Audi 1', format: 'Dolby Atmos', price: 190, totalSeats: 150, bookedCount: 28 }
     ]
   },
   {
@@ -348,21 +301,78 @@ export const INITIAL_THEATRES = [
     type: 'Multiplex',
     rating: 4.8,
     reviewsCount: 2200,
-    screensCount: 6,
-    totalSeats: 1400,
-    brandLogo: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=150&auto=format&fit=crop&q=80',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80',
+    screensCount: 4,
+    totalSeats: 165,
+    brandLogo: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'Gourmet Food'],
     contact: { phone: '+91 891 2545 678', email: 'vizag@inoxmovies.com' },
     shows: [
-      { id: 'sh-1401', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:15 PM', screen: 'Audi 2', format: 'Dolby Atmos', price: 180, totalSeats: 160, bookedCount: 120 }
+      { id: 'sh-1401', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:15 PM', screen: 'Audi 2', format: 'Dolby Atmos', price: 180, totalSeats: 165, bookedCount: 30 }
+    ]
+  },
+  {
+    id: 'th-120',
+    name: 'PVR Phoenix Marketcity',
+    city: 'Pune',
+    address: 'Viman Nagar, Pune, Maharashtra',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 2750,
+    screensCount: 4,
+    totalSeats: 180,
+    brandLogo: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['IMAX 3D', '4DX 3D', 'VIP Recliners'],
+    contact: { phone: '+91 20 6677 8899', email: 'pune@pvrcinemas.com' },
+    shows: [
+      { id: 'sh-120-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '05:00 PM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 340, totalSeats: 180, bookedCount: 35 }
+    ]
+  },
+  {
+    id: 'th-121',
+    name: 'INOX Quest Mall',
+    city: 'Kolkata',
+    address: 'Park Circus, Kolkata, West Bengal',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 3100,
+    screensCount: 3,
+    totalSeats: 155,
+    brandLogo: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['Insignia VIP', 'Laser 4K', 'Dolby Atmos'],
+    contact: { phone: '+91 33 2288 9900', email: 'quest.inox@inoxmovies.com' },
+    shows: [
+      { id: 'sh-121-1', movieId: 106, movieTitle: 'Interstellar', time: '03:45 PM', screen: 'Insignia Audi 1', format: 'Laser 4K', price: 390, totalSeats: 155, bookedCount: 26 }
+    ]
+  },
+  {
+    id: 'th-122',
+    name: 'Cinepolis Centre Square Mall',
+    city: 'Kochi',
+    address: 'MG Road, Kochi, Kerala',
+    status: 'Active',
+    type: 'Multiplex',
+    rating: 4.8,
+    reviewsCount: 2900,
+    screensCount: 4,
+    totalSeats: 190,
+    brandLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1000&auto=format&fit=crop&q=80',
+    amenities: ['VIP Recliners', 'MacroXE', 'Dolby Atmos'],
+    contact: { phone: '+91 484 4567 890', email: 'kochi@cinepolis.com' },
+    shows: [
+      { id: 'sh-122-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:00 PM', screen: 'Screen 1 - VIP', format: 'Dolby Atmos', price: 280, totalSeats: 190, bookedCount: 34 }
     ]
   }
 ];
 
 export const theatreApi = {
   getTheatres: (cityFilter = 'All', search = '') => {
-    const saved = localStorage.getItem('movtego_theatres');
+    const saved = localStorage.getItem('movtego_theatres_v7');
     let list = INITIAL_THEATRES;
     if (saved) {
       try {
@@ -407,13 +417,13 @@ export const theatreApi = {
       type: 'Multiplex',
       amenities: ['Dolby Atmos', 'VIP Recliners'],
       screens: [
-        { id: `sc-${Date.now()}-1`, name: 'Audi 1', type: 'Dolby Atmos', totalSeats: 200 }
+        { id: `sc-${Date.now()}-1`, name: 'Audi 1', type: 'Dolby Atmos', totalSeats: 180 }
       ],
       shows: [],
       ...newTheatre
     };
     const updatedList = [created, ...theatres];
-    localStorage.setItem('movtego_theatres', JSON.stringify(updatedList));
+    localStorage.setItem('movtego_theatres_v7', JSON.stringify(updatedList));
     return created;
   },
 
@@ -422,7 +432,7 @@ export const theatreApi = {
     const index = theatres.findIndex(t => String(t.id) === String(id));
     if (index !== -1) {
       theatres[index] = { ...theatres[index], ...updatedFields };
-      localStorage.setItem('movtego_theatres', JSON.stringify(theatres));
+      localStorage.setItem('movtego_theatres_v7', JSON.stringify(theatres));
       return theatres[index];
     }
     return null;
@@ -431,12 +441,12 @@ export const theatreApi = {
   deleteTheatre: (id) => {
     const theatres = theatreApi.getTheatres();
     const filtered = theatres.filter(t => String(t.id) !== String(id));
-    localStorage.setItem('movtego_theatres', JSON.stringify(filtered));
+    localStorage.setItem('movtego_theatres_v7', JSON.stringify(filtered));
     return true;
   },
 
   resetToDefaults: () => {
-    localStorage.setItem('movtego_theatres', JSON.stringify(INITIAL_THEATRES));
+    localStorage.setItem('movtego_theatres_v7', JSON.stringify(INITIAL_THEATRES));
     return INITIAL_THEATRES;
   },
 

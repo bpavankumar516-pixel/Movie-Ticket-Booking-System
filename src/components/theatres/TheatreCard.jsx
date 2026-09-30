@@ -122,6 +122,9 @@ export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit,
         <img
           src={image || 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80'}
           alt={name}
+          onError={(e) => {
+            e.target.src = 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80';
+          }}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
         />
 

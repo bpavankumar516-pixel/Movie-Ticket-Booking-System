@@ -32,40 +32,94 @@ const LANG_CODE_MAP = {
   Hindi: 'hi',
   Tamil: 'ta',
   French: 'fr',
-  English: 'en',
-  Spanish: 'es',
   Japanese: 'ja'
 };
 
 // Authentic Multilingual Movie Catalog (English, Telugu, Hindi, Tamil, French) with Official Posters
 export const MOCK_MOVIES = [
-  // 1. RRR (Telugu Blockbuster)
+  // 1. Avatar: The Way of Water (English Blockbuster)
   {
-    id: 101,
-    tmdbId: 579974,
-    title: 'RRR',
-    originalTitle: 'RRR',
-    tagline: 'Rise, Roar, Revolt.',
-    overview: 'A fictitious story about two legendary revolutionaries and their journey away from home before they started fighting for their country in the 1920s.',
-    poster: 'https://image.tmdb.org/t/p/w500/wE0I6efAW4cDDmZQWtwZMOW44EJ.jpg',
-    backdrop: 'https://image.tmdb.org/t/p/original/i0Y0wP8H6SRgjr6QmuwbtQbS24D.jpg',
+    id: 1,
+    tmdbId: 76600,
+    title: 'Avatar: The Way of Water',
+    originalTitle: 'Avatar 2',
+    tagline: 'Return to Pandora in IMAX 3D.',
+    overview: 'Jake Sully lives with his family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri.',
+    poster: 'https://image.tmdb.org/t/p/w500/t6HIfvMGNVChLEoPJ3z212iYyN3.jpg',
+    backdrop: 'https://image.tmdb.org/t/p/original/s16H6WHAWn2vFBhMCUtwqF8Phzp.jpg',
     rating: 8.9,
-    voteCount: 24000,
-    likes: 24000,
-    runtime: 187,
-    releaseDate: '2022-03-25',
-    language: 'Telugu',
+    voteCount: 32000,
+    likes: 32000,
+    runtime: 192,
+    releaseDate: '2022-12-16',
+    language: 'English',
     status: 'Now Showing',
     category: 'now_showing',
     activeShows: 28,
-    genres: ['Action', 'Drama', 'History'],
+    genres: ['Sci-Fi', 'Action', 'Adventure'],
+    formats: ['IMAX 3D', 'Dolby Atmos', '4DX'],
+    cast: [
+      { name: 'James Cameron', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Sam Worthington', role: 'As Jake Sully', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Zoe Saldana', role: 'As Neytiri', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
+    ],
+    trailerUrl: 'https://www.youtube.com/embed/d9MyW72ELq0'
+  },
+  // 2. Avengers: Endgame (English Blockbuster)
+  {
+    id: 601,
+    tmdbId: 299534,
+    title: 'Avengers: Endgame',
+    originalTitle: 'Avengers Endgame',
+    tagline: 'Part of the journey is the end.',
+    overview: 'After the devastating events of Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more to reverse Thanos\' actions.',
+    poster: 'https://image.tmdb.org/t/p/w500/or06tUkWStQZ2bseZ2fYtBd3BhL.jpg',
+    backdrop: 'https://image.tmdb.org/t/p/original/7RyGkoB9RyP1vOHMOKbUkjZ7T5b.jpg',
+    rating: 8.9,
+    voteCount: 35000,
+    likes: 35000,
+    runtime: 181,
+    releaseDate: '2019-04-26',
+    language: 'English',
+    status: 'Now Showing',
+    category: 'now_showing',
+    activeShows: 32,
+    genres: ['Action', 'Sci-Fi', 'Adventure'],
     formats: ['IMAX 3D', 'Dolby Cinema', '4DX'],
     cast: [
-      { name: 'S.S. Rajamouli', role: 'Director', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' },
-      { name: 'N.T. Rama Rao Jr.', role: 'As Komaram Bheem', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
-      { name: 'Ram Charan', role: 'As Alluri Sitarama Raju', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' }
+      { name: 'Anthony & Joe Russo', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Robert Downey Jr.', role: 'As Tony Stark / Iron Man', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Chris Evans', role: 'As Steve Rogers / Captain America', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' }
     ],
-    trailerUrl: 'https://www.youtube.com/embed/NgBoT17G0hI'
+    trailerUrl: 'https://www.youtube.com/embed/TcMBFSGVi1c'
+  },
+  // 3. Salaar: Part 1 – Ceasefire (Telugu Blockbuster)
+  {
+    id: 602,
+    tmdbId: 778000,
+    title: 'Salaar: Part 1 – Ceasefire',
+    originalTitle: 'Salaar',
+    tagline: 'The most violent man. A promise made to a friend.',
+    overview: 'A gang leader tries to keep a promise made to his dying friend and takes on other criminal gangs in the dystopian city-state of Khansaar.',
+    poster: 'https://image.tmdb.org/t/p/w500/4n2gECLy65j2eC226n9n4S61483.jpg',
+    backdrop: 'https://image.tmdb.org/t/p/original/m99A3s1k8p3f3f22n5H6e3Z5g1.jpg',
+    rating: 8.8,
+    voteCount: 22000,
+    likes: 22000,
+    runtime: 175,
+    releaseDate: '2023-12-22',
+    language: 'Telugu',
+    status: 'Now Showing',
+    category: 'now_showing',
+    activeShows: 30,
+    genres: ['Action', 'Crime', 'Drama'],
+    formats: ['IMAX 4K', 'Dolby Atmos', '4DX'],
+    cast: [
+      { name: 'Prashanth Neel', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Prabhas', role: 'As Deva / Salaar', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Prithviraj Sukumaran', role: 'As Varadha Raja Mannaar', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' }
+    ],
+    trailerUrl: 'https://www.youtube.com/embed/HihakFi632Q'
   },
   // 2. Dune: Part Two (English Blockbuster)
   {
@@ -75,16 +129,16 @@ export const MOCK_MOVIES = [
     originalTitle: 'Dune 2',
     tagline: 'Long live the fighters across the desert sands.',
     overview: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
-    poster: 'https://image.tmdb.org/t/p/w500/czba3F2n0bHqJ5zDqXW9yZz4.jpg',
-    backdrop: 'https://image.tmdb.org/t/p/original/eZ239CUp1d6OryZEBPnO2n87gMG.jpg',
+    poster: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=1000&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=1600&auto=format&fit=crop&q=95',
     rating: 8.7,
     voteCount: 18920,
     likes: 18920,
     runtime: 166,
     releaseDate: '2024-03-01',
     language: 'English',
-    status: 'Published',
-    category: 'published',
+    status: 'Now Showing',
+    category: 'now_showing',
     activeShows: 18,
     genres: ['Action', 'Sci-Fi', 'Adventure'],
     formats: ['IMAX 70MM', 'Dolby Atmos', 'VIP Lounge'],
@@ -355,8 +409,8 @@ export const MOCK_MOVIES = [
     originalTitle: 'Pushpa 2: The Rule',
     tagline: 'Wildfire takes over the syndicate.',
     overview: 'The clash between Pushpa Raj and Bhanwar Singh Shekhawat continues as Pushpa consolidates his sandalwood smuggling empire.',
-    poster: 'https://image.tmdb.org/t/p/w500/1T21FblunT0y8fz7YaW8JMYgUKm.jpg',
-    backdrop: 'https://image.tmdb.org/t/p/original/7jGItf7idJsBm9QTNoTNTU3KiGe.jpg',
+    poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&auto=format&fit=crop&q=95',
     rating: 8.8,
     voteCount: 16500,
     likes: 16500,
@@ -374,6 +428,62 @@ export const MOCK_MOVIES = [
       { name: 'Rashmika Mandanna', role: 'As Srivalli', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
     ],
     trailerUrl: 'https://www.youtube.com/embed/1kGLUGAXm0w'
+  },
+  // 13. Deadpool & Wolverine (Upcoming Release)
+  {
+    id: 501,
+    tmdbId: 533535,
+    title: 'Deadpool & Wolverine',
+    originalTitle: 'Deadpool & Wolverine',
+    tagline: 'Everyone deserves a happy ending.',
+    overview: 'Wolverine is recovering from his injuries when he crosses paths with the loudmouth Deadpool. They team up to defeat a common enemy.',
+    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&auto=format&fit=crop&q=95',
+    rating: 8.6,
+    voteCount: 14000,
+    likes: 14000,
+    runtime: 128,
+    releaseDate: '2024-07-26',
+    language: 'English',
+    status: 'Upcoming',
+    category: 'upcoming',
+    activeShows: 25,
+    genres: ['Action', 'Comedy', 'Sci-Fi'],
+    formats: ['IMAX 3D', '4DX', 'Dolby Cinema'],
+    cast: [
+      { name: 'Shawn Levy', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Ryan Reynolds', role: 'As Wade Wilson / Deadpool', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Hugh Jackman', role: 'As Logan / Wolverine', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80' }
+    ],
+    trailerUrl: 'https://www.youtube.com/embed/73_1biulk6s'
+  },
+  // 14. Joker: Folie à Deux (Upcoming Release)
+  {
+    id: 502,
+    tmdbId: 889737,
+    title: 'Joker: Folie à Deux',
+    originalTitle: 'Joker 2',
+    tagline: 'The world is a stage.',
+    overview: 'Failed comedian Arthur Fleck meets the love of his life, Harley Quinn, while incarcerated at Arkham State Hospital.',
+    poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=95',
+    backdrop: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&auto=format&fit=crop&q=95',
+    rating: 8.5,
+    voteCount: 12500,
+    likes: 12500,
+    runtime: 138,
+    releaseDate: '2024-10-04',
+    language: 'English',
+    status: 'Upcoming',
+    category: 'upcoming',
+    activeShows: 20,
+    genres: ['Thriller', 'Drama', 'Crime'],
+    formats: ['IMAX 70MM', 'Dolby Cinema'],
+    cast: [
+      { name: 'Todd Phillips', role: 'Director', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Joaquin Phoenix', role: 'As Arthur Fleck / Joker', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+      { name: 'Lady Gaga', role: 'As Harleen Quinzel / Harley Quinn', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' }
+    ],
+    trailerUrl: 'https://www.youtube.com/embed/_OKAwz223lU'
   },
   // 13. Pathaan (Hindi Blockbuster)
   {

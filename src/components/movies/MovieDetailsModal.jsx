@@ -16,8 +16,9 @@ export const MovieDetailsModal = ({ movie, isOpen, onClose }) => {
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
   const [enrichedData, setEnrichedData] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('TODAY, 30 SEP');
+  const [selectedDate, setSelectedDate] = useState('Today, 30 Sep');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('06:30 PM');
+  const [selectedTheatre, setSelectedTheatre] = useState('INOX Mantri Square, Bengaluru');
   const [toastMessage, setToastMessage] = useState(null);
   const [isPosterLightboxOpen, setIsPosterLightboxOpen] = useState(false);
   const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
@@ -48,14 +49,16 @@ export const MovieDetailsModal = ({ movie, isOpen, onClose }) => {
     return (
       <SeatSelectionView
         movieTitle={activeMovie.title}
-        theatreName="PVR Cinemas - Nexus Mall"
+        theatreName={selectedTheatre}
         showtime={selectedTimeSlot}
         dateStr={selectedDate}
-        format="IMAX 3D"
-        pricePerSeat={250}
+        format="Screen 1 (IMAX 4K)"
+        genre={activeMovie.genre || 'Horror'}
+        moviePoster={activeMovie.poster}
+        pricePerSeat={16}
         onBack={() => setIsSeatModalOpen(false)}
         onBookingComplete={(bookingData) => {
-          showToast(`🎉 Booking Confirmed! Reserved Seats: ${bookingData.seats} (${bookingData.seatCount} Seats) for "${bookingData.movieTitle}"!`);
+          showToast(`🎉 Booking Confirmed! Reserved Seats: ${Array.isArray(bookingData.seats) ? bookingData.seats.join(', ') : bookingData.seats} for "${bookingData.movieTitle}"!`);
           setIsSeatModalOpen(false);
         }}
       />
@@ -461,10 +464,30 @@ export const MovieDetailsModal = ({ movie, isOpen, onClose }) => {
                     Pre-Bookings Open
                   </span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-black text-[var(--text-heading)] pt-0.5">Select Booking Date</h3>
+                <h3 className="text-lg sm:text-xl font-black text-[var(--text-heading)] pt-0.5">Select Theatre & Date</h3>
                 <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-                  Choose date to book tickets for <strong>{activeMovie.title}</strong>.
+                  Choose multiplex theatre & date to book tickets for <strong>{activeMovie.title}</strong>.
                 </p>
+              </div>
+
+              {/* Theatre Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-[var(--primary)]" /> Select Multiplex Theatre:
+                </label>
+                <select
+                  value={selectedTheatre}
+                  onChange={(e) => setSelectedTheatre(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--border)] focus:outline-none focus:border-[var(--primary)] text-xs font-bold cursor-pointer"
+                >
+                  <option value="INOX Mantri Square, Bengaluru">INOX Mantri Square (Bengaluru)</option>
+                  <option value="PVR Vega City Gold Class, Bengaluru">PVR Vega City Gold Class (Bengaluru)</option>
+                  <option value="Cinepolis Forum Shantiniketan, Bengaluru">Cinepolis Forum Shantiniketan (Bengaluru)</option>
+                  <option value="AMB Cinemas Gachibowli, Hyderabad">AMB Cinemas Gachibowli (Hyderabad)</option>
+                  <option value="Prasads Multiplex, Hyderabad">Prasads Multiplex (Hyderabad)</option>
+                  <option value="PVR Director's Cut, Delhi">PVR Director's Cut (Delhi)</option>
+                  <option value="Cinepolis Centre Square, Kochi">Cinepolis Centre Square (Kochi)</option>
+                </select>
               </div>
 
               {/* Date Selector Row */}

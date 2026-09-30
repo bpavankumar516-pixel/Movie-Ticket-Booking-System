@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Home, Film, Clock, Ticket, Building2, Monitor, Armchair, TrendingUp, Settings as SettingsIcon, User 
+  Home, Film, Clock, Ticket, Building2, Monitor, TrendingUp, Settings as SettingsIcon, User 
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -12,10 +12,8 @@ export const Sidebar = () => {
   const mainItems = [
     { label: 'Dashboard', icon: Home, path: '/dashboard' },
     { label: 'Movies', icon: Film, path: '/movies' },
-    { label: 'Showtimes', icon: Clock, path: '/theatres' },
     { label: 'Bookings', icon: Ticket, path: '/booking-history' },
     { label: 'Theatres', icon: Building2, path: '/theatres' },
-    { label: 'Screens', icon: Monitor, path: '/theatres' },
     { label: 'Analytics', icon: TrendingUp, path: '/reports' },
   ];
 
@@ -38,7 +36,7 @@ export const Sidebar = () => {
     <aside className="hidden lg:flex flex-col justify-between w-[240px] movtego-sidebar p-4 shrink-0 select-none sticky top-5 self-start h-[calc(100vh-2.5rem)] max-h-[calc(100vh-2.5rem)] z-30 transition-all duration-300">
       
       {/* Brand Header & Navigation List */}
-      <div className="space-y-4 overflow-y-auto pr-1 flex-1">
+      <div className="space-y-4 overflow-y-auto pr-1 flex-1 custom-scrollbar">
         
         {/* Brand Logo with Primary Gradient Tile */}
         <Link to="/dashboard" className="flex items-center gap-3 px-2 py-1 group">

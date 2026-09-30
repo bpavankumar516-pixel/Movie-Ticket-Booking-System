@@ -5,9 +5,9 @@ import { MovieDetailsModal } from '../../components/movies/MovieDetailsModal';
 import { MovieFormModal } from '../../components/movies/MovieFormModal';
 import { ConfirmationModal } from '../../components/common/ConfirmationModal';
 import { 
-  Film, Plus, Search, Eye, TrendingUp, Calendar, Clock, Star, 
-  Grid, List, CheckCircle2, Ticket, Sparkles, Filter, ChevronLeft, ChevronRight,
-  Play, RefreshCw, X, Award, ShieldAlert, SlidersHorizontal, Check, Flame, Layers
+  Film, Plus, Search, Eye, Calendar, Star, 
+  Grid, List, CheckCircle2, Ticket, Sparkles, ChevronLeft, ChevronRight,
+  Play, RefreshCw, X, Award, SlidersHorizontal, Check, Flame, Globe, ArrowUpDown, LayoutGrid
 } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Loading } from '../../components/common/Loading';
@@ -42,7 +42,7 @@ export const Movies = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [minRating, setMinRating] = useState('All');
-  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   const [activeCategoryTab, setActiveCategoryTab] = useState('all');
   const [deletingMovie, setDeletingMovie] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
@@ -60,7 +60,11 @@ export const Movies = () => {
     }
   };
 
-  // Filter Logic with Rating & Tab Category
+  const handleImageError = (e) => {
+    e.target.src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80';
+  };
+
+  // Filter Logic
   const filteredMovies = useMemo(() => {
     let result = getFilteredMovies();
 
@@ -94,7 +98,7 @@ export const Movies = () => {
     return [...movies].sort((a, b) => (b.rating || 0) - (a.rating || 0))[0];
   }, [movies]);
 
-  const totalPages = Math.ceil(filteredMovies.length / itemsPerPage) || 1;
+  const totalPages = Math.max(1, Math.ceil(filteredMovies.length / itemsPerPage));
   const displayedMovies = filteredMovies.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -102,232 +106,190 @@ export const Movies = () => {
 
   const genres = ['All', 'Sci-Fi', 'Action', 'Drama', 'Thriller', 'Biography', 'Animation', 'Adventure', 'Crime'];
   const languages = ['All', 'English', 'Telugu', 'Hindi', 'Tamil', 'French'];
-  const statuses = ['All', 'Now Showing', 'Published', 'Upcoming', 'Draft', 'Unpublished', 'Archived'];
 
-  const hasActiveFilters = searchQuery !== '' || selectedGenre !== 'All' || selectedLanguage !== 'All' || selectedStatus !== 'All' || minRating !== 'All' || activeCategoryTab !== 'all';
+  const hasActiveFilters = searchQuery !== '' || selectedGenre !== 'All' || selectedLanguage !== 'All' || minRating !== 'All' || activeCategoryTab !== 'all';
 
-  const handleResetFilters = () => {
-    setSearchQuery('');
-    setSelectedGenre('All');
-    setSelectedLanguage('All');
-    setSelectedStatus('All');
-    setMinRating('All');
-    setActiveCategoryTab('all');
-    setCurrentPage(1);
-  };
+  // Render View Details Page in-place with single window scrollbar
+  if (selectedMovieForDetail) {
+    return (
+      <div className="w-full animate-fade-in space-y-6">
+        <MovieDetailsModal
+          movie={selectedMovieForDetail}
+          isOpen={true}
+          onClose={() => setSelectedMovieForDetail(null)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in text-left pb-16">
       
-      {/* 1. TOP CONTROL & SEARCH HEADER */}
-      <div className="movtego-card p-4 rounded-3xl border border-[var(--border)] shadow-md">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          
-          {/* Brand Header */}
-          <div className="flex items-center gap-3.5 w-full md:w-auto">
-            <div className="w-11 h-11 rounded-2xl bg-primary-gradient text-white flex items-center justify-center shadow-lg shadow-[#14B8A0]/30 shrink-0">
-              <Film className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="font-black text-xl sm:text-2xl text-[var(--text-heading)] tracking-tight">
-                Movies Catalog
-              </h1>
-              <p className="text-xs text-[var(--text-muted)] font-medium">
-                Explore movies, formats, showtimes and catalog entries.
-              </p>
-            </div>
-          </div>
-
-          {/* Centered Search Input Bar */}
-          <div className="relative flex-1 max-w-xl w-full">
-            <Search className="w-4 h-4 absolute left-4 top-3.5 text-[var(--text-muted)]" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              placeholder="Search by title, genre, keyword..."
-              className="w-full pl-11 pr-10 py-3 rounded-2xl bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--primary)] text-xs font-semibold shadow-inner"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-3.5 text-[var(--text-muted)] hover:text-[var(--text-heading)] cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          {/* Add New Movie Primary Action */}
-          <div className="shrink-0 w-full md:w-auto">
-            <Button
-              variant="teal"
-              size="md"
-              icon={Plus}
-              onClick={() => {
-                setEditingMovie(null);
-                setIsAddModalOpen(true);
-              }}
-              className="w-full md:w-auto rounded-2xl shadow-xl shadow-[#14B8A0]/30 px-5 py-3 font-black text-xs sm:text-sm hover:scale-[1.03] transition-transform cursor-pointer"
-            >
-              Add New Movie
-            </Button>
-          </div>
-
-        </div>
-      </div>
-
-      {/* 2. EXECUTIVE METRICS STATS (5 CARDS GRID) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      {/* 1. STATS CATEGORY TABS & ADD NEW MOVIE BUTTON (6-CARD ROW) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 items-stretch">
         
-        {/* Card 1: Total Catalog */}
+        {/* Card 1: All Movies */}
         <div 
-          onClick={() => setActiveCategoryTab('all')}
-          className={`movtego-card p-4 rounded-3xl border transition-all cursor-pointer hover:shadow-md ${
-            activeCategoryTab === 'all' ? 'border-[#14B8A0] ring-2 ring-[#14B8A0]/30 shadow-md' : 'border-[var(--border)]'
+          onClick={() => {
+            setActiveCategoryTab('all');
+            setCurrentPage(1);
+          }}
+          className={`movtego-card p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md flex flex-col justify-between ${
+            activeCategoryTab === 'all' ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]/20 bg-[var(--primary-light)]/40 shadow-sm' : 'border-[var(--border)]'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[var(--text-muted)]">Total Catalog</span>
-            <div className="w-9 h-9 rounded-2xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center shadow-xs">
+            <span className="text-xs font-bold text-[var(--text-muted)]">All Catalog</span>
+            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center font-bold">
               <Film className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)]">{stats.total}</span>
-            <span className="text-[11px] font-bold text-emerald-500 flex items-center gap-0.5 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <TrendingUp className="w-3 h-3" /> +14.2%
-            </span>
-          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)] mt-2">{stats.total}</div>
         </div>
 
         {/* Card 2: Now Showing */}
         <div 
-          onClick={() => setActiveCategoryTab('now_showing')}
-          className={`movtego-card p-4 rounded-3xl border transition-all cursor-pointer hover:shadow-md ${
-            activeCategoryTab === 'now_showing' ? 'border-[#14B8A0] ring-2 ring-[#14B8A0]/30 shadow-md' : 'border-[var(--border)]'
+          onClick={() => {
+            setActiveCategoryTab('now_showing');
+            setCurrentPage(1);
+          }}
+          className={`movtego-card p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md flex flex-col justify-between ${
+            activeCategoryTab === 'now_showing' ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-500/10 shadow-sm' : 'border-[var(--border)]'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Now Showing</span>
-            <div className="w-9 h-9 rounded-2xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold">
               <Eye className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)]">{stats.nowShowing}</span>
-            <span className="text-[11px] font-bold text-emerald-500 flex items-center gap-0.5 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              Live
-            </span>
-          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)] mt-2">{stats.nowShowing}</div>
         </div>
 
         {/* Card 3: Upcoming */}
         <div 
-          onClick={() => setActiveCategoryTab('upcoming')}
-          className={`movtego-card p-4 rounded-3xl border transition-all cursor-pointer hover:shadow-md ${
-            activeCategoryTab === 'upcoming' ? 'border-[#14B8A0] ring-2 ring-[#14B8A0]/30 shadow-md' : 'border-[var(--border)]'
+          onClick={() => {
+            setActiveCategoryTab('upcoming');
+            setCurrentPage(1);
+          }}
+          className={`movtego-card p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md flex flex-col justify-between ${
+            activeCategoryTab === 'upcoming' ? 'border-purple-500 ring-2 ring-purple-500/20 bg-purple-500/10 shadow-sm' : 'border-[var(--border)]'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Upcoming</span>
-            <div className="w-9 h-9 rounded-2xl bg-purple-500/15 text-purple-500 flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-500 flex items-center justify-center font-bold">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)]">{stats.upcoming}</span>
-            <span className="text-[11px] font-bold text-purple-500 flex items-center gap-0.5 bg-purple-500/10 px-2 py-0.5 rounded-full">
-              Soon
-            </span>
-          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)] mt-2">{stats.upcoming}</div>
         </div>
 
-        {/* Card 4: Draft */}
+        {/* Card 4: Draft Movies */}
         <div 
-          onClick={() => setActiveCategoryTab('draft')}
-          className={`movtego-card p-4 rounded-3xl border transition-all cursor-pointer hover:shadow-md ${
-            activeCategoryTab === 'draft' ? 'border-[#14B8A0] ring-2 ring-[#14B8A0]/30 shadow-md' : 'border-[var(--border)]'
+          onClick={() => {
+            setActiveCategoryTab('draft');
+            setCurrentPage(1);
+          }}
+          className={`movtego-card p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md flex flex-col justify-between ${
+            activeCategoryTab === 'draft' ? 'border-amber-500 ring-2 ring-amber-500/20 bg-amber-500/10 shadow-sm' : 'border-[var(--border)]'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[var(--text-muted)]">Draft Movies</span>
-            <div className="w-9 h-9 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center shadow-xs">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Drafts</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)]">{stats.draft}</span>
-            <span className="text-[11px] font-bold text-amber-500 flex items-center gap-0.5 bg-amber-500/10 px-2 py-0.5 rounded-full">
-              Drafts
-            </span>
-          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)] mt-2">{stats.draft}</div>
         </div>
 
         {/* Card 5: Archived */}
         <div 
-          onClick={() => setActiveCategoryTab('archived')}
-          className={`movtego-card p-4 rounded-3xl border transition-all cursor-pointer hover:shadow-md ${
-            activeCategoryTab === 'archived' ? 'border-[#14B8A0] ring-2 ring-[#14B8A0]/30 shadow-md' : 'border-[var(--border)]'
+          onClick={() => {
+            setActiveCategoryTab('archived');
+            setCurrentPage(1);
+          }}
+          className={`movtego-card p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md flex flex-col justify-between ${
+            activeCategoryTab === 'archived' ? 'border-cyan-500 ring-2 ring-cyan-500/20 bg-cyan-500/10 shadow-sm' : 'border-[var(--border)]'
           }`}
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[var(--text-muted)]">Archived</span>
-            <div className="w-9 h-9 rounded-2xl bg-cyan-500/15 text-cyan-500 flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/15 text-cyan-500 flex items-center justify-center font-bold">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)]">{stats.archived}</span>
-            <span className="text-[11px] font-bold text-cyan-500 flex items-center gap-0.5 bg-cyan-500/10 px-2 py-0.5 rounded-full">
-              Stored
+          <div className="text-2xl font-black text-[var(--text-heading)] mt-2">{stats.archived}</div>
+        </div>
+
+        {/* Card 6: Action - Add New Movie Button */}
+        <div 
+          onClick={() => {
+            setEditingMovie(null);
+            setIsAddModalOpen(true);
+          }}
+          className="movtego-card relative overflow-hidden rounded-2xl border border-[var(--primary)]/60 p-4 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl hover:border-[var(--primary)] group col-span-2 sm:col-span-1 flex flex-col justify-between min-h-[96px]"
+        >
+          {/* High Clarity Cinema Background Image covering 100% of the complete card */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80" 
+              alt="Add movie artwork" 
+              className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.15] saturate-[1.1] group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/50 to-slate-950/30" />
+            <div className="absolute inset-0 bg-[var(--primary)]/15 group-hover:bg-[var(--primary)]/25 transition-colors duration-300" />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between">
+            <span className="text-[10px] font-black text-white bg-emerald-500/90 px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm border border-emerald-400/40">
+              Action
             </span>
+            <div className="w-8 h-8 rounded-xl bg-primary-gradient text-white flex items-center justify-center font-bold shadow-lg shadow-[#14B8A0]/40 group-hover:scale-110 transition-transform border border-white/30">
+              <Plus className="w-4.5 h-4.5" />
+            </div>
+          </div>
+
+          <div className="relative z-10 text-xs sm:text-sm font-black text-white mt-3 group-hover:text-teal-300 transition-colors flex items-center gap-1.5 drop-shadow-md">
+            <Sparkles className="w-4 h-4 text-teal-300 shrink-0" />
+            <span>+ Add New Movie</span>
           </div>
         </div>
 
       </div>
 
-      {/* 3. FEATURED SPOTLIGHT BANNER */}
-      {featuredMovie && !searchQuery && selectedGenre === 'All' && activeCategoryTab === 'all' && (
-        <div className="relative rounded-3xl overflow-hidden border border-[#14B8A0]/40 shadow-2xl bg-slate-950 text-white min-h-[280px] sm:min-h-[320px] flex items-end">
-          {/* Backdrop Image with vignette overlay */}
+      {/* 2. FEATURED SPOTLIGHT HERO BANNER (Only when no search/filters active) */}
+      {featuredMovie && !searchQuery && selectedGenre === 'All' && selectedLanguage === 'All' && activeCategoryTab === 'all' && (
+        <div className="relative rounded-3xl overflow-hidden border border-[#14B8A0]/40 shadow-xl bg-slate-950 text-white min-h-[260px] sm:min-h-[290px] flex items-end">
           <div className="absolute inset-0 z-0">
             <img 
               src={featuredMovie.backdrop || featuredMovie.poster} 
               alt={featuredMovie.title} 
-              className="w-full h-full object-cover opacity-50 transform scale-105"
+              onError={handleImageError}
+              className="w-full h-full object-cover opacity-40 transform scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
           </div>
 
-          {/* Banner Content Container */}
           <div className="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
-            
             <div className="flex gap-5 items-end max-w-3xl">
-              {/* Poster Thumbnail */}
-              <div className="w-28 sm:w-36 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl shrink-0 hidden sm:block bg-slate-900">
-                <img src={featuredMovie.poster} alt={featuredMovie.title} className="w-full h-full object-cover" />
+              <div className="w-28 sm:w-32 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl shrink-0 hidden sm:block bg-slate-900">
+                <img src={featuredMovie.poster} alt={featuredMovie.title} onError={handleImageError} className="w-full h-full object-cover" />
               </div>
 
-              {/* Movie Details */}
               <div className="space-y-2 text-left">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-3 py-1 rounded-full bg-primary-gradient text-white text-[10px] font-black tracking-widest uppercase shadow-md flex items-center gap-1">
-                    <Award className="w-3 h-3" /> Featured Spotlight
+                  <span className="px-3 py-1 rounded-full bg-primary-gradient text-white text-[10px] font-black tracking-wider uppercase shadow-md flex items-center gap-1">
+                    <Award className="w-3 h-3" /> Blockbuster Spotlight
                   </span>
                   <span className="px-2.5 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-amber-400 font-extrabold text-xs flex items-center gap-1 border border-amber-400/30">
-                    <Star className="w-3.5 h-3.5 fill-amber-400" /> {featuredMovie.rating} / 10 IMDb
-                  </span>
-                  <span className="text-xs text-slate-300 font-semibold flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-teal-400" /> {featuredMovie.runtime || 166} mins
+                    <Star className="w-3.5 h-3.5 fill-amber-400" /> {featuredMovie.rating}
                   </span>
                 </div>
 
-                <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
                   {featuredMovie.title}
                 </h2>
 
@@ -335,15 +297,14 @@ export const Movies = () => {
                   {featuredMovie.overview}
                 </p>
 
-                {/* Genre & Formats Pills */}
-                <div className="flex flex-wrap items-center gap-2 pt-1">
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
                   {(featuredMovie.genres || ['Sci-Fi', 'Action']).map((g, idx) => (
-                    <span key={idx} className="px-2.5 py-0.5 rounded-lg bg-white/10 backdrop-blur-md text-slate-200 text-xs font-semibold border border-white/10">
+                    <span key={idx} className="px-2 py-0.5 rounded-md bg-white/10 text-slate-200 text-xs font-semibold border border-white/10">
                       {g}
                     </span>
                   ))}
                   {(featuredMovie.formats || ['IMAX 3D', 'Dolby Atmos']).map((f, idx) => (
-                    <span key={idx} className="px-2.5 py-0.5 rounded-lg bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/40">
+                    <span key={idx} className="px-2 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/40">
                       {f}
                     </span>
                   ))}
@@ -351,63 +312,133 @@ export const Movies = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setSelectedMovieForDetail(featuredMovie)}
-                className="px-5 py-3 rounded-2xl bg-primary-gradient text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-[#14B8A0]/40 hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-primary-gradient text-white font-extrabold text-xs sm:text-sm shadow-lg hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
               >
-                <Ticket className="w-4 h-4" /> Book Tickets
-              </button>
-              <button
-                onClick={() => setSelectedMovieForDetail(featuredMovie)}
-                className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md text-white font-bold text-xs sm:text-sm hover:bg-white/20 transition-colors border border-white/20 flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="w-4 h-4 fill-white" /> Watch Trailer
+                <Ticket className="w-4 h-4" /> Book Showtimes
               </button>
             </div>
-
           </div>
         </div>
       )}
 
-      {/* 4. MAIN LAYOUT: SIDEBAR FILTERS (LEFT) + MOVIES GRID (RIGHT) */}
+      {/* 3. MAIN CONTENT AREA: ICON-ALIGNED SIDEBAR FILTERS (LEFT) + CATALOG GRID/LIST (RIGHT) */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         
-        {/* LEFT COLUMN: SIDEBAR FILTERS */}
+        {/* UNIFIED LEFT SIDEBAR FILTERS PANEL WITH ICON ALIGNMENT */}
         <div className="w-full lg:w-64 shrink-0 space-y-4">
-          <div className="movtego-card p-4 rounded-3xl border border-[var(--border)] space-y-5 text-xs shadow-sm">
+          <div className="movtego-card p-4.5 rounded-3xl border border-[var(--border)] space-y-4 text-xs shadow-sm bg-[var(--bg-card)]">
             
+            {/* Header Bar */}
             <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
               <h3 className="font-extrabold text-sm text-[var(--text-heading)] flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[var(--primary)]" /> Filters
+                <SlidersHorizontal className="w-4 h-4 text-[var(--primary)]" /> Controls & Filters
               </h3>
               {hasActiveFilters && (
                 <button 
                   onClick={handleResetFilters}
-                  className="text-[11px] font-bold text-red-500 hover:underline cursor-pointer"
+                  className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
                 >
                   Clear All
                 </button>
               )}
             </div>
 
-            {/* Language Filter */}
-            <div className="space-y-2">
-              <label className="font-bold text-[var(--text-heading)] block">Languages</label>
+            {/* 1. View Mode Toggle Switcher Inside Left Sidebar */}
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <LayoutGrid className="w-3.5 h-3.5 text-[var(--primary)]" /> Display Layout
+              </label>
+              <div className="grid grid-cols-2 gap-1.5 bg-[var(--input-bg)] p-1 rounded-xl border border-[var(--border)]">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`py-1.5 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    viewMode === 'grid'
+                      ? 'bg-primary-gradient text-white shadow-md'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                  }`}
+                >
+                  <Grid className="w-3.5 h-3.5" /> Grid Cards
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`py-1.5 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    viewMode === 'list'
+                      ? 'bg-primary-gradient text-white shadow-md'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                  }`}
+                >
+                  <List className="w-3.5 h-3.5" /> List Rows
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Search Input Bar */}
+            <div className="space-y-1.5">
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <Search className="w-3.5 h-3.5 text-[var(--primary)]" /> Search Movies
+              </label>
+              <div className="relative w-full">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  placeholder="Search title, genre, actor..."
+                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--primary)] text-xs font-semibold"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-heading)] cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 2. Sort Dropdown */}
+            <div className="space-y-1.5 pt-3 border-t border-[var(--border)]">
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[var(--primary)]" /> Sort Movies By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full rounded-xl px-3 py-2 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none text-xs font-bold cursor-pointer"
+              >
+                <option value="famous">🔥 Blockbusters & Popular</option>
+                <option value="release_date">Release Date</option>
+                <option value="rating">Highest Rating ⭐</option>
+                <option value="title">Title (A-Z)</option>
+                <option value="duration">Runtime Duration</option>
+              </select>
+            </div>
+
+            {/* 3. Language Filter */}
+            <div className="space-y-2 pt-3 border-t border-[var(--border)]">
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[var(--primary)]" /> Languages
+              </label>
               <div className="flex flex-wrap gap-1.5">
-                {languages.map((lang, i) => {
+                {languages.map((lang, idx) => {
                   const isSel = selectedLanguage === lang;
                   return (
                     <button
-                      key={i}
+                      key={idx}
                       onClick={() => {
                         setSelectedLanguage(lang);
                         setCurrentPage(1);
                       }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      className={`px-3 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                         isSel
-                          ? 'bg-primary-gradient text-white shadow-md'
+                          ? 'bg-[var(--primary)] text-white shadow-sm'
                           : 'bg-[var(--input-bg)] text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--text-heading)]'
                       }`}
                     >
@@ -418,9 +449,11 @@ export const Movies = () => {
               </div>
             </div>
 
-            {/* Genre Filter */}
+            {/* 4. Genre Filter */}
             <div className="space-y-2 pt-3 border-t border-[var(--border)]">
-              <label className="font-bold text-[var(--text-heading)] block">Genres</label>
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <Film className="w-3.5 h-3.5 text-[var(--primary)]" /> Genres
+              </label>
               <div className="flex flex-wrap gap-1.5">
                 {genres.map((g, i) => {
                   const isSel = selectedGenre === g;
@@ -433,7 +466,7 @@ export const Movies = () => {
                       }}
                       className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold transition-all cursor-pointer ${
                         isSel
-                          ? 'bg-primary-gradient text-white font-bold'
+                          ? 'bg-primary-gradient text-white font-bold shadow-sm'
                           : 'bg-[var(--input-bg)] text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--text-heading)]'
                       }`}
                     >
@@ -444,115 +477,37 @@ export const Movies = () => {
               </div>
             </div>
 
-            {/* Status Filter */}
+            {/* 5. Minimum Rating Filter */}
             <div className="space-y-2 pt-3 border-t border-[var(--border)]">
-              <label className="font-bold text-[var(--text-heading)] block">Release Status</label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => {
-                  setSelectedStatus(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full rounded-xl px-3 py-2 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none text-xs font-semibold"
-              >
-                {statuses.map((s, i) => (
-                  <option key={i} value={s}>{s === 'All' ? 'All Status' : s}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Rating Filter */}
-            <div className="space-y-2 pt-3 border-t border-[var(--border)]">
-              <label className="font-bold text-[var(--text-heading)] block">Rating</label>
+              <label className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                <Star className="w-3.5 h-3.5 text-amber-400" /> Minimum Rating
+              </label>
               <select
                 value={minRating}
                 onChange={(e) => {
                   setMinRating(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full rounded-xl px-3 py-2 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none text-xs font-semibold"
+                className="w-full rounded-xl px-3 py-2 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none text-xs font-semibold cursor-pointer"
               >
                 <option value="All">All Ratings</option>
-                <option value="8.5">⭐ 8.5+ Top Rated</option>
-                <option value="7.5">⭐ 7.5+ High Rated</option>
-                <option value="6.0">⭐ 6.0+ Good Rated</option>
+                <option value="8.5">⭐ 8.5+ Blockbusters</option>
+                <option value="7.5">⭐ 7.5+ Highly Rated</option>
+                <option value="6.0">⭐ 6.0+ Average Rated</option>
               </select>
             </div>
 
           </div>
         </div>
 
-        {/* RIGHT COLUMN: MOVIES CATALOG GRID */}
+        {/* RIGHT COLUMN: MOVIES CATALOG (GRID / LIST VIEWS) */}
         <div className="flex-1 w-full space-y-4">
           
-          {/* Top Bar: Quick Language Pills + Sort & View Mode */}
-          <div className="movtego-card p-3.5 rounded-3xl border border-[var(--border)] flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm">
-            
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              {['All', 'Telugu', 'English', 'Hindi', 'Tamil', 'French'].map((lang, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setSelectedLanguage(lang);
-                    setCurrentPage(1);
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer ${
-                    selectedLanguage === lang
-                      ? 'bg-[var(--primary)] text-white shadow-sm'
-                      : 'bg-[var(--input-bg)] text-[var(--text-muted)] hover:text-[var(--text-heading)]'
-                  }`}
-                >
-                  {lang}
-                </button>
-              ))}
-            </div>
 
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[var(--text-muted)] font-medium">Sort:</span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="rounded-xl px-3 py-1.5 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none text-xs font-semibold cursor-pointer"
-                >
-                  <option value="release_date">Release Date</option>
-                  <option value="rating">Highest Rating</option>
-                  <option value="title">Title (A-Z)</option>
-                  <option value="duration">Runtime Duration</option>
-                </select>
-              </div>
 
-              <div className="flex items-center gap-1 bg-[var(--input-bg)] p-1 rounded-xl border border-[var(--border)]">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                    viewMode === 'grid' 
-                      ? 'bg-primary-gradient text-white shadow-sm' 
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-heading)]'
-                  }`}
-                  title="Grid View"
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                    viewMode === 'list' 
-                      ? 'bg-primary-gradient text-white shadow-sm' 
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-heading)]'
-                  }`}
-                  title="List View"
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-          {/* MOVIES CATALOG DISPLAY */}
+          {/* MOVIES CATALOG DISPLAY: GRID / LIST VIEWS */}
           {loading ? (
-            <Loading text="Fetching cinema catalog from TMDB API..." />
+            <Loading text="Fetching cinema catalog..." />
           ) : displayedMovies.length > 0 ? (
             <div className={
               viewMode === 'grid'
@@ -584,82 +539,84 @@ export const Movies = () => {
           )}
 
           {/* PAGINATION FOOTER */}
-          <div className="movtego-card p-4 rounded-3xl border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-sm">
-            <div className="flex items-center gap-4 text-[var(--text-muted)] font-medium">
-              <span>
-                Showing <strong>{(currentPage - 1) * itemsPerPage + 1}</strong> - <strong>{Math.min(currentPage * itemsPerPage, filteredMovies.length)}</strong> of <strong>{filteredMovies.length}</strong> movies
-              </span>
+          {totalPages > 1 && (
+            <div className="movtego-card p-4 rounded-3xl border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-sm">
+              <div className="flex items-center gap-4 text-[var(--text-muted)] font-medium">
+                <span>
+                  Showing <strong>{(currentPage - 1) * itemsPerPage + 1}</strong> - <strong>{Math.min(currentPage * itemsPerPage, filteredMovies.length)}</strong> of <strong>{filteredMovies.length}</strong> movies
+                </span>
 
-              <div className="flex items-center gap-1.5 hidden md:flex">
-                <span>Per Page:</span>
-                <select
-                  value={itemsPerPage}
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                  className="px-2 py-1 rounded-lg bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-semibold text-xs focus:outline-none"
+                <div className="flex items-center gap-1.5 hidden md:flex">
+                  <span>Per Page:</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="px-2 py-1 rounded-lg bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-semibold text-xs focus:outline-none cursor-pointer"
+                  >
+                    <option value={8}>8</option>
+                    <option value={12}>12</option>
+                    <option value={16}>16</option>
+                    <option value={24}>24</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  className="p-2 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
+                  title="Previous Page"
                 >
-                  <option value={8}>8</option>
-                  <option value={12}>12</option>
-                  <option value={16}>16</option>
-                  <option value={24}>24</option>
-                </select>
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {Array.from({ length: totalPages }).map((_, idx) => {
+                  const pageNum = idx + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-8 h-8 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                        currentPage === pageNum
+                          ? 'bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30'
+                          : 'bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--border)] hover:bg-[var(--primary-light)]'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  className="p-2 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
+                  title="Next Page"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex items-center gap-1.5">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className="p-2 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
-                title="Previous Page"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              {Array.from({ length: totalPages }).map((_, idx) => {
-                const pageNum = idx + 1;
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`w-8 h-8 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-                      currentPage === pageNum
-                        ? 'bg-primary-gradient text-white shadow-md shadow-[#14B8A0]/30'
-                        : 'bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--border)] hover:bg-[var(--primary-light)]'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className="p-2 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
-                title="Next Page"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          )}
 
         </div>
 
       </div>
 
-      {/* 5. TOAST NOTIFICATION POPUP */}
+      {/* 4. TOAST NOTIFICATION POPUP */}
       {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#0B8F7A] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-xs animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0B8F7A] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-xs animate-bounce border border-emerald-400">
           <Check className="w-4 h-4" />
           <span>{toastMsg}</span>
         </div>
       )}
 
-      {/* 6. MODALS INTEGRATION */}
+      {/* 5. MODALS INTEGRATION */}
       <MovieDetailsModal
         movie={selectedMovieForDetail}
         isOpen={Boolean(selectedMovieForDetail)}
@@ -667,12 +624,13 @@ export const Movies = () => {
       />
 
       <MovieFormModal
-        isOpen={isAddModalOpen}
+        isOpen={isAddModalOpen || Boolean(editingMovie)}
         onClose={() => {
           setIsAddModalOpen(false);
           setEditingMovie(null);
         }}
         initialData={editingMovie}
+        onSuccess={showToast}
       />
 
       <ConfirmationModal

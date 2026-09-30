@@ -16,6 +16,10 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
     }
   };
 
+  const handleImageError = (e) => {
+    e.target.src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80';
+  };
+
   const favorite = isFavorite(movie.id);
 
   const formatDate = (dateStr) => {
@@ -51,7 +55,7 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
   // ----------------------------------------------------
   if (viewMode === 'list') {
     return (
-      <div className="movtego-card p-4 rounded-2xl border border-[var(--border)] transition-all duration-300 hover:border-[#14B8A0]/70 hover:shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 group text-left relative">
+      <div className="movtego-card p-4 rounded-2xl border border-[var(--border)] transition-all duration-300 hover:border-[#14B8A0]/70 hover:shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 group text-left relative shadow-sm">
         
         {/* Left Poster + Title Details */}
         <div className="flex items-center gap-4 flex-1 min-w-0 w-full sm:w-auto">
@@ -62,6 +66,7 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
             <img
               src={movie.poster}
               alt={movie.title}
+              onError={handleImageError}
               className="w-full h-full object-cover group-hover/poster:scale-110 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/poster:opacity-100 flex items-center justify-center transition-opacity">
@@ -91,7 +96,7 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
 
             <div className="flex items-center gap-3 text-xs flex-wrap font-semibold text-[var(--text-heading)]">
               <span className="flex items-center gap-1 text-amber-500 font-extrabold">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> {movie.rating} / 10
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> {movie.rating}
               </span>
               <span className="text-[var(--text-muted)]">•</span>
               <span className="text-[var(--text-muted)] font-medium">
@@ -155,21 +160,22 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
   }
 
   // ----------------------------------------------------
-  // GRID VIEW LAYOUT (Authentic BookMyShow Vertical 2:3 Card)
+  // GRID VIEW LAYOUT (Original 2:3 Vertical Card Size)
   // ----------------------------------------------------
   return (
     <div 
       onClick={() => onViewDetails && onViewDetails(movie)}
-      className="movtego-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#14B8A0]/80 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between text-left group relative border border-[var(--border)] cursor-pointer"
+      className="movtego-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#14B8A0]/80 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between text-left group relative border border-[var(--border)] cursor-pointer h-full shadow-sm"
     >
       
       {/* 1. BOOKMYSHOW 2:3 POSTER CONTAINER WITH OVERLAY METRICS */}
-      <div className="relative aspect-[2/3] w-full bg-slate-950 overflow-hidden group/poster">
+      <div className="relative aspect-[2/3] w-full bg-slate-950 overflow-hidden group/poster shrink-0">
         
         {/* Main Vertical Poster Image */}
         <img
           src={movie.poster}
           alt={movie.title}
+          onError={handleImageError}
           className="w-full h-full object-cover group-hover/poster:scale-105 transition-transform duration-500"
         />
 
@@ -208,8 +214,7 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
           {/* Rating Pill */}
           <div className="flex items-center gap-1.5 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-xl border border-amber-400/40 text-amber-400 font-black text-xs shadow-md">
             <Star className="w-3.5 h-3.5 fill-amber-400" />
-            <span>{movie.rating} / 10</span>
-            <span className="text-[10px] text-slate-300 font-normal hidden sm:inline">({movie.voteCount || '14.2K'} Votes)</span>
+            <span>{movie.rating}</span>
           </div>
 
           {/* Formats / Language Tag */}
@@ -249,7 +254,7 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
                       setShowDropdown(false);
                       onViewDetails && onViewDetails(movie);
                     }}
-                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-[var(--primary-light)] text-[var(--text-heading)] cursor-pointer"
+                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-[var(--primary-light)] text-[var(--text-heading)] cursor-pointer text-left"
                   >
                     <Eye className="w-3.5 h-3.5 text-teal-500" /> View Details
                   </button>
@@ -258,13 +263,13 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
                       setShowDropdown(false);
                       onEdit && onEdit(movie);
                     }}
-                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-[var(--primary-light)] text-[var(--text-heading)] cursor-pointer"
+                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-[var(--primary-light)] text-[var(--text-heading)] cursor-pointer text-left"
                   >
                     <Edit className="w-3.5 h-3.5 text-amber-500" /> Edit Movie
                   </button>
                   <button
                     onClick={handleDeleteTrigger}
-                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-red-500/10 text-red-500 cursor-pointer"
+                    className="w-full px-3 py-2 flex items-center gap-2 hover:bg-red-500/10 text-red-500 cursor-pointer text-left"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-red-500" /> Delete Movie
                   </button>

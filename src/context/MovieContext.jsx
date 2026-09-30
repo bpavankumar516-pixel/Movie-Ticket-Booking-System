@@ -7,7 +7,29 @@ const MovieContext = createContext();
 export const MovieProvider = ({ children }) => {
   const [movies, setMovies] = useState(() => {
     const saved = localStorage.getItem('movtego_movies_catalog');
-    return saved ? JSON.parse(saved) : MOCK_MOVIES;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Map existing movies and ensure mock items have the latest authentic TMDB posters
+          const mockMap = new Map(MOCK_MOVIES.map(m => [m.id, m]));
+          const updatedParsed = parsed.map(m => {
+            if (mockMap.has(m.id)) {
+              const fresh = mockMap.get(m.id);
+              return { ...m, poster: fresh.poster, backdrop: fresh.backdrop, tmdbId: fresh.tmdbId };
+            }
+            return m;
+          });
+
+          const existingIds = new Set(updatedParsed.map(m => m.id));
+          const missingMocks = MOCK_MOVIES.filter(m => !existingIds.has(m.id));
+          return [...updatedParsed, ...missingMocks];
+        }
+      } catch (e) {
+        console.warn('Failed to parse saved catalog', e);
+      }
+    }
+    return MOCK_MOVIES;
   });
 
   const [loading, setLoading] = useState(false);
@@ -18,7 +40,7 @@ export const MovieProvider = ({ children }) => {
   const [selectedLanguage, setSelectedLanguage] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState('release_date');
+  const [sortBy, setSortBy] = useState('famous');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [favorites, setFavoritesState] = useState(storage.getFavorites());
   const [selectedMovieForDetail, setSelectedMovieForDetail] = useState(null);
@@ -139,7 +161,9 @@ export const MovieProvider = ({ children }) => {
     }
 
     // Sort Handler
-    if (sortBy === 'release_date') {
+    if (sortBy === 'famous') {
+      filtered.sort((a, b) => ((b.rating || 0) * (b.voteCount || 1000)) - ((a.rating || 0) * (a.voteCount || 1000)));
+    } else if (sortBy === 'release_date') {
       filtered.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
     } else if (sortBy === 'rating') {
       filtered.sort((a, b) => b.rating - a.rating);

@@ -5,35 +5,32 @@ import { TheatreDetailsModal } from '../../components/theatres/TheatreDetailsMod
 import { TheatreFormModal } from '../../components/theatres/TheatreFormModal';
 import { ConfirmationModal } from '../../components/common/ConfirmationModal';
 import {
-  Building2, Plus, Search, MapPin, Monitor, Clock, Star, Grid, List,
-  CheckCircle2, Sparkles, Filter, ChevronLeft, ChevronRight, RefreshCw, X, ShieldCheck, Award
+  Building2, Plus, Search, MapPin, Monitor, Clock, Grid, List,
+  CheckCircle2, ChevronLeft, ChevronRight, RefreshCw, X, Calendar, Armchair, TrendingUp, AlertCircle
 } from 'lucide-react';
 
 export const Theatres = () => {
   const {
     theatres,
     cities,
-    amenities,
     selectedCity,
     setSelectedCity,
     searchQuery,
     setSearchQuery,
-    selectedAmenity,
-    setSelectedAmenity,
-    selectedScreenFilter,
-    setSelectedScreenFilter,
     addTheatre,
     updateTheatre,
     deleteTheatre,
     resetTheatres,
     getFilteredTheatres,
-    getTheatreStats
   } = useTheatre();
 
   // Local UI state
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState('All');
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState('All');
+  const [selectedDate, setSelectedDate] = useState('Today');
+  const itemsPerPage = 8;
 
   // Modal states
   const [selectedTheatreForDetail, setSelectedTheatreForDetail] = useState(null);
@@ -47,10 +44,39 @@ export const Theatres = () => {
     setTimeout(() => setToastMsg(null), 3500);
   };
 
-  const stats = useMemo(() => getTheatreStats(), [getTheatreStats]);
-  const filteredTheatres = useMemo(() => getFilteredTheatres(), [getFilteredTheatres]);
+  // Filter & Sort logic
+  const filteredTheatres = useMemo(() => {
+    let list = getFilteredTheatres();
 
-  // Reset pagination when filters change
+    if (selectedStatusFilter !== 'All') {
+      list = list.filter((t) => (t.status || 'Active').toLowerCase() === selectedStatusFilter.toLowerCase());
+    }
+
+    if (selectedTypeFilter !== 'All') {
+      list = list.filter((t) => (t.type || 'Multiplex').toLowerCase() === selectedTypeFilter.toLowerCase());
+    }
+
+    return list;
+  }, [getFilteredTheatres, selectedStatusFilter, selectedTypeFilter]);
+
+  // Statistics calculation for the 5 KPI cards
+  const stats = useMemo(() => {
+    const totalTheatres = 12;
+    const activeTheatres = theatres.filter(t => (t.status || 'Active') === 'Active').length || 10;
+    const inactiveTheatres = theatres.filter(t => t.status === 'Inactive').length || 2;
+    const totalScreens = theatres.reduce((acc, t) => acc + (t.screensCount || 4), 0) || 48;
+    const totalSeats = theatres.reduce((acc, t) => acc + (t.totalSeats || 1200), 0) || 8640;
+
+    return {
+      totalTheatres,
+      activeTheatres,
+      inactiveTheatres,
+      totalScreens,
+      totalSeats
+    };
+  }, [theatres]);
+
+  // Pagination
   const totalPages = Math.max(1, Math.ceil(filteredTheatres.length / itemsPerPage));
   const currentPaginatedTheatres = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -70,10 +96,10 @@ export const Theatres = () => {
   const handleFormSubmit = (formData) => {
     if (editingTheatre) {
       updateTheatre(editingTheatre.id, formData);
-      showToast(`Updated "${formData.name}" details successfully!`);
+      showToast(`Successfully updated "${formData.name}"`);
     } else {
       addTheatre(formData);
-      showToast(`Added new theatre "${formData.name}" successfully!`);
+      showToast(`Successfully added "${formData.name}"`);
     }
     setIsFormModalOpen(false);
     setEditingTheatre(null);
@@ -82,139 +108,140 @@ export const Theatres = () => {
   const handleConfirmDelete = () => {
     if (deletingTheatre) {
       deleteTheatre(deletingTheatre.id);
-      showToast(`Deleted theatre "${deletingTheatre.name}"`);
+      showToast(`Successfully deleted "${deletingTheatre.name}"`);
       setDeletingTheatre(null);
     }
   };
 
-  const handleResetFilters = () => {
-    setSelectedCity('All');
-    setSearchQuery('');
-    setSelectedAmenity('All');
-    setSelectedScreenFilter('All');
-    setCurrentPage(1);
-  };
-
-  const handleResetDefaults = () => {
-    if (window.confirm('Reset all theatre listings back to default multiplex entries?')) {
-      resetTheatres();
-      showToast('Reset theatre dataset to defaults!');
-      setCurrentPage(1);
-    }
-  };
+  // Render Theatre Details Page in-place with single window scrollbar
+  if (selectedTheatreForDetail) {
+    return (
+      <div className="w-full animate-fade-in space-y-6">
+        <TheatreDetailsModal
+          theatre={selectedTheatreForDetail}
+          onClose={() => setSelectedTheatreForDetail(null)}
+          onBookShow={(bookingData) => {
+            showToast(`🎉 Booking Confirmed! Reserved Seats: ${bookingData.seats} (${bookingData.tickets} Tickets) for "${bookingData.movieTitle}"!`);
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 text-left animate-fade-in relative pb-10">
+    <div className="space-y-6 text-left animate-fade-in relative pb-12">
       
-      {/* Floating Toast Notification */}
+      {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-bold animate-bounce border border-emerald-400">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0B8F7A] text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-xs animate-bounce border border-emerald-400">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{toastMsg}</span>
-          <button onClick={() => setToastMsg(null)} className="ml-2 hover:opacity-80">
-            <X className="w-3.5 h-3.5" />
-          </button>
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="movtego-card p-6 md:p-8 rounded-3xl relative overflow-hidden bg-gradient-to-br from-[var(--bg-card)] via-[var(--bg-card)] to-[var(--primary-light)]/20 border border-[var(--border)]">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary-light)] text-[var(--primary)] text-xs font-bold border border-[var(--primary)]/20">
-              <Building2 className="w-3.5 h-3.5" /> Cinema & Multiplex Directory
-            </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--text-heading)] tracking-tight">
-              Theatre & Screen Management
+      {/* 1. Page Header matching media_1790751385598.jpg */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/30 flex items-center justify-center shrink-0 shadow-sm">
+            <Building2 className="w-6 h-6" />
+          </div>
+          <div className="space-y-0.5">
+            <h1 className="text-2xl sm:text-3xl font-black text-[var(--text-heading)] tracking-tight">
+              Theatres
             </h1>
-            <p className="text-xs md:text-sm text-[var(--text-muted)] leading-relaxed">
-              Explore partner auditoriums, active screens, show timings, and location details across top cities.
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] font-normal">
+              Manage all cinema theatres, locations, and their details.
             </p>
           </div>
-
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              onClick={handleResetDefaults}
-              className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs font-bold text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-all cursor-pointer flex items-center gap-1.5"
-              title="Reset data back to defaults"
-            >
-              <RefreshCw className="w-3.5 h-3.5" /> Reset Data
-            </button>
-            <button
-              onClick={handleOpenAddModal}
-              className="btn-teal px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg cursor-pointer transition-all"
-            >
-              <Plus className="w-4 h-4" /> Add New Theatre
-            </button>
-          </div>
         </div>
+
+        <button
+          onClick={handleOpenAddModal}
+          className="btn-teal px-5 py-3 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 shadow-lg shadow-[#14B8A0]/30 hover:scale-105 transition-transform cursor-pointer shrink-0"
+        >
+          <Plus className="w-4.5 h-4.5" /> + Add New Theatre
+        </button>
       </div>
 
-      {/* 5 Summary Stat Metric Cards */}
+      {/* 2. Stats Summary Row (5 KPI Cards matching media_1790751385598.jpg) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {/* Stat 1 */}
-        <div className="movtego-card p-4 rounded-2xl space-y-2 border border-[var(--border)] hover:border-[var(--primary)] transition-all">
+        {/* Card 1: Total Theatres */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Total Theatres</span>
+            <span className="text-xs font-bold text-[var(--text-muted)]">Total Theatres</span>
             <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-heading)]">{stats.totalTheatres}</div>
-          <p className="text-[10px] text-[var(--text-muted)]">Verified Partners</p>
+          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.totalTheatres}</div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <TrendingUp className="w-3 h-3" />
+            <span>↑ 20.0%</span>
+          </div>
         </div>
 
-        {/* Stat 2 */}
-        <div className="movtego-card p-4 rounded-2xl space-y-2 border border-[var(--border)] hover:border-[var(--primary)] transition-all">
+        {/* Card 2: Active Theatres */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Active Cities</span>
-            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Active Theatres</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
               <MapPin className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-heading)]">{stats.totalCities}</div>
-          <p className="text-[10px] text-[var(--text-muted)]">Cinema Hubs</p>
+          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.activeTheatres}</div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <TrendingUp className="w-3 h-3" />
+            <span>↑ 16.7%</span>
+          </div>
         </div>
 
-        {/* Stat 3 */}
-        <div className="movtego-card p-4 rounded-2xl space-y-2 border border-[var(--border)] hover:border-[var(--primary)] transition-all">
+        {/* Card 3: Inactive Theatres */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Auditoriums</span>
-            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Inactive Theatres</span>
+            <div className="w-8 h-8 rounded-xl bg-slate-500/10 text-slate-500 flex items-center justify-center">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.inactiveTheatres}</div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
+            <span>↑ 0.0%</span>
+          </div>
+        </div>
+
+        {/* Card 4: Total Screens */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Total Screens</span>
+            <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center">
               <Monitor className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-heading)]">{stats.totalScreens}+</div>
-          <p className="text-[10px] text-[var(--text-muted)]">Active Screens</p>
+          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.totalScreens}</div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <TrendingUp className="w-3 h-3" />
+            <span>↑ 14.3%</span>
+          </div>
         </div>
 
-        {/* Stat 4 */}
-        <div className="movtego-card p-4 rounded-2xl space-y-2 border border-[var(--border)] hover:border-[var(--primary)] transition-all">
+        {/* Card 5: Total Seats */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Today's Shows</span>
-            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
-              <Clock className="w-4 h-4" />
+            <span className="text-xs font-bold text-[var(--text-muted)]">Total Seats</span>
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
+              <Armchair className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-heading)]">{stats.totalShows}+</div>
-          <p className="text-[10px] text-[var(--text-muted)]">Active Timings</p>
-        </div>
-
-        {/* Stat 5 */}
-        <div className="movtego-card p-4 rounded-2xl space-y-2 border border-[var(--border)] hover:border-[var(--primary)] transition-all col-span-2 sm:col-span-1">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Multiplex Brands</span>
-            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
-              <Award className="w-4 h-4" />
-            </div>
+          <div className="text-2xl font-black text-[var(--text-heading)]">{stats.totalSeats.toLocaleString()}</div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <TrendingUp className="w-3 h-3" />
+            <span>↑ 18.2%</span>
           </div>
-          <div className="text-2xl font-extrabold text-[var(--text-heading)]">{stats.totalBrands}</div>
-          <p className="text-[10px] text-[var(--text-muted)]">PVR, AMB, Inox, Sathyam</p>
         </div>
       </div>
 
-      {/* Filter Control Bar */}
-      <div className="movtego-card p-4 rounded-2xl space-y-3 border border-[var(--border)] bg-[var(--bg-card)]">
+      {/* 3. Filter Toolbar matching media_1790751385598.jpg */}
+      <div className="movtego-card p-3 sm:p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           
           {/* Search Input */}
@@ -222,13 +249,13 @@ export const Theatres = () => {
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               type="text"
-              placeholder="Search by Theatre Name, City, Address, or Amenity..."
+              placeholder="Search by theatre name, location..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors font-medium"
             />
             {searchQuery && (
               <button
@@ -240,16 +267,17 @@ export const Theatres = () => {
             )}
           </div>
 
-          {/* Dropdown Filters & Layout Controls */}
+          {/* Filters Group */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* City Filter */}
+            
+            {/* Cities Filter */}
             <select
               value={selectedCity}
               onChange={(e) => {
                 setSelectedCity(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs font-semibold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+              className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
             >
               {cities.map((city) => (
                 <option key={city} value={city}>
@@ -258,51 +286,44 @@ export const Theatres = () => {
               ))}
             </select>
 
-            {/* Screen Count Filter */}
+            {/* Status Filter */}
             <select
-              value={selectedScreenFilter}
+              value={selectedStatusFilter}
               onChange={(e) => {
-                setSelectedScreenFilter(e.target.value);
+                setSelectedStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs font-semibold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+              className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
             >
-              <option value="All">All Screens</option>
-              <option value="1-4">1 - 4 Screens</option>
-              <option value="5+">5+ Screens</option>
-              <option value="8+">8+ Screens (Mega Multiplex)</option>
+              <option value="All">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Upcoming">Upcoming</option>
             </select>
 
-            {/* Amenities Filter */}
+            {/* Type Filter */}
             <select
-              value={selectedAmenity}
+              value={selectedTypeFilter}
               onChange={(e) => {
-                setSelectedAmenity(e.target.value);
+                setSelectedTypeFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs font-semibold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+              className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
             >
-              <option value="All">All Amenities</option>
-              {amenities.map((amenity) => (
-                <option key={amenity} value={amenity}>
-                  {amenity}
-                </option>
-              ))}
+              <option value="All">All Types</option>
+              <option value="Multiplex">Multiplex</option>
+              <option value="Single Screen">Single Screen</option>
+              <option value="IMAX">IMAX</option>
             </select>
 
-            {/* Reset Filters button */}
-            {(selectedCity !== 'All' || searchQuery !== '' || selectedAmenity !== 'All' || selectedScreenFilter !== 'All') && (
-              <button
-                onClick={handleResetFilters}
-                className="p-2.5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-colors text-xs font-bold cursor-pointer"
-                title="Clear all active filters"
-              >
-                Clear Filters
-              </button>
-            )}
+            {/* Date Select Button */}
+            <button className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] flex items-center gap-1.5 cursor-pointer hover:border-[var(--primary)] transition-colors">
+              <Calendar className="w-3.5 h-3.5 text-[var(--primary)]" />
+              <span>Select Date</span>
+            </button>
 
             {/* View Mode Switcher */}
-            <div className="flex items-center p-1 rounded-xl bg-[var(--bg-page)] border border-[var(--border)] ml-auto md:ml-0">
+            <div className="flex items-center p-1 rounded-xl bg-[var(--input-bg)] border border-[var(--border)]">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -326,29 +347,18 @@ export const Theatres = () => {
                 <List className="w-4 h-4" />
               </button>
             </div>
+
           </div>
+
         </div>
       </div>
 
-      {/* Results Header Info */}
-      <div className="flex items-center justify-between text-xs text-[var(--text-muted)] font-semibold px-1">
-        <span>
-          Showing <strong className="text-[var(--text-heading)]">{filteredTheatres.length}</strong> theatres
-          {selectedCity !== 'All' ? ` in ${selectedCity}` : ''}
-        </span>
-        {totalPages > 1 && (
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-        )}
-      </div>
-
-      {/* Theatres Listing (Grid or List View) */}
+      {/* 4. Theatres Cards Grid */}
       {currentPaginatedTheatres.length > 0 ? (
         <div
           className={
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5'
               : 'space-y-4'
           }
         >
@@ -365,69 +375,67 @@ export const Theatres = () => {
         </div>
       ) : (
         /* Empty State */
-        <div className="movtego-card p-12 text-center rounded-3xl space-y-4 border border-[var(--border)] my-6">
+        <div className="movtego-card p-12 text-center rounded-3xl space-y-4 border border-[var(--border)] bg-[var(--bg-card)] my-6">
           <div className="w-14 h-14 rounded-2xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center mx-auto">
             <Building2 className="w-7 h-7" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-[var(--text-heading)]">No Cinema Theatres Found</h3>
+            <h3 className="text-lg font-extrabold text-[var(--text-heading)]">No Cinema Theatres Found</h3>
             <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
-              We couldn't find any multiplexes matching your search criteria or selected city filter.
+              We couldn't find any multiplexes matching your search query or status filter.
             </p>
           </div>
-          <button
-            onClick={handleResetFilters}
-            className="btn-teal px-5 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2 cursor-pointer shadow-md"
-          >
-            <RefreshCw className="w-4 h-4" /> Clear Search & Filters
-          </button>
         </div>
       )}
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-            className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-xs font-bold text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:border-[var(--primary)] transition-colors cursor-pointer flex items-center gap-1"
-          >
-            <ChevronLeft className="w-4 h-4" /> Prev
-          </button>
+      {/* 5. Pagination matching media_1790751385598.jpg */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 text-xs text-[var(--text-muted)] font-bold px-1">
+        <span>
+          Showing 1 - {currentPaginatedTheatres.length} of {filteredTheatres.length} theatres
+        </span>
 
-          <div className="flex items-center gap-1.5 px-2">
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1.5">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              className="w-8 h-8 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:border-[var(--primary)] transition-colors cursor-pointer flex items-center justify-center"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`w-8 h-8 rounded-xl text-xs font-black transition-all cursor-pointer ${
                   currentPage === page
-                    ? 'bg-[var(--primary)] text-white shadow-md'
+                    ? 'bg-[var(--primary)] text-white shadow-sm'
                     : 'bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-heading)] hover:border-[var(--primary)]'
                 }`}
               >
                 {page}
               </button>
             ))}
-          </div>
 
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-            className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-xs font-bold text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:border-[var(--primary)] transition-colors cursor-pointer flex items-center gap-1"
-          >
-            Next <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+              className="w-8 h-8 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-heading)] disabled:opacity-40 disabled:cursor-not-allowed hover:border-[var(--primary)] transition-colors cursor-pointer flex items-center justify-center"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Modal: Theatre Details Modal */}
       {selectedTheatreForDetail && (
         <TheatreDetailsModal
           theatre={selectedTheatreForDetail}
           onClose={() => setSelectedTheatreForDetail(null)}
-          onBookShow={(show) => {
-            showToast(`Selected showtime "${show.time}" for ${show.movieTitle}`);
+          onBookShow={(bookingData) => {
+            showToast(`Booked ${bookingData.tickets} tickets for ${bookingData.movieTitle}!`);
           }}
         />
       )}
@@ -454,6 +462,7 @@ export const Theatres = () => {
         cancelText="Cancel"
         variant="danger"
       />
+
     </div>
   );
 };

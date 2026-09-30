@@ -3,9 +3,9 @@ import { Modal } from '../common/Modal';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { useMovies } from '../../context/MovieContext';
-import { Film, Calendar, Clock, Star, Globe, Tag, Tv, Ticket, Image, Video } from 'lucide-react';
+import { Film, Calendar, Clock, Star, Globe, Tag, Ticket, Image, Video, CheckCircle2, Edit3, PlusCircle } from 'lucide-react';
 
-export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
+export const MovieFormModal = ({ isOpen, onClose, initialData = null, onSuccess }) => {
   const { addMovie, updateMovie } = useMovies();
 
   const [formData, setFormData] = useState({
@@ -13,11 +13,11 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
     originalTitle: '',
     poster: '',
     backdrop: '',
-    genres: 'Sci-Fi',
+    genres: 'Sci-Fi, Action',
     language: 'English',
     runtime: '120',
     rating: '8.0',
-    releaseDate: '2025-01-01',
+    releaseDate: new Date().toISOString().split('T')[0],
     status: 'Now Showing',
     activeShows: '10',
     overview: '',
@@ -35,7 +35,7 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
         language: initialData.language || 'English',
         runtime: String(initialData.runtime || 120),
         rating: String(initialData.rating || 8.0),
-        releaseDate: initialData.releaseDate || '2025-01-01',
+        releaseDate: initialData.releaseDate || new Date().toISOString().split('T')[0],
         status: initialData.status || 'Now Showing',
         activeShows: String(initialData.activeShows || 10),
         overview: initialData.overview || '',
@@ -47,11 +47,11 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
         originalTitle: '',
         poster: '',
         backdrop: '',
-        genres: 'Sci-Fi',
+        genres: 'Sci-Fi, Action',
         language: 'English',
         runtime: '120',
         rating: '8.0',
-        releaseDate: '2025-01-01',
+        releaseDate: new Date().toISOString().split('T')[0],
         status: 'Now Showing',
         activeShows: '10',
         overview: '',
@@ -64,7 +64,7 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
     e.preventDefault();
     const moviePayload = {
       ...formData,
-      genres: formData.genres.split(',').map((g) => g.trim()),
+      genres: formData.genres.split(',').map((g) => g.trim()).filter(Boolean),
       runtime: Number(formData.runtime),
       rating: Number(formData.rating),
       activeShows: Number(formData.activeShows)
@@ -72,23 +72,34 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
 
     if (initialData && initialData.id) {
       updateMovie(initialData.id, moviePayload);
+      if (onSuccess) onSuccess(`Successfully updated "${formData.title}"`);
     } else {
       addMovie(moviePayload);
+      if (onSuccess) onSuccess(`Successfully added "${formData.title}"`);
     }
 
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={initialData ? 'Edit Movie Details' : 'Add New Movie'}>
-      <form onSubmit={handleSubmit} className="space-y-4 text-left p-2">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      title={initialData ? 'Edit Movie Details' : 'Add New Movie'}
+      subtitle={initialData ? 'Modify details & click Save Changes' : 'Fill in the information below to add a movie'}
+      icon={initialData ? Edit3 : PlusCircle}
+      maxWidth="max-w-2xl"
+    >
+      <form onSubmit={handleSubmit} className="space-y-4 text-left py-1">
+        
+        {/* Row 1: Title & Subtitle */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
           <Input
             label="Movie Title"
             icon={Film}
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Avatar: The Way of Water"
+            placeholder="e.g. Inception / Kalki 2898 AD"
             required
           />
 
@@ -97,20 +108,41 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
             icon={Tag}
             value={formData.originalTitle}
             onChange={(e) => setFormData({ ...formData, originalTitle: e.target.value })}
-            placeholder="Avatar 2"
+            placeholder="e.g. The Mind is the Scene of the Crime"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Row 2: Language & Status */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
           <Input
             label="Language"
             icon={Globe}
             value={formData.language}
             onChange={(e) => setFormData({ ...formData, language: e.target.value })}
-            placeholder="English / Telugu"
+            placeholder="English, Telugu, Hindi, etc."
             required
           />
 
+          <div className="w-full space-y-1.5 text-left">
+            <label className="block text-xs font-bold text-[var(--text-heading)] tracking-wide">
+              Release Status <span className="text-[var(--primary)]">*</span>
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="w-full rounded-2xl text-xs py-3 px-3.5 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] font-bold cursor-pointer transition-colors"
+            >
+              <option value="Now Showing">Now Showing</option>
+              <option value="Published">Published</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Draft">Draft</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Row 3: Genres & Release Date */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
           <Input
             label="Genres (comma separated)"
             icon={Tag}
@@ -120,24 +152,6 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
             required
           />
 
-          <div>
-            <label className="block text-xs font-bold text-[var(--text-heading)] mb-1">Status</label>
-            <select
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              className="w-full rounded-2xl text-xs py-3 px-3 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)]"
-            >
-              <option value="Now Showing">Now Showing</option>
-              <option value="Published">Published</option>
-              <option value="Upcoming">Upcoming</option>
-              <option value="Draft">Draft</option>
-              <option value="Unpublished">Unpublished</option>
-              <option value="Archived">Archived</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <Input
             label="Release Date"
             type="date"
@@ -146,7 +160,10 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
             onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })}
             required
           />
+        </div>
 
+        {/* Row 4: Metrics (Rating, Runtime, Active Shows) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-start">
           <Input
             label="Rating (1-10)"
             type="number"
@@ -179,17 +196,18 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Row 5: Media URLs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
           <Input
-            label="Poster URL"
+            label="Poster Image URL"
             icon={Image}
             value={formData.poster}
             onChange={(e) => setFormData({ ...formData, poster: e.target.value })}
-            placeholder="https://image.tmdb.org/..."
+            placeholder="https://image.tmdb.org/t/p/w780/..."
           />
 
           <Input
-            label="Trailer YouTube Embed URL"
+            label="YouTube Trailer Embed URL"
             icon={Video}
             value={formData.trailerUrl}
             onChange={(e) => setFormData({ ...formData, trailerUrl: e.target.value })}
@@ -197,25 +215,35 @@ export const MovieFormModal = ({ isOpen, onClose, initialData = null }) => {
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-bold text-[var(--text-heading)] mb-1">Movie Synopsis / Overview</label>
+        {/* Row 6: Overview */}
+        <div className="w-full space-y-1.5 text-left">
+          <label className="text-xs font-bold text-[var(--text-heading)] block tracking-wide">
+            Movie Synopsis / Overview
+          </label>
           <textarea
             rows="3"
             value={formData.overview}
             onChange={(e) => setFormData({ ...formData, overview: e.target.value })}
-            placeholder="Enter full movie storyline and description..."
-            className="w-full rounded-2xl text-xs p-3 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] resize-none"
+            placeholder="Enter full storyline, cast highlights, and plot description..."
+            className="w-full rounded-2xl text-xs p-3.5 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none font-normal leading-relaxed"
           />
         </div>
 
-        <div className="flex justify-end gap-3 pt-3 border-t border-[var(--border)]">
-          <Button variant="ghost" onClick={onClose}>
+        {/* Row 7: Footer Buttons */}
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
+          <Button variant="ghost" onClick={onClose} type="button" className="font-semibold text-xs">
             Cancel
           </Button>
-          <Button type="submit" variant="teal">
+          <Button 
+            type="submit" 
+            variant="teal" 
+            className="flex items-center gap-1.5 font-black text-xs px-6 py-2.5 shadow-md shadow-[#14B8A0]/30 hover:scale-105 transition-transform cursor-pointer"
+          >
+            <CheckCircle2 className="w-4 h-4" />
             {initialData ? 'Save Changes' : 'Create Movie'}
           </Button>
         </div>
+
       </form>
     </Modal>
   );

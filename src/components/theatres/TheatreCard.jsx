@@ -1,93 +1,104 @@
-import React from 'react';
-import { Building2, MapPin, Star, Monitor, Phone, ExternalLink, Edit3, Trash2, Clock, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Building2, MapPin, Star, Monitor, Armchair, Eye, Edit3, Trash2, Heart, MoreVertical, CheckCircle2 } from 'lucide-react';
 
 export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit, onDelete }) => {
-  const { id, name, city, address, rating, reviewsCount, screensCount, amenities, image, contact, shows } = theatre;
+  const { id, name, city, address, rating, reviewsCount, screensCount, totalSeats, status = 'Active', type = 'Multiplex', brandLogo, image } = theatre;
 
+  const [isLiked, setIsLiked] = useState(false);
+
+  const getStatusBadgeStyle = (st) => {
+    switch (st) {
+      case 'Active':
+        return 'bg-emerald-500 text-white font-black';
+      case 'Inactive':
+        return 'bg-rose-500 text-white font-black';
+      case 'Upcoming':
+        return 'bg-amber-500 text-white font-black';
+      default:
+        return 'bg-[#14B8A0] text-white font-black';
+    }
+  };
+
+  const getTypeBadgeStyle = (tp) => {
+    if (tp === 'Single Screen') {
+      return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+    }
+    return 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20';
+  };
+
+  // --------------------------------------------------
+  // LIST VIEW LAYOUT
+  // --------------------------------------------------
   if (viewMode === 'list') {
     return (
-      <div className="movtego-card p-5 hover:border-[var(--primary)] transition-all duration-300 flex flex-col md:flex-row gap-5 items-start md:items-center justify-between text-left group">
-        {/* Left Side: Thumbnail & Main Info */}
-        <div className="flex gap-4 items-start w-full md:w-1/2">
-          <img
-            src={image || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80'}
-            alt={name}
-            className="w-24 h-24 rounded-xl object-cover shrink-0 border border-[var(--border)] group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="space-y-1.5 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-[var(--primary-light)] text-[var(--primary)] uppercase tracking-wider">
-                {city}
-              </span>
-              <span className="flex items-center gap-1 text-xs font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md">
-                <Star className="w-3.5 h-3.5 fill-amber-500" />
-                {rating || 4.8}
-                <span className="text-[10px] text-[var(--text-muted)] font-normal">({reviewsCount || 100})</span>
+      <div className="movtego-card p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-[var(--primary)] transition-all duration-300 flex flex-col sm:flex-row items-center justify-between gap-4 group text-left shadow-sm">
+        <div className="flex items-center gap-4 flex-1 min-w-0 w-full sm:w-auto">
+          <div 
+            onClick={() => onViewDetails && onViewDetails(theatre)}
+            className="w-24 aspect-[4/3] shrink-0 rounded-xl overflow-hidden border border-[var(--border)] bg-slate-900 cursor-pointer relative group/img"
+          >
+            <img
+              src={image || 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80'}
+              alt={name}
+              className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
+            />
+            <span className={`absolute top-1.5 left-1.5 px-2 py-0.5 text-[9px] font-black uppercase rounded-full ${getStatusBadgeStyle(status)}`}>
+              {status}
+            </span>
+          </div>
+
+          <div className="space-y-1 flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 
+                onClick={() => onViewDetails && onViewDetails(theatre)}
+                className="font-extrabold text-base text-[var(--text-heading)] hover:text-[var(--primary)] transition-colors line-clamp-1 cursor-pointer tracking-tight"
+              >
+                {name}
+              </h3>
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${getTypeBadgeStyle(type)}`}>
+                {type}
               </span>
             </div>
 
-            <h3 className="text-base font-bold text-[var(--text-heading)] truncate group-hover:text-[var(--primary)] transition-colors">
-              {name}
-            </h3>
-
-            <p className="text-xs text-[var(--text-muted)] flex items-center gap-1 line-clamp-1">
-              <MapPin className="w-3.5 h-3.5 shrink-0 text-[var(--primary)]" />
-              {address}
+            <p className="text-xs text-[var(--text-muted)] flex items-center gap-1 line-clamp-1 font-medium">
+              <MapPin className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
+              {address || `${city}, Telangana`}
             </p>
 
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[11px] font-semibold text-[var(--text-heading)] bg-[var(--bg-page)] border border-[var(--border)] px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Monitor className="w-3 h-3 text-[var(--primary)]" />
+            <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] pt-1 font-semibold">
+              <span className="flex items-center gap-1">
+                <Monitor className="w-3.5 h-3.5 text-[var(--primary)]" />
                 {screensCount || 4} Screens
               </span>
-              {amenities && amenities.slice(0, 3).map((amenity, idx) => (
-                <span key={idx} className="text-[10px] text-[var(--text-muted)] bg-[var(--bg-page)] border border-[var(--border)] px-2 py-0.5 rounded-md">
-                  {amenity}
-                </span>
-              ))}
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Armchair className="w-3.5 h-3.5 text-[var(--primary)]" />
+                {(totalSeats || 1200).toLocaleString()} Seats
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Middle: Show Timings Preview */}
-        <div className="w-full md:w-1/3 space-y-1.5 border-t md:border-t-0 md:border-l border-[var(--border)] pt-3 md:pt-0 md:pl-5">
-          <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1">
-            <Clock className="w-3 h-3 text-[var(--primary)]" /> Today's Showtimes
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {shows && shows.length > 0 ? (
-              shows.slice(0, 4).map((show, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/20"
-                >
-                  {show.time}
-                </span>
-              ))
-            ) : (
-              <span className="text-xs text-[var(--text-muted)]">No active shows scheduled</span>
-            )}
-          </div>
-        </div>
-
-        {/* Right Side: Action Buttons */}
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border)]">
+        <div className="flex items-center gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[var(--border)] w-full sm:w-auto justify-end">
           <button
-            onClick={() => onViewDetails(theatre)}
-            className="btn-teal px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-1.5 shadow-sm"
+            onClick={() => onViewDetails && onViewDetails(theatre)}
+            className="p-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-colors cursor-pointer"
+            title="View Details"
           >
-            <Sparkles className="w-3.5 h-3.5" /> View Details & Timings
+            <Eye className="w-4 h-4" />
           </button>
+
           <button
-            onClick={() => onEdit(theatre)}
-            className="p-2 rounded-xl border border-[var(--border)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] transition-colors cursor-pointer text-[var(--text-muted)]"
+            onClick={() => onEdit && onEdit(theatre)}
+            className="p-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-colors cursor-pointer"
             title="Edit Theatre"
           >
             <Edit3 className="w-4 h-4" />
           </button>
+
           <button
-            onClick={() => onDelete(theatre)}
-            className="p-2 rounded-xl border border-[var(--border)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 transition-colors cursor-pointer text-[var(--text-muted)]"
+            onClick={() => onDelete && onDelete(theatre)}
+            className="p-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] hover:text-rose-500 hover:border-rose-500/30 transition-colors cursor-pointer"
             title="Delete Theatre"
           >
             <Trash2 className="w-4 h-4" />
@@ -97,143 +108,124 @@ export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit,
     );
   }
 
-  // Grid View (Default)
+  // --------------------------------------------------
+  // GRID VIEW LAYOUT (Exact Match to media_1790751385598.jpg)
+  // --------------------------------------------------
   return (
-    <div className="movtego-card rounded-2xl overflow-hidden hover:border-[var(--primary)] transition-all duration-300 flex flex-col justify-between group h-full text-left shadow-sm hover:shadow-md">
-      <div>
-        {/* Card Header Image with Badges */}
-        <div className="relative h-44 overflow-hidden bg-[var(--bg-page)]">
-          <img
-            src={image || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80'}
-            alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+    <div className="movtego-card rounded-3xl overflow-hidden bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--primary)]/70 transition-all duration-300 flex flex-col justify-between group h-full text-left shadow-sm hover:shadow-xl relative">
+      
+      {/* 1. Header Image Container */}
+      <div 
+        onClick={() => onViewDetails && onViewDetails(theatre)}
+        className="relative h-44 sm:h-48 overflow-hidden bg-slate-900 cursor-pointer"
+      >
+        <img
+          src={image || 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&auto=format&fit=crop&q=80'}
+          alt={name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
+        />
 
-          {/* Top Badges */}
-          <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-            <span className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-black/60 backdrop-blur-md text-white border border-white/20">
-              {city}
-            </span>
-            <span className="flex items-center gap-1 text-xs font-bold text-amber-400 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20">
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
-              {rating || 4.8}
-            </span>
-          </div>
+        {/* Top Status Pill (Left) & Heart Button (Right) */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
+          <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded-full shadow-md ${getStatusBadgeStyle(status)}`}>
+            {status}
+          </span>
 
-          {/* Bottom Title on Image */}
-          <div className="absolute bottom-3 left-3 right-3">
-            <h3 className="text-lg font-extrabold text-white line-clamp-1 drop-shadow-sm group-hover:text-[var(--primary)] transition-colors">
-              {name}
-            </h3>
-            <p className="text-xs text-slate-200 flex items-center gap-1 line-clamp-1 mt-0.5">
-              <MapPin className="w-3.5 h-3.5 shrink-0 text-[var(--primary)]" />
-              {address}
-            </p>
-          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsLiked(!isLiked);
+            }}
+            className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-rose-500 transition-all cursor-pointer border border-white/20 shadow-sm"
+            title="Save to Favorites"
+          >
+            <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-white'}`} />
+          </button>
         </div>
+      </div>
 
-        {/* Card Body */}
-        <div className="p-4 space-y-3">
-          {/* Screen count & Amenities */}
-          <div className="flex items-center justify-between text-xs text-[var(--text-muted)] border-b border-[var(--border)] pb-2.5">
-            <span className="font-semibold text-[var(--text-heading)] flex items-center gap-1.5 bg-[var(--primary-light)] text-[var(--primary)] px-2.5 py-1 rounded-lg">
-              <Monitor className="w-3.5 h-3.5" />
-              {screensCount || 4} Screens
-            </span>
-            <span className="text-[11px]">
-              {reviewsCount ? `${reviewsCount}+ reviews` : 'Verified Multiplex'}
-            </span>
-          </div>
-
-          {/* Amenities Pills */}
-          <div className="flex flex-wrap gap-1.5">
-            {amenities && amenities.slice(0, 4).map((amenity, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] font-semibold text-[var(--text-muted)] bg-[var(--bg-page)] border border-[var(--border)] px-2 py-0.5 rounded-md"
-              >
-                {amenity}
-              </span>
-            ))}
-            {amenities && amenities.length > 4 && (
-              <span className="text-[10px] font-semibold text-[var(--primary)] bg-[var(--primary-light)] px-1.5 py-0.5 rounded-md">
-                +{amenities.length - 4} more
-              </span>
-            )}
-          </div>
-
-          {/* Show Timings Grid */}
-          <div className="space-y-1.5 pt-1">
-            <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center justify-between">
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-[var(--primary)]" /> Show Timings
-              </span>
-              <span className="text-[10px] text-[var(--primary)]">
-                {shows ? `${shows.length} shows` : 'Active'}
-              </span>
-            </p>
-
-            <div className="grid grid-cols-3 gap-1.5">
-              {shows && shows.length > 0 ? (
-                shows.slice(0, 3).map((show, idx) => (
-                  <div
-                    key={idx}
-                    className="px-2 py-1 text-center text-xs font-bold rounded-lg bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/20 truncate"
-                  >
-                    {show.time}
-                  </div>
-                ))
+      {/* 2. Middle Brand Logo & Main Title Row */}
+      <div className="p-4.5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div className="space-y-2">
+          {/* Brand Logo Circle + Title */}
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[var(--primary)]/40 shrink-0 bg-slate-900 shadow-sm flex items-center justify-center font-black text-xs text-white uppercase">
+              {brandLogo ? (
+                <img src={brandLogo} alt={name} className="w-full h-full object-cover" />
               ) : (
-                <div className="col-span-3 text-center py-1 text-xs text-[var(--text-muted)]">
-                  No shows available
-                </div>
+                <Building2 className="w-5 h-5 text-[var(--primary)]" />
               )}
             </div>
+
+            <div className="space-y-0.5 min-w-0 flex-1">
+              <h3 
+                onClick={() => onViewDetails && onViewDetails(theatre)}
+                className="font-extrabold text-sm sm:text-base text-[var(--text-heading)] line-clamp-1 hover:text-[var(--primary)] transition-colors cursor-pointer tracking-tight"
+                title={name}
+              >
+                {name}
+              </h3>
+
+              <p className="text-xs text-[var(--text-muted)] flex items-center gap-1 line-clamp-1 font-medium">
+                <MapPin className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
+                {address || `${city}, Telangana`}
+              </p>
+            </div>
+          </div>
+
+          {/* Specs Row: Screens & Seats */}
+          <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] font-bold pt-1">
+            <span className="flex items-center gap-1.5">
+              <Monitor className="w-3.5 h-3.5 text-slate-400" />
+              {screensCount || 4} Screens
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Armchair className="w-3.5 h-3.5 text-slate-400" />
+              {(totalSeats || 1200).toLocaleString()} Seats
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Card Footer Actions */}
-      <div className="p-4 pt-0 space-y-2">
-        <button
-          onClick={() => onViewDetails(theatre)}
-          className="w-full btn-teal py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-sm"
-        >
-          <Sparkles className="w-4 h-4" /> View Details & Bookings
-        </button>
+        {/* 3. Bottom Type Tag & Action Buttons Bar */}
+        <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
+          
+          {/* Type Tag (Multiplex / Single Screen) */}
+          <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full border ${getTypeBadgeStyle(type)}`}>
+            {type}
+          </span>
 
-        <div className="flex items-center justify-between gap-2 pt-1 border-t border-[var(--border)]">
-          {contact?.phone ? (
-            <a
-              href={`tel:${contact.phone}`}
-              className="text-[11px] font-semibold text-[var(--text-muted)] hover:text-[var(--primary)] flex items-center gap-1 transition-colors"
-            >
-              <Phone className="w-3 h-3 text-[var(--primary)]" />
-              {contact.phone}
-            </a>
-          ) : (
-            <span className="text-[11px] text-[var(--text-muted)]">Location Verified</span>
-          )}
-
-          <div className="flex items-center gap-1">
+          {/* Quick Actions (View Eye, Edit Pencil, Menu/Delete) */}
+          <div className="flex items-center gap-1 text-[var(--text-muted)]">
             <button
-              onClick={() => onEdit(theatre)}
-              className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] transition-colors cursor-pointer text-[var(--text-muted)]"
-              title="Edit Theatre Details"
+              onClick={() => onViewDetails && onViewDetails(theatre)}
+              className="p-1.5 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
+              title="View Theatre Details"
             >
-              <Edit3 className="w-3.5 h-3.5" />
+              <Eye className="w-4 h-4" />
             </button>
+
             <button
-              onClick={() => onDelete(theatre)}
-              className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30 transition-colors cursor-pointer text-[var(--text-muted)]"
+              onClick={() => onEdit && onEdit(theatre)}
+              className="p-1.5 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-light)] transition-colors cursor-pointer"
+              title="Edit Theatre"
+            >
+              <Edit3 className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => onDelete && onDelete(theatre)}
+              className="p-1.5 rounded-lg hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
               title="Delete Theatre"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 };

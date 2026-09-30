@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from './Modal';
 import { Button } from './Button';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Trash2, CheckCircle2 } from 'lucide-react';
 
 export const ConfirmationModal = ({
   isOpen,
@@ -15,14 +15,21 @@ export const ConfirmationModal = ({
   isLoading = false,
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="space-y-4 text-left">
-        <div className="flex items-start gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl">
-          <AlertCircle className={`w-5 h-5 shrink-0 mt-0.5 ${variant === 'danger' ? 'text-red-400' : 'text-[#00D690]'}`} />
-          <p className="text-xs text-slate-300 leading-relaxed font-medium">{message}</p>
+    <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="max-w-md">
+      <div className="space-y-5 text-left py-1">
+        <div className="flex items-start gap-3.5 p-4 bg-[var(--input-bg)] border border-[var(--border)] rounded-2xl">
+          <div className={`p-2 rounded-xl shrink-0 ${variant === 'danger' ? 'bg-rose-500/15 text-rose-500 border border-rose-500/30' : 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'}`}>
+            {variant === 'danger' ? <Trash2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-xs font-black uppercase tracking-wider text-[var(--text-heading)]">
+              {variant === 'danger' ? 'Permanent Action Warning' : 'Confirmation Needed'}
+            </h4>
+            <p className="text-xs text-[var(--text-body)] leading-relaxed font-normal">{message}</p>
+          </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[var(--border)]">
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isLoading}>
             {cancelText}
           </Button>
@@ -31,7 +38,9 @@ export const ConfirmationModal = ({
             size="sm"
             onClick={onConfirm}
             isLoading={isLoading}
+            className="flex items-center gap-1.5 font-bold px-5 py-2"
           >
+            {variant === 'danger' ? <Trash2 className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
             {confirmText}
           </Button>
         </div>

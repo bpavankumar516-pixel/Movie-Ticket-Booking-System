@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Building2, MapPin, Phone, Mail, Globe, Monitor, ShieldCheck, Image as ImageIcon, Save } from 'lucide-react';
+import { Modal } from '../common/Modal';
+import { Input } from '../common/Input';
+import { Button } from '../common/Button';
+import { Building2, MapPin, Phone, Mail, Globe, Monitor, ShieldCheck, Image as ImageIcon, CheckCircle2, Edit3, PlusCircle, Armchair, Tag } from 'lucide-react';
 import { CITIES, AMENITIES_LIST } from '../../services/theatreApi';
 
 export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null }) => {
@@ -7,12 +10,16 @@ export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null
     name: '',
     city: 'Hyderabad',
     address: '',
-    screensCount: 4,
+    status: 'Active',
+    type: 'Multiplex',
+    screensCount: 6,
+    totalSeats: 1850,
     phone: '',
     email: '',
     website: '',
     mapUrl: '',
     image: '',
+    brandLogo: '',
     amenities: ['Dolby Atmos', 'VIP Recliners']
   });
 
@@ -22,12 +29,16 @@ export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null
         name: initialData.name || '',
         city: initialData.city || 'Hyderabad',
         address: initialData.address || '',
-        screensCount: initialData.screensCount || 4,
+        status: initialData.status || 'Active',
+        type: initialData.type || 'Multiplex',
+        screensCount: initialData.screensCount || 6,
+        totalSeats: initialData.totalSeats || 1850,
         phone: initialData.contact?.phone || initialData.phone || '',
         email: initialData.contact?.email || initialData.email || '',
         website: initialData.contact?.website || initialData.website || '',
         mapUrl: initialData.contact?.mapUrl || initialData.mapUrl || '',
         image: initialData.image || '',
+        brandLogo: initialData.brandLogo || '',
         amenities: initialData.amenities || ['Dolby Atmos', 'VIP Recliners']
       });
     } else {
@@ -35,26 +46,37 @@ export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null
         name: '',
         city: 'Hyderabad',
         address: '',
-        screensCount: 4,
+        status: 'Active',
+        type: 'Multiplex',
+        screensCount: 6,
+        totalSeats: 1850,
         phone: '',
         email: '',
         website: '',
         mapUrl: '',
         image: '',
+        brandLogo: '',
         amenities: ['Dolby Atmos', 'VIP Recliners']
       });
     }
   }, [initialData, isOpen]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.address.trim()) {
-      alert('Please provide theatre name and address.');
       return;
     }
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      screensCount: Number(formData.screensCount),
+      totalSeats: Number(formData.totalSeats),
+      contact: {
+        phone: formData.phone,
+        email: formData.email,
+        website: formData.website,
+        mapUrl: formData.mapUrl
+      }
+    });
   };
 
   const toggleAmenity = (amenity) => {
@@ -69,220 +91,191 @@ export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="movtego-card max-w-2xl w-full rounded-3xl overflow-hidden text-left shadow-2xl border border-[var(--border)] bg-[var(--bg-card)] my-auto">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={initialData ? 'Edit Theatre Details' : 'Add New Theatre'}
+      subtitle={initialData ? 'Modify cinema info, screens & amenities' : 'Register a new multiplex or single screen partner'}
+      icon={initialData ? Edit3 : PlusCircle}
+      maxWidth="max-w-2xl"
+    >
+      <form onSubmit={handleSubmit} className="space-y-4 text-left py-1">
         
-        {/* Header */}
-        <div className="p-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-page)]/50">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center font-bold">
-              <Building2 className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-lg font-extrabold text-[var(--text-heading)]">
-                {initialData ? 'Edit Theatre Info' : 'Add New Multiplex / Theatre'}
-              </h3>
-              <p className="text-xs text-[var(--text-muted)]">
-                {initialData ? 'Update location, screens & amenities' : 'Register a new cinema partner into the system'}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-[var(--primary-light)] hover:text-[var(--primary)] transition-colors cursor-pointer text-[var(--text-muted)]"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Form Content */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-          {/* Theatre Name & City */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-2 space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-[var(--primary)]" /> Theatre / Multiplex Name *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. AMB Cinemas Multiplex"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[var(--primary)]" /> City *
-              </label>
-              <select
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
-              >
-                {CITIES.filter((c) => c !== 'All').map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Full Address */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-[var(--primary)]" /> Full Address & Location Landmark *
-            </label>
-            <input
-              type="text"
+        {/* Name & City */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-start">
+          <div className="sm:col-span-2">
+            <Input
+              label="Theatre / Multiplex Name"
+              icon={Building2}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="e.g. PVR Cinemas - Nexus Mall"
               required
-              placeholder="e.g. Gachibowli - Miyapur Rd, Whitefields, Gachibowli, Hyderabad"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
             />
           </div>
 
-          {/* Number of Screens & Image URL */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <Monitor className="w-3.5 h-3.5 text-[var(--primary)]" /> Number of Screens
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="25"
-                value={formData.screensCount}
-                onChange={(e) => setFormData({ ...formData, screensCount: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-
-            <div className="md:col-span-2 space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <ImageIcon className="w-3.5 h-3.5 text-[var(--primary)]" /> Cover Image URL
-              </label>
-              <input
-                type="url"
-                placeholder="https://images.unsplash.com/..."
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* Contact details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <Phone className="w-3.5 h-3.5 text-[var(--primary)]" /> Contact Phone
-              </label>
-              <input
-                type="text"
-                placeholder="+91 40 2345 6789"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-[var(--primary)]" /> Contact Email
-              </label>
-              <input
-                type="email"
-                placeholder="support@cinema.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <Globe className="w-3.5 h-3.5 text-[var(--primary)]" /> Website Link
-              </label>
-              <input
-                type="url"
-                placeholder="https://pvrcinemas.com"
-                value={formData.website}
-                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[var(--primary)]" /> Google Maps Link
-              </label>
-              <input
-                type="url"
-                placeholder="https://maps.google.com/?q=..."
-                value={formData.mapUrl}
-                onChange={(e) => setFormData({ ...formData, mapUrl: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-page)] text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* Amenities Checkbox Group */}
-          <div className="space-y-2 pt-2 border-t border-[var(--border)]">
-            <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" /> Cinema Amenities & Facilities
+          <div className="w-full space-y-1.5 text-left">
+            <label className="block text-xs font-bold text-[var(--text-heading)] tracking-wide">
+              City <span className="text-[var(--primary)]">*</span>
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {AMENITIES_LIST.map((amenity) => {
-                const isSelected = formData.amenities.includes(amenity);
-                return (
-                  <button
-                    key={amenity}
-                    type="button"
-                    onClick={() => toggleAmenity(amenity)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer text-left flex items-center gap-2 ${
-                      isSelected
-                        ? 'bg-[var(--primary-light)] text-[var(--primary)] border-[var(--primary)]'
-                        : 'bg-[var(--bg-page)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--primary)]/50'
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {}}
-                      className="accent-[var(--primary)] rounded cursor-pointer"
-                    />
-                    <span className="truncate">{amenity}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <select
+              value={formData.city}
+              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              className="w-full rounded-2xl text-xs py-3 px-3.5 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] font-bold cursor-pointer transition-colors"
+            >
+              {CITIES.filter((c) => c !== 'All').map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Address */}
+        <Input
+          label="Full Address & Location Landmark"
+          icon={MapPin}
+          value={formData.address}
+          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+          placeholder="e.g. Kukatpally, Hyderabad, Telangana"
+          required
+        />
+
+        {/* Status, Type, Screens & Seats */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5 items-start">
+          <div className="w-full space-y-1.5 text-left">
+            <label className="block text-xs font-bold text-[var(--text-heading)] tracking-wide">
+              Status <span className="text-[var(--primary)]">*</span>
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="w-full rounded-2xl text-xs py-3 px-3 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] font-bold cursor-pointer"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Upcoming">Upcoming</option>
+            </select>
           </div>
 
-          {/* Buttons */}
-          <div className="pt-4 flex items-center justify-end gap-3 border-t border-[var(--border)]">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-xs font-bold border border-[var(--border)] hover:bg-[var(--primary-light)] hover:text-[var(--primary)] transition-colors cursor-pointer text-[var(--text-muted)]"
+          <div className="w-full space-y-1.5 text-left">
+            <label className="block text-xs font-bold text-[var(--text-heading)] tracking-wide">
+              Category Type <span className="text-[var(--primary)]">*</span>
+            </label>
+            <select
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              className="w-full rounded-2xl text-xs py-3 px-3 bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--input-border)] focus:outline-none focus:border-[var(--primary)] font-bold cursor-pointer"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn-teal px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md"
-            >
-              <Save className="w-4 h-4" /> {initialData ? 'Update Theatre' : 'Save New Theatre'}
-            </button>
+              <option value="Multiplex">Multiplex</option>
+              <option value="Single Screen">Single Screen</option>
+              <option value="IMAX">IMAX</option>
+            </select>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <Input
+            label="Screens Count"
+            type="number"
+            icon={Monitor}
+            value={formData.screensCount}
+            onChange={(e) => setFormData({ ...formData, screensCount: e.target.value })}
+            placeholder="6"
+            required
+          />
+
+          <Input
+            label="Total Seats"
+            type="number"
+            icon={Armchair}
+            value={formData.totalSeats}
+            onChange={(e) => setFormData({ ...formData, totalSeats: e.target.value })}
+            placeholder="1850"
+            required
+          />
+        </div>
+
+        {/* Media URLs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
+          <Input
+            label="Theatre Cover Image URL"
+            icon={ImageIcon}
+            value={formData.image}
+            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+            placeholder="https://images.unsplash.com/..."
+          />
+
+          <Input
+            label="Brand Logo Circle Image URL"
+            icon={Tag}
+            value={formData.brandLogo}
+            onChange={(e) => setFormData({ ...formData, brandLogo: e.target.value })}
+            placeholder="https://images.unsplash.com/..."
+          />
+        </div>
+
+        {/* Contact info */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 items-start">
+          <Input
+            label="Contact Phone"
+            icon={Phone}
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+91 40 4567 8901"
+          />
+
+          <Input
+            label="Contact Email"
+            icon={Mail}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="support@pvrcinemas.com"
+          />
+        </div>
+
+        {/* Amenities Selection */}
+        <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+          <label className="text-xs font-bold text-[var(--text-heading)] flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-[var(--primary)]" /> Cinema Amenities & Facilities
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {AMENITIES_LIST.map((amenity) => {
+              const isSelected = formData.amenities.includes(amenity);
+              return (
+                <button
+                  key={amenity}
+                  type="button"
+                  onClick={() => toggleAmenity(amenity)}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer text-left flex items-center gap-2 ${
+                    isSelected
+                      ? 'bg-[var(--primary-light)] text-[var(--primary)] border-[var(--primary)]'
+                      : 'bg-[var(--input-bg)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--primary)]/50'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-[var(--primary)]' : 'bg-slate-400'}`} />
+                  <span>{amenity}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Action Buttons Footer */}
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--border)]">
+          <Button variant="ghost" onClick={onClose} type="button">
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="teal" 
+            className="flex items-center gap-1.5 font-black px-6 py-2.5 shadow-md shadow-[#14B8A0]/30 hover:scale-105 transition-transform cursor-pointer"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            {initialData ? 'Save Changes' : 'Create Theatre'}
+          </Button>
+        </div>
+
+      </form>
+    </Modal>
   );
 };

@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Ticket, CheckCircle2, Clock, XCircle, Search, QrCode, X, 
-  MapPin, Calendar, AlertTriangle, TrendingUp 
+  MapPin, Calendar, AlertTriangle, TrendingUp, Building2, Film 
 } from 'lucide-react';
 import { useBooking } from '../../context/BookingContext';
+import { ETicketModal } from '../../components/booking/ETicketModal';
 
 export const BookingHistory = () => {
   const { bookingHistory, cancelBooking } = useBooking();
@@ -197,10 +198,30 @@ export const BookingHistory = () => {
                 return (
                   <tr key={bId} className="hover:bg-[var(--primary-light)]/30 transition-colors">
                     <td className="py-4 font-mono font-black text-[var(--primary)] text-sm">{bId}</td>
-                    <td className="py-4 font-black text-[var(--text-heading)]">{b.movieTitle || b.movie}</td>
+                    <td className="py-4 text-[var(--text-heading)]">
+                      <div className="flex items-center gap-2.5">
+                        {b.moviePoster || b.poster ? (
+                          <img src={b.moviePoster || b.poster} alt="" className="w-9 h-12 rounded-lg object-cover shrink-0 border border-[var(--border)] shadow-sm" />
+                        ) : (
+                          <div className="w-9 h-12 rounded-lg bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center shrink-0 border border-[var(--border)]">
+                            <Film className="w-4 h-4" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-extrabold text-[var(--text-heading)]">{b.movieTitle || b.movie}</div>
+                          <div className="text-[10px] text-[var(--primary)] font-bold">{b.format || '2D / Dolby Atmos'}</div>
+                        </div>
+                      </div>
+                    </td>
                     <td className="py-4 text-[var(--text-muted)]">
-                      <div>{b.theatreName || b.theatre}</div>
-                      <div className="text-[10px] text-[var(--text-muted)]/70">{b.city || 'Multiplex'}</div>
+                      <div className="font-extrabold text-[var(--text-heading)] flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
+                        <span>{b.theatreName || b.theatre || 'Multiplex Cinema'}</span>
+                      </div>
+                      <div className="text-[10px] text-[var(--text-muted)] font-semibold flex items-center gap-1 pt-1">
+                        <MapPin className="w-3 h-3 text-[var(--primary)] shrink-0" />
+                        <span>{b.city || 'Hyderabad'}</span> • <span className="text-[var(--text-heading)] font-bold">{b.screen || 'Audi 1 (IMAX)'}</span>
+                      </div>
                     </td>
                     <td className="py-4 font-black text-teal-400">{seatsStr}</td>
                     <td className="py-4 text-[var(--text-muted)]">
@@ -232,10 +253,10 @@ export const BookingHistory = () => {
                         {b.status === 'Confirmed' && (
                           <button
                             onClick={() => setCancellingBookingId(bId)}
-                            className="px-2.5 py-1.5 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors font-bold text-xs cursor-pointer border border-rose-500/20"
-                            title="Cancel Booking"
+                            className="px-3.5 py-1.5 rounded-xl bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white dark:hover:text-white transition-all font-extrabold text-xs cursor-pointer border border-rose-500/20 dark:border-rose-500/40 shadow-sm flex items-center gap-1.5"
+                            title="Cancel Ticket Booking"
                           >
-                            Cancel
+                            <XCircle className="w-3.5 h-3.5" /> Cancel
                           </button>
                         )}
                       </div>
@@ -256,104 +277,73 @@ export const BookingHistory = () => {
 
       {/* 4. DIGITAL M-TICKET QR PREVIEW MODAL */}
       {selectedTicketForModal && (
+        <ETicketModal 
+          ticket={selectedTicketForModal} 
+          onClose={() => setSelectedTicketForModal(null)} 
+        />
+      )}
+
+      {/* 5. THEME-ADAPTIVE CANCEL CONFIRMATION MODAL */}
+      {cancellingBookingId && (
         <div 
-          className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
-          onClick={() => setSelectedTicketForModal(null)}
+          className="fixed inset-0 z-[9999] bg-slate-900/50 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in transition-colors duration-300 overflow-y-auto"
+          onClick={() => setCancellingBookingId(null)}
         >
           <div 
-            className="movtego-card relative max-w-md w-full p-6 rounded-3xl bg-slate-950 text-white border border-white/20 shadow-2xl space-y-5 text-left"
+            className="relative max-w-md w-full my-auto text-left rounded-3xl bg-[var(--bg-card)] text-[var(--text-heading)] border border-[var(--border)] shadow-2xl overflow-hidden transition-all transform scale-100"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2">
-                <Ticket className="w-5 h-5 text-[var(--primary)]" />
-                <span className="font-black text-sm uppercase tracking-wider text-teal-300">Official Entry M-Ticket</span>
+            {/* Top Red Gradient Accent Bar */}
+            <div className="h-2 bg-gradient-to-r from-rose-500 via-red-500 to-amber-500 w-full" />
+
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-card)]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-500">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <span className="font-black text-xs uppercase tracking-wider text-rose-500">
+                  Cancel Ticket Reservation
+                </span>
               </div>
+
               <button 
-                onClick={() => setSelectedTicketForModal(null)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                onClick={() => setCancellingBookingId(null)}
+                className="w-8 h-8 rounded-full bg-[var(--input-bg)] text-[var(--text-muted)] hover:text-[var(--text-heading)] flex items-center justify-center border border-[var(--border)] transition-colors cursor-pointer"
+                title="Close Modal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Ticket Header Card */}
-            <div className="space-y-3 bg-slate-900 p-4 rounded-2xl border border-white/10">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase text-teal-300 tracking-wider bg-teal-500/20 px-2.5 py-0.5 rounded-md border border-teal-400/30">
-                  BOOKING CONFIRMED ✓
-                </span>
-                <span className="font-mono text-xs font-black text-slate-300">ID: {selectedTicketForModal.bookingId || selectedTicketForModal.id}</span>
-              </div>
-
-              <h2 className="text-xl font-black text-white">{selectedTicketForModal.movieTitle || selectedTicketForModal.movie}</h2>
-
-              <div className="text-xs text-slate-300 space-y-1">
-                <p className="flex items-center gap-1.5 font-semibold">
-                  <MapPin className="w-3.5 h-3.5 text-[var(--primary)]" />
-                  {selectedTicketForModal.theatreName || selectedTicketForModal.theatre}
+            {/* Modal Content */}
+            <div className="p-5 space-y-4 bg-[var(--bg-card)]">
+              <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-xs space-y-2">
+                <p className="font-bold text-rose-600 dark:text-rose-400">
+                  Are you sure you want to cancel booking <span className="font-mono text-xs font-black underline">{cancellingBookingId}</span>?
                 </p>
-                <p className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-teal-300" />
-                  {selectedTicketForModal.date || 'Today'} • {selectedTicketForModal.time || '06:30 PM'}
+                <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+                  Upon cancellation, your reserved seat(s) will be instantly released back to the multiplex system for public availability.
                 </p>
               </div>
-
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Seats</span>
-                  <span className="font-black text-teal-300 text-sm">{Array.isArray(selectedTicketForModal.seats) ? selectedTicketForModal.seats.join(', ') : selectedTicketForModal.seats}</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Amount Paid</span>
-                  <span className="font-black text-white text-sm">₹{selectedTicketForModal.totalPrice || selectedTicketForModal.amount || 250}</span>
-                </div>
-              </div>
             </div>
 
-            {/* QR Code Representation */}
-            <div className="bg-white p-4 rounded-2xl text-center space-y-2 border-4 border-teal-400/30">
-              <div className="w-44 h-44 mx-auto bg-slate-900 rounded-xl p-2 flex flex-col items-center justify-center space-y-2">
-                <QrCode className="w-32 h-32 text-teal-400" />
-                <span className="font-mono text-[9px] font-black text-slate-300 tracking-widest">{selectedTicketForModal.qrCodeData || selectedTicketForModal.bookingId}</span>
-              </div>
-              <p className="text-[10px] font-bold text-slate-700">Scan this QR Code at the multiplex usher entrance</p>
-            </div>
-
-            <button
-              onClick={() => setSelectedTicketForModal(null)}
-              className="w-full btn-teal py-3 rounded-xl text-xs font-black cursor-pointer shadow-lg"
-            >
-              Done & Close M-Ticket
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 5. CANCEL CONFIRMATION MODAL */}
-      {cancellingBookingId && (
-        <div className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
-          <div className="movtego-card max-w-sm w-full p-6 rounded-3xl bg-[var(--bg-card)] text-[var(--text-heading)] border border-[var(--border)] shadow-2xl space-y-4 text-left">
-            <div className="flex items-center gap-2 text-rose-500 font-black text-base">
-              <AlertTriangle className="w-5 h-5" /> Cancel Ticket Reservation?
-            </div>
-            <p className="text-xs text-[var(--text-muted)] font-medium leading-relaxed">
-              Are you sure you want to cancel booking <strong>{cancellingBookingId}</strong>? Reserved seats will be released back to public availability.
-            </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
+            {/* Modal Footer */}
+            <div className="p-4 bg-[var(--bg-card)] border-t border-[var(--border)] flex items-center justify-end gap-3">
               <button
                 onClick={() => setCancellingBookingId(null)}
-                className="px-4 py-2 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] font-bold text-xs cursor-pointer border border-[var(--border)]"
+                className="px-4 py-2.5 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] hover:bg-[var(--primary-light)] font-bold text-xs cursor-pointer border border-[var(--border)] transition-colors"
               >
                 Keep Booking
               </button>
               <button
                 onClick={handleConfirmCancel}
-                className="px-4 py-2 rounded-xl bg-rose-500 text-white font-black text-xs cursor-pointer shadow-md hover:bg-rose-600"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-xs cursor-pointer shadow-lg shadow-rose-500/30 flex items-center gap-1.5 transition-all"
               >
-                Yes, Cancel Booking
+                <XCircle className="w-4 h-4" /> Yes, Cancel Booking
               </button>
             </div>
+
           </div>
         </div>
       )}

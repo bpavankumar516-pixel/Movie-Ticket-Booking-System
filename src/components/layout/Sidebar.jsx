@@ -12,8 +12,8 @@ export const Sidebar = () => {
   const mainItems = [
     { label: 'Dashboard', icon: Home, path: '/dashboard' },
     { label: 'Movies', icon: Film, path: '/movies' },
-    { label: 'Bookings', icon: Ticket, path: '/booking-history' },
     { label: 'Theatres', icon: Building2, path: '/theatres' },
+    { label: 'Bookings', icon: Ticket, path: '/booking-history' },
     { label: 'Analytics', icon: TrendingUp, path: '/reports' },
   ];
 

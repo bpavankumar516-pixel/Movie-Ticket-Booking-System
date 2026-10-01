@@ -24,8 +24,156 @@ export const AMENITIES_LIST = [
   'Valet Parking'
 ];
 
+// Standard Multi-Movie Showtimes Presets for BookMyShow realism
+const STANDARD_THEATRE_SHOWS = (theatrePrefix, basePrice = 280) => [
+  {
+    id: `sh-${theatrePrefix}-1a`,
+    movieId: 101,
+    movieTitle: 'Dune: Part Two',
+    time: '10:30 AM',
+    screen: 'Audi 1 - IMAX 3D',
+    format: 'IMAX 3D',
+    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 40,
+    totalSeats: 180,
+    bookedCount: 32
+  },
+  {
+    id: `sh-${theatrePrefix}-1b`,
+    movieId: 101,
+    movieTitle: 'Dune: Part Two',
+    time: '02:15 PM',
+    screen: 'Audi 1 - IMAX 3D',
+    format: 'IMAX 3D',
+    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 40,
+    totalSeats: 180,
+    bookedCount: 45
+  },
+  {
+    id: `sh-${theatrePrefix}-1c`,
+    movieId: 101,
+    movieTitle: 'Dune: Part Two',
+    time: '06:00 PM',
+    screen: 'Audi 1 - IMAX 3D',
+    format: 'IMAX 3D',
+    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 50,
+    totalSeats: 180,
+    bookedCount: 55
+  },
+  {
+    id: `sh-${theatrePrefix}-1d`,
+    movieId: 101,
+    movieTitle: 'Dune: Part Two',
+    time: '09:45 PM',
+    screen: 'Audi 1 - IMAX 3D',
+    format: 'IMAX 3D',
+    poster: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 50,
+    totalSeats: 180,
+    bookedCount: 60
+  },
+  {
+    id: `sh-${theatrePrefix}-2a`,
+    movieId: 106,
+    movieTitle: 'Interstellar',
+    time: '11:15 AM',
+    screen: 'Audi 2 - Laser 4K',
+    format: 'Laser 4K',
+    poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 70,
+    totalSeats: 160,
+    bookedCount: 28
+  },
+  {
+    id: `sh-${theatrePrefix}-2b`,
+    movieId: 106,
+    movieTitle: 'Interstellar',
+    time: '03:30 PM',
+    screen: 'Audi 2 - Laser 4K',
+    format: 'Laser 4K',
+    poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 70,
+    totalSeats: 160,
+    bookedCount: 40
+  },
+  {
+    id: `sh-${theatrePrefix}-2c`,
+    movieId: 106,
+    movieTitle: 'Interstellar',
+    time: '07:15 PM',
+    screen: 'Audi 2 - Laser 4K',
+    format: 'Laser 4K',
+    poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 80,
+    totalSeats: 160,
+    bookedCount: 52
+  },
+  {
+    id: `sh-${theatrePrefix}-3a`,
+    movieId: 103,
+    movieTitle: 'Kalki 2898 AD',
+    time: '01:00 PM',
+    screen: 'Audi 3 - 4DX 3D',
+    format: '4DX 3D',
+    poster: 'https://images.unsplash.com/photo-1568832359672-e36cf5d74f54?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 10,
+    totalSeats: 150,
+    bookedCount: 35
+  },
+  {
+    id: `sh-${theatrePrefix}-3b`,
+    movieId: 103,
+    movieTitle: 'Kalki 2898 AD',
+    time: '05:00 PM',
+    screen: 'Audi 3 - 4DX 3D',
+    format: '4DX 3D',
+    poster: 'https://images.unsplash.com/photo-1568832359672-e36cf5d74f54?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 20,
+    totalSeats: 150,
+    bookedCount: 48
+  },
+  {
+    id: `sh-${theatrePrefix}-3c`,
+    movieId: 103,
+    movieTitle: 'Kalki 2898 AD',
+    time: '08:45 PM',
+    screen: 'Audi 3 - 4DX 3D',
+    format: '4DX 3D',
+    poster: 'https://images.unsplash.com/photo-1568832359672-e36cf5d74f54?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 20,
+    totalSeats: 150,
+    bookedCount: 50
+  },
+  {
+    id: `sh-${theatrePrefix}-4a`,
+    movieId: 105,
+    movieTitle: 'Avatar: The Way of Water',
+    time: '09:45 AM',
+    screen: 'Audi 4 - Dolby Atmos',
+    format: 'Dolby Atmos',
+    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 30,
+    totalSeats: 190,
+    bookedCount: 40
+  },
+  {
+    id: `sh-${theatrePrefix}-4b`,
+    movieId: 105,
+    movieTitle: 'Avatar: The Way of Water',
+    time: '05:15 PM',
+    screen: 'Audi 4 - Dolby Atmos',
+    format: 'Dolby Atmos',
+    poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=80',
+    price: basePrice + 40,
+    totalSeats: 190,
+    bookedCount: 55
+  }
+];
+
 export const INITIAL_THEATRES = [
-  // BENGALURU THEATRES (6 Total - Majority)
+  // BENGALURU THEATRES
   {
     id: 'th-109',
     name: 'PVR Orion Mall IMAX',
@@ -45,10 +193,7 @@ export const INITIAL_THEATRES = [
       { id: 'sc-901', name: 'Audi 1 - IMAX 3D', type: 'IMAX 3D', totalSeats: 180 },
       { id: 'sc-902', name: 'Audi 2 - 4DX 3D', type: '4DX 3D', totalSeats: 150 }
     ],
-    shows: [
-      { id: 'sh-901', movieId: 101, movieTitle: 'Dune: Part Two', time: '11:00 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 350, totalSeats: 180, bookedCount: 32 },
-      { id: 'sh-902', movieId: 106, movieTitle: 'Interstellar', time: '03:15 PM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 380, totalSeats: 180, bookedCount: 45 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('109', 300)
   },
   {
     id: 'th-115',
@@ -68,9 +213,7 @@ export const INITIAL_THEATRES = [
     screens: [
       { id: 'sc-115-1', name: 'Screen 1 - Insignia', type: 'VIP Recliner', totalSeats: 160 }
     ],
-    shows: [
-      { id: 'sh-115-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '01:30 PM', screen: 'Screen 1 - Insignia', format: 'Laser 4K', price: 320, totalSeats: 160, bookedCount: 28 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('115', 280)
   },
   {
     id: 'th-116',
@@ -90,9 +233,7 @@ export const INITIAL_THEATRES = [
     screens: [
       { id: 'sc-116-1', name: 'Screen 1 - MacroXE', type: 'Dolby Atmos', totalSeats: 150 }
     ],
-    shows: [
-      { id: 'sh-116-1', movieId: 105, movieTitle: 'Avatar: The Way of Water', time: '04:00 PM', screen: 'Screen 1 - MacroXE', format: 'Dolby Atmos', price: 290, totalSeats: 150, bookedCount: 36 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('116', 260)
   },
   {
     id: 'th-117',
@@ -112,9 +253,7 @@ export const INITIAL_THEATRES = [
     screens: [
       { id: 'sc-117-1', name: 'Gold Class Audi 1', type: 'VIP Recliner', totalSeats: 180 }
     ],
-    shows: [
-      { id: 'sh-117-1', movieId: 106, movieTitle: 'Interstellar', time: '07:30 PM', screen: 'Gold Class Audi 1', format: 'Laser 4K', price: 450, totalSeats: 180, bookedCount: 40 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('117', 350)
   },
   {
     id: 'th-118',
@@ -134,16 +273,14 @@ export const INITIAL_THEATRES = [
     screens: [
       { id: 'sc-118-1', name: 'Main Screen 4K', type: 'Laser 4K', totalSeats: 195 }
     ],
-    shows: [
-      { id: 'sh-118-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:00 PM', screen: 'Main Screen 4K', format: 'Laser 4K', price: 220, totalSeats: 195, bookedCount: 42 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('118', 220)
   },
   {
     id: 'th-119',
     name: 'PVR Forum Mall Koramangala',
     city: 'Bengaluru',
     address: 'Hosur Rd, Koramangala, Bengaluru, Karnataka',
-    status: 'Upcoming',
+    status: 'Active',
     type: 'Multiplex',
     rating: 4.8,
     reviewsCount: 2900,
@@ -153,11 +290,13 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1586899028174-e7098604235b?w=1000&auto=format&fit=crop&q=80',
     amenities: ['IMAX 3D', 'VIP Recliners', 'Gourmet Food'],
     contact: { phone: '+91 80 4455 6677', email: 'koramangala@pvrcinemas.com' },
-    screens: [],
-    shows: []
+    screens: [
+      { id: 'sc-119-1', name: 'Audi 1', type: 'IMAX 3D', totalSeats: 175 }
+    ],
+    shows: STANDARD_THEATRE_SHOWS('119', 300)
   },
 
-  // HYDERABAD THEATRES (2 Total - Exactly as requested)
+  // HYDERABAD THEATRES
   {
     id: 'th-101',
     name: 'PVR Cinemas - Nexus Mall',
@@ -182,10 +321,7 @@ export const INITIAL_THEATRES = [
       { id: 'sc-101', name: 'Audi 1 - IMAX 3D', type: 'IMAX 3D', totalSeats: 180 },
       { id: 'sc-102', name: 'Audi 2 - Dolby Atmos VIP', type: 'VIP Recliner', totalSeats: 160 }
     ],
-    shows: [
-      { id: 'sh-101', movieId: 101, movieTitle: 'Dune: Part Two', time: '10:30 AM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 290, totalSeats: 180, bookedCount: 32 },
-      { id: 'sh-103', movieId: 106, movieTitle: 'Interstellar', time: '06:00 PM', screen: 'Audi 2 - Dolby Atmos VIP', format: 'Dolby Atmos', price: 350, totalSeats: 160, bookedCount: 25 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('101', 290)
   },
   {
     id: 'th-108',
@@ -210,12 +346,10 @@ export const INITIAL_THEATRES = [
     screens: [
       { id: 'sc-801', name: 'Audi 1 - Superplex', type: 'IMAX 3D', totalSeats: 190 }
     ],
-    shows: [
-      { id: 'sh-801', movieId: 101, movieTitle: 'Dune: Part Two', time: '03:00 PM', screen: 'Audi 1 - Superplex', format: 'IMAX 3D', price: 320, totalSeats: 190, bookedCount: 38 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('108', 320)
   },
 
-  // REMAINING CITIES (1 Theatre Each - Exactly as requested)
+  // REMAINING CITIES THEATRES
   {
     id: 'th-110',
     name: 'PVR Maison JWO BKC',
@@ -231,9 +365,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1000&auto=format&fit=crop&q=80',
     amenities: ['VIP Recliners', 'Laser 4K', 'Gourmet Food'],
     contact: { phone: '+91 22 6789 0123', email: 'bkc@pvrcinemas.com' },
-    shows: [
-      { id: 'sh-1001', movieId: 106, movieTitle: 'Interstellar', time: '02:00 PM', screen: 'Luxe Screen 1', format: 'Laser 4K', price: 420, totalSeats: 160, bookedCount: 30 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('110', 400)
   },
   {
     id: 'th-111',
@@ -250,9 +382,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'Laser 4K', 'Gourmet Food'],
     contact: { phone: '+91 44 2811 1111', email: 'support@spicinemas.in' },
-    shows: [
-      { id: 'sh-1101', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:30 PM', screen: 'Sathyam Main Audi', format: 'Dolby Atmos', price: 250, totalSeats: 185, bookedCount: 35 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('111', 250)
   },
   {
     id: 'th-112',
@@ -269,9 +399,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?w=1000&auto=format&fit=crop&q=80',
     amenities: ['VIP Recliners', 'Gourmet Food', 'Valet Parking'],
     contact: { phone: '+91 11 4567 8900', email: 'directorscut@pvrcinemas.com' },
-    shows: [
-      { id: 'sh-1201', movieId: 106, movieTitle: 'Interstellar', time: '08:00 PM', screen: 'Director Audi 1', format: 'Laser 4K', price: 500, totalSeats: 140, bookedCount: 22 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('112', 450)
   },
   {
     id: 'th-113',
@@ -288,9 +416,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'VIP Recliners'],
     contact: { phone: '+91 866 2434 567', email: 'vijayawada@inoxmovies.com' },
-    shows: [
-      { id: 'sh-1301', movieId: 101, movieTitle: 'Dune: Part Two', time: '02:30 PM', screen: 'Audi 1', format: 'Dolby Atmos', price: 190, totalSeats: 150, bookedCount: 28 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('113', 200)
   },
   {
     id: 'th-114',
@@ -307,9 +433,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Dolby Atmos', 'Gourmet Food'],
     contact: { phone: '+91 891 2545 678', email: 'vizag@inoxmovies.com' },
-    shows: [
-      { id: 'sh-1401', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:15 PM', screen: 'Audi 2', format: 'Dolby Atmos', price: 180, totalSeats: 165, bookedCount: 30 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('114', 190)
   },
   {
     id: 'th-120',
@@ -326,9 +450,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=1000&auto=format&fit=crop&q=80',
     amenities: ['IMAX 3D', '4DX 3D', 'VIP Recliners'],
     contact: { phone: '+91 20 6677 8899', email: 'pune@pvrcinemas.com' },
-    shows: [
-      { id: 'sh-120-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '05:00 PM', screen: 'Audi 1 - IMAX 3D', format: 'IMAX 3D', price: 340, totalSeats: 180, bookedCount: 35 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('120', 310)
   },
   {
     id: 'th-121',
@@ -345,9 +467,7 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1000&auto=format&fit=crop&q=80',
     amenities: ['Insignia VIP', 'Laser 4K', 'Dolby Atmos'],
     contact: { phone: '+91 33 2288 9900', email: 'quest.inox@inoxmovies.com' },
-    shows: [
-      { id: 'sh-121-1', movieId: 106, movieTitle: 'Interstellar', time: '03:45 PM', screen: 'Insignia Audi 1', format: 'Laser 4K', price: 390, totalSeats: 155, bookedCount: 26 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('121', 340)
   },
   {
     id: 'th-122',
@@ -364,15 +484,13 @@ export const INITIAL_THEATRES = [
     image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1000&auto=format&fit=crop&q=80',
     amenities: ['VIP Recliners', 'MacroXE', 'Dolby Atmos'],
     contact: { phone: '+91 484 4567 890', email: 'kochi@cinepolis.com' },
-    shows: [
-      { id: 'sh-122-1', movieId: 101, movieTitle: 'Dune: Part Two', time: '06:00 PM', screen: 'Screen 1 - VIP', format: 'Dolby Atmos', price: 280, totalSeats: 190, bookedCount: 34 }
-    ]
+    shows: STANDARD_THEATRE_SHOWS('122', 270)
   }
 ];
 
 export const theatreApi = {
   getTheatres: (cityFilter = 'All', search = '') => {
-    const saved = localStorage.getItem('movtego_theatres_v7');
+    const saved = localStorage.getItem('movtego_theatres_v9');
     let list = INITIAL_THEATRES;
     if (saved) {
       try {
@@ -419,11 +537,11 @@ export const theatreApi = {
       screens: [
         { id: `sc-${Date.now()}-1`, name: 'Audi 1', type: 'Dolby Atmos', totalSeats: 180 }
       ],
-      shows: [],
+      shows: STANDARD_THEATRE_SHOWS(String(Date.now()).slice(-4), 280),
       ...newTheatre
     };
     const updatedList = [created, ...theatres];
-    localStorage.setItem('movtego_theatres_v7', JSON.stringify(updatedList));
+    localStorage.setItem('movtego_theatres_v9', JSON.stringify(updatedList));
     return created;
   },
 
@@ -432,7 +550,7 @@ export const theatreApi = {
     const index = theatres.findIndex(t => String(t.id) === String(id));
     if (index !== -1) {
       theatres[index] = { ...theatres[index], ...updatedFields };
-      localStorage.setItem('movtego_theatres_v7', JSON.stringify(theatres));
+      localStorage.setItem('movtego_theatres_v9', JSON.stringify(theatres));
       return theatres[index];
     }
     return null;
@@ -441,12 +559,12 @@ export const theatreApi = {
   deleteTheatre: (id) => {
     const theatres = theatreApi.getTheatres();
     const filtered = theatres.filter(t => String(t.id) !== String(id));
-    localStorage.setItem('movtego_theatres_v7', JSON.stringify(filtered));
+    localStorage.setItem('movtego_theatres_v9', JSON.stringify(filtered));
     return true;
   },
 
   resetToDefaults: () => {
-    localStorage.setItem('movtego_theatres_v7', JSON.stringify(INITIAL_THEATRES));
+    localStorage.setItem('movtego_theatres_v9', JSON.stringify(INITIAL_THEATRES));
     return INITIAL_THEATRES;
   },
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Building2, MapPin, Monitor, Armchair, Eye, Edit3, Trash2, Heart } from 'lucide-react';
+import { Building2, MapPin, Monitor, Armchair, Eye, Edit3, Trash2, Heart, Plus, Film } from 'lucide-react';
 
 export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit, onDelete }) => {
   const { id, name, city, address, rating, reviewsCount, screensCount, totalSeats, status = 'Active', type = 'Multiplex', brandLogo, image } = theatre;
@@ -80,6 +80,15 @@ export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit,
         </div>
 
         <div className="flex items-center gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[var(--border)] w-full sm:w-auto justify-end">
+          <button
+            onClick={() => onViewDetails && onViewDetails({ ...theatre, initialOpenAddMovie: true })}
+            className="px-3 py-2 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/30 hover:scale-105 transition-all text-xs font-bold flex items-center gap-1 cursor-pointer"
+            title="Add Movie from catalog to this theatre"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Movie</span>
+          </button>
+
           <button
             onClick={() => onViewDetails && onViewDetails(theatre)}
             className="p-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-colors cursor-pointer"
@@ -188,6 +197,31 @@ export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit,
               {(totalSeats || 1200).toLocaleString()} Seats
             </span>
           </div>
+
+          {/* Quick Showtimes Pills */}
+          <div className="pt-2 border-t border-[var(--border)]/50 space-y-1">
+            <span className="text-[9px] font-extrabold uppercase text-[var(--text-muted)] tracking-wider block">
+              Today's Showtimes
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {['10:30 AM', '02:15 PM', '06:00 PM', '09:45 PM'].map((time) => (
+                <button
+                  key={time}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onViewDetails) {
+                      onViewDetails({ ...theatre, initialShowtime: time });
+                    }
+                  }}
+                  className="px-2 py-1 rounded-lg bg-[var(--input-bg)] hover:bg-[var(--primary-light)] border border-[var(--border)] hover:border-[var(--primary)] text-[10px] font-black text-[var(--text-heading)] hover:text-[var(--primary)] transition-all cursor-pointer"
+                  title="Click to select seats & book"
+                >
+                  {time}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 3. Bottom Type Tag & Action Buttons Bar */}
@@ -198,8 +232,22 @@ export const TheatreCard = ({ theatre, viewMode = 'grid', onViewDetails, onEdit,
             {type}
           </span>
 
-          {/* Quick Actions (View Eye, Edit Pencil, Menu/Delete) */}
+          {/* Quick Actions (Add Movie, View Eye, Edit Pencil, Menu/Delete) */}
           <div className="flex items-center gap-1 text-[var(--text-muted)]">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onViewDetails) {
+                  onViewDetails({ ...theatre, initialOpenAddMovie: true });
+                }
+              }}
+              className="px-2 py-1 rounded-lg bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/30 hover:scale-105 transition-all text-[10px] font-extrabold flex items-center gap-0.5 cursor-pointer"
+              title="Add Movie from catalog to this theatre"
+            >
+              <Plus className="w-3 h-3" />
+              <span>+ Movie</span>
+            </button>
+
             <button
               onClick={() => onViewDetails && onViewDetails(theatre)}
               className="p-1 rounded-lg hover:text-[var(--primary)] hover:bg-[var(--primary-light)] transition-colors cursor-pointer"

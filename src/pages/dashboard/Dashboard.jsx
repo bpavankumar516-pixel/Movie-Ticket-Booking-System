@@ -218,14 +218,14 @@ export const Dashboard = () => {
     <div className="space-y-6 animate-fade-in text-left pb-16 font-sans">
       
       {/* 1. TOP METRICS ROW (5 Perfectly Aligned Clickable Stat Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {topMetrics.map((m, i) => {
           const Icon = m.icon;
           return (
             <div
               key={i}
               onClick={() => navigate(m.path)}
-              className="movtego-card p-4.5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col justify-between space-y-3 shadow-sm hover:shadow-xl hover:border-[var(--primary)] transition-all duration-300 cursor-pointer group min-h-[124px]"
+              className="movtego-card p-4.5 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col justify-between space-y-3 shadow-sm hover:shadow-xl hover:border-[var(--primary)] transition-all duration-300 cursor-pointer group min-h-[128px] h-full"
               title={`View ${m.label}`}
             >
               <div className="flex items-center justify-between">
@@ -241,7 +241,7 @@ export const Dashboard = () => {
                 <span className="text-xs text-[var(--text-muted)] font-bold">
                   {m.label}
                 </span>
-                <span className="text-2xl sm:text-3xl font-black text-[var(--text-heading)] tracking-tight leading-tight group-hover:text-[var(--primary)] transition-colors">
+                <span className="text-xl sm:text-2xl font-black text-[var(--text-heading)] tracking-tight leading-tight group-hover:text-[var(--primary)] transition-colors">
                   {m.value}
                 </span>
               </div>
@@ -256,7 +256,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 2. MIDDLE ANALYTICS & RECENT BOOKINGS GRID (Aligned Span 7 / Span 5) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         
         {/* LEFT COLUMN (Span 7): Revenue Analytics Chart & Screen Occupancy */}
         <div className="lg:col-span-7 space-y-5">

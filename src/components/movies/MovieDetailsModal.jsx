@@ -49,6 +49,7 @@ export const MovieDetailsModal = ({ movie, isOpen, onClose }) => {
       <SeatSelectionView
         movieTitle={activeMovie.title}
         theatreName={selectedTheatre}
+        city={selectedTheatre.includes('Bengaluru') ? 'Bengaluru' : selectedTheatre.includes('Delhi') ? 'Delhi' : selectedTheatre.includes('Kochi') ? 'Kochi' : 'Hyderabad'}
         showtime={selectedTimeSlot}
         dateStr={selectedDate}
         format="Screen 1 (IMAX 4K)"

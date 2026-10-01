@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
-import { Building2, MapPin, Phone, Mail, Globe, Monitor, ShieldCheck, Image as ImageIcon, CheckCircle2, Edit3, PlusCircle, Armchair, Tag } from 'lucide-react';
+import { Building2, MapPin, Phone, Mail, Monitor, ShieldCheck, Image as ImageIcon, CheckCircle2, Edit3, PlusCircle, Armchair, Tag } from 'lucide-react';
 import { CITIES, AMENITIES_LIST } from '../../services/theatreApi';
 
 export const TheatreFormModal = ({ isOpen, onClose, onSubmit, initialData = null }) => {

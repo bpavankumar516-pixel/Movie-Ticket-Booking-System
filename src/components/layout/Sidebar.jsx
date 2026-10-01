@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Home, Film, Clock, Ticket, Building2, Monitor, TrendingUp, Settings as SettingsIcon, User 
+  Home, Film, Ticket, Building2, TrendingUp, Settings as SettingsIcon, User 
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 

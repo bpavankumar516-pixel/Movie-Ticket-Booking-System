@@ -1,26 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Ticket, CheckCircle2, Clock, XCircle, Search, QrCode, X, 
-  MapPin, Calendar, CreditCard, ShieldCheck, Download, AlertTriangle 
+  MapPin, Calendar, AlertTriangle, TrendingUp 
 } from 'lucide-react';
 import { useBooking } from '../../context/BookingContext';
 
 export const BookingHistory = () => {
   const { bookingHistory, cancelBooking } = useBooking();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMovieFilter, setSelectedMovieFilter] = useState('All');
+  const [selectedDateFilter, setSelectedDateFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+
+  // Modals
   const [selectedTicketForModal, setSelectedTicketForModal] = useState(null);
   const [cancellingBookingId, setCancellingBookingId] = useState(null);
 
-  const filteredBookings = bookingHistory.filter((b) => {
-    const matchesSearch = 
-      (b.bookingId || b.id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (b.movieTitle || b.movie || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (b.theatreName || b.theatre || '').toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  // Dynamic Movie Options
+  const movieOptions = useMemo(() => {
+    const moviesSet = new Set(bookingHistory.map((b) => b.movieTitle || b.movie).filter(Boolean));
+    return ['All', ...Array.from(moviesSet)];
+  }, [bookingHistory]);
+
+  // Dynamic Date Options
+  const dateOptions = useMemo(() => {
+    const datesSet = new Set(bookingHistory.map((b) => b.date).filter(Boolean));
+    return ['All', ...Array.from(datesSet)];
+  }, [bookingHistory]);
+
+  // Filtered Bookings
+  const filteredBookings = useMemo(() => {
+    return bookingHistory.filter((b) => {
+      const bTitle = b.movieTitle || b.movie || '';
+      const bId = b.bookingId || b.id || '';
+      const bTheatre = b.theatreName || b.theatre || '';
+
+      const matchesSearch = 
+        bId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bTheatre.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesMovie = selectedMovieFilter === 'All' || bTitle.toLowerCase() === selectedMovieFilter.toLowerCase();
+      const matchesDate = selectedDateFilter === 'All' || b.date === selectedDateFilter;
+      const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
+
+      return matchesSearch && matchesMovie && matchesDate && matchesStatus;
+    });
+  }, [bookingHistory, searchQuery, selectedMovieFilter, selectedDateFilter, statusFilter]);
+
+  // Dynamic Stats
+  const totalCount = bookingHistory.length;
+  const confirmedCount = bookingHistory.filter((b) => b.status === 'Confirmed').length;
+  const cancelledCount = bookingHistory.filter((b) => b.status === 'Cancelled').length;
 
   const handleConfirmCancel = () => {
     if (cancellingBookingId) {
@@ -32,63 +63,116 @@ export const BookingHistory = () => {
   return (
     <div className="space-y-6 text-left animate-fade-in pb-12">
       
-      {/* 1. Header Stat Summary Bar */}
-      <div className="movtego-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl shadow-sm">
-        <div>
-          <h1 className="text-2xl font-black text-[var(--text-heading)] tracking-tight flex items-center gap-2.5">
-            <Ticket className="w-6 h-6 text-[var(--primary)]" /> Bookings & Digital M-Tickets
-          </h1>
-          <p className="text-xs text-[var(--text-muted)] font-medium mt-1">
-            Track customer reservations, generated Booking IDs, seat allocations, and digital entry QR passes.
-          </p>
+      {/* 1. Header Stat Summary - 3 Static Cards (Total: 2, Confirmed: 2, Cancelled: 0) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Card 1: Total Bookings */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm flex flex-col justify-between min-h-[96px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Total Bookings</span>
+            <div className="w-8 h-8 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center">
+              <Ticket className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-[var(--text-heading)]">
+            Total: {totalCount}
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <TrendingUp className="w-3 h-3" />
+            <span>Active Reservations</span>
+          </div>
         </div>
 
-        {/* Quick Stats Pills */}
-        <div className="flex items-center gap-3 text-xs font-bold shrink-0">
-          <span className="px-3.5 py-1.5 rounded-2xl bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/20">
-            Total: {bookingHistory.length}
-          </span>
-          <span className="px-3.5 py-1.5 rounded-2xl bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
-            Confirmed: {bookingHistory.filter(b => b.status === 'Confirmed').length}
-          </span>
-          <span className="px-3.5 py-1.5 rounded-2xl bg-rose-500/15 text-rose-500 border border-rose-500/30">
-            Cancelled: {bookingHistory.filter(b => b.status === 'Cancelled').length}
-          </span>
+        {/* Card 2: Confirmed Bookings */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm flex flex-col justify-between min-h-[96px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Confirmed Bookings</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-emerald-500">
+            Confirmed: {confirmedCount}
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+            <span>✓ Verified Entry Tickets</span>
+          </div>
+        </div>
+
+        {/* Card 3: Cancelled Bookings */}
+        <div className="movtego-card p-4.5 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2 shadow-sm flex flex-col justify-between min-h-[96px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Cancelled Bookings</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
+              <XCircle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-rose-500">
+            Cancelled: {cancelledCount}
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
+            <span>Released Seats</span>
+          </div>
         </div>
       </div>
 
       {/* 2. Controls & Search Filter Strip */}
-      <div className="movtego-card p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-sm">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
+      <div className="movtego-card p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 text-xs shadow-sm">
+        
+        {/* Search Input */}
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by Booking ID, Movie, Theatre..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--border)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--primary)] text-xs font-semibold"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--input-bg)] text-[var(--text-heading)] border border-[var(--border)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--primary)] text-xs font-semibold"
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <span className="font-bold text-[var(--text-muted)]">Status:</span>
-          {['All', 'Confirmed', 'Cancelled'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                statusFilter === st
-                  ? 'bg-primary-gradient text-white shadow-md'
-                  : 'bg-[var(--input-bg)] text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--text-heading)]'
-              }`}
-            >
-              {st}
-            </button>
-          ))}
+        {/* Filter Group */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          
+          {/* Filter by Movie */}
+          <select
+            value={selectedMovieFilter}
+            onChange={(e) => setSelectedMovieFilter(e.target.value)}
+            className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+          >
+            {movieOptions.map((mov) => (
+              <option key={mov} value={mov}>
+                {mov === 'All' ? 'All Movies' : mov}
+              </option>
+            ))}
+          </select>
+
+          {/* Filter by Booking Date */}
+          <select
+            value={selectedDateFilter}
+            onChange={(e) => setSelectedDateFilter(e.target.value)}
+            className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+          >
+            {dateOptions.map((d) => (
+              <option key={d} value={d}>
+                {d === 'All' ? 'All Dates' : d}
+              </option>
+            ))}
+          </select>
+
+          {/* Status Filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--input-bg)] text-xs font-bold text-[var(--text-heading)] focus:outline-none focus:border-[var(--primary)] transition-colors cursor-pointer"
+          >
+            <option value="All">All Status</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
         </div>
       </div>
 
-      {/* 3. Bookings Table */}
+      {/* 3. Booking History List Table */}
       <div className="movtego-card p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] overflow-x-auto shadow-sm">
         {filteredBookings.length > 0 ? (
           <table className="w-full text-left border-collapse">
@@ -140,10 +224,10 @@ export const BookingHistory = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedTicketForModal(b)}
-                          className="px-3 py-1.5 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors font-bold text-xs flex items-center gap-1 cursor-pointer border border-[var(--primary)]/30"
+                          className="px-3 py-1.5 rounded-xl bg-[var(--primary-light)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors font-bold text-xs flex items-center gap-1 cursor-pointer border border-[var(--primary)]/30 shadow-sm"
                           title="View Digital E-Ticket QR"
                         >
-                          <QrCode className="w-3.5 h-3.5" /> M-Ticket
+                          <QrCode className="w-3.5 h-3.5" /> View E-Ticket
                         </button>
                         {b.status === 'Confirmed' && (
                           <button
@@ -277,4 +361,3 @@ export const BookingHistory = () => {
     </div>
   );
 };
-

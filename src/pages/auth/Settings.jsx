@@ -9,26 +9,28 @@ export const Settings = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 py-2 animate-fade-in text-left">
       <div>
-        <h1 className="text-2xl font-bold text-[#0F1F2E]">
+        <h1 className="text-2xl font-black text-[var(--text-heading)]">
           Application Settings
         </h1>
-        <p className="text-xs text-[#8A97A6] mt-1">
+        <p className="text-xs text-[var(--text-muted)] mt-1 font-medium">
           Customize your cinema viewing preferences, theme, and account notifications.
         </p>
       </div>
 
       {/* Theme Section */}
-      <div className="movtego-card p-6 space-y-4">
+      <div className="movtego-card p-6 space-y-4 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {theme === 'dark' ? (
-              <Moon className="w-5 h-5 text-[#0FA58A]" />
+              <Moon className="w-5 h-5 text-[var(--primary)]" />
             ) : (
               <Sun className="w-5 h-5 text-amber-500" />
             )}
             <div>
-              <h3 className="text-sm font-bold text-[#0F1F2E]">Appearance Theme</h3>
-              <p className="text-xs text-[#8A97A6]">Current mode: <span className="text-[#0F1F2E] font-semibold capitalize">{theme}</span></p>
+              <h3 className="text-sm font-black text-[var(--text-heading)]">Appearance Theme</h3>
+              <p className="text-xs text-[var(--text-muted)] font-medium">
+                Current mode: <span className="text-[var(--primary)] font-bold capitalize">{theme}</span>
+              </p>
             </div>
           </div>
           <Button variant="secondary" size="sm" onClick={toggleTheme}>
@@ -38,36 +40,36 @@ export const Settings = () => {
       </div>
 
       {/* Notification Preferences */}
-      <div className="movtego-card p-6 space-y-4">
-        <h3 className="text-sm font-bold text-[#0F1F2E] flex items-center gap-2 border-b border-[#E8F0F0] pb-3">
-          <Bell className="w-4 h-4 text-[#0FA58A]" /> Notification Alerts
+      <div className="movtego-card p-6 space-y-4 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <h3 className="text-sm font-black text-[var(--text-heading)] flex items-center gap-2 border-b border-[var(--border)] pb-3">
+          <Bell className="w-4 h-4 text-[var(--primary)]" /> Notification Alerts
         </h3>
         
         <div className="space-y-3">
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-xs font-semibold text-[#0F1F2E]">Booking Confirmations</p>
-              <p className="text-[11px] text-[#8A97A6]">Receive instant E-Ticket SMS & Email notifications</p>
+              <p className="text-xs font-black text-[var(--text-heading)]">Booking Confirmations</p>
+              <p className="text-[11px] text-[var(--text-muted)] font-medium">Receive instant E-Ticket SMS & Email notifications</p>
             </div>
-            <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#0FA58A]" />
+            <input type="checkbox" defaultChecked className="w-4 h-4 accent-[var(--primary)]" />
           </label>
 
-          <label className="flex items-center justify-between cursor-pointer border-t border-[#E8F0F0] pt-3">
+          <label className="flex items-center justify-between cursor-pointer border-t border-[var(--border)] pt-3">
             <div>
-              <p className="text-xs font-semibold text-[#0F1F2E]">Movie Release Reminders</p>
-              <p className="text-[11px] text-[#8A97A6]">Alert me when pre-booking opens for my watchlist</p>
+              <p className="text-xs font-black text-[var(--text-heading)]">Movie Release Reminders</p>
+              <p className="text-[11px] text-[var(--text-muted)] font-medium">Alert me when pre-booking opens for my watchlist</p>
             </div>
-            <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#0FA58A]" />
+            <input type="checkbox" defaultChecked className="w-4 h-4 accent-[var(--primary)]" />
           </label>
         </div>
       </div>
 
       {/* Security */}
-      <div className="movtego-card p-6 space-y-4">
-        <h3 className="text-sm font-bold text-[#0F1F2E] flex items-center gap-2 border-b border-[#E8F0F0] pb-3">
-          <Shield className="w-4 h-4 text-[#0FA58A]" /> Account Security
+      <div className="movtego-card p-6 space-y-4 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <h3 className="text-sm font-black text-[var(--text-heading)] flex items-center gap-2 border-b border-[var(--border)] pb-3">
+          <Shield className="w-4 h-4 text-[var(--primary)]" /> Account Security
         </h3>
-        <p className="text-xs text-[#8A97A6]">
+        <p className="text-xs text-[var(--text-muted)] font-medium">
           Your account is secured with 256-bit encryption. Multi-factor authentication is active.
         </p>
       </div>

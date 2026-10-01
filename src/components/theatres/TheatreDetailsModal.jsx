@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, MapPin, Phone, Mail, Globe, Monitor, Star, Clock, Ticket, ShieldCheck, ExternalLink, Calendar, Film, CheckCircle2, Navigation, Users, ArrowLeft } from 'lucide-react';
+import { MapPin, Phone, Monitor, Star, Clock, Ticket, ShieldCheck, Film, Navigation, ArrowLeft } from 'lucide-react';
 import { SeatSelectionView } from '../booking/SeatSelectionView';
 
 export const TheatreDetailsModal = ({ theatre, onClose, onBookShow }) => {
@@ -274,7 +274,8 @@ export const TheatreDetailsModal = ({ theatre, onClose, onBookShow }) => {
                 <span className="font-extrabold text-[var(--text-heading)] block">{address}</span>
               </div>
               <div className="space-y-1">
-                <span className="font-bold text-[var(--text-muted)] block">Phone</span>
+                <span className="font-bold text-[var(--text-muted)] block">Phone Contact</span>
+                <span className="font-extrabold text-[var(--text-heading)] block">{contact?.phone || '+91 40 2345 6789'}</span>
               </div>
             </div>
           </div>

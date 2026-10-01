@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film, AlertCircle } from 'lucide-react';
+import { Film } from 'lucide-react';
 import { Button } from './Button';
 
 export const EmptyState = ({

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Clock, Calendar, Ticket, Eye, Edit, Trash2, Play, Heart, MoreVertical } from 'lucide-react';
+import { Star, Clock, Ticket, Eye, Edit, Trash2, Play, Heart, MoreVertical } from 'lucide-react';
 import { useMovies } from '../../context/MovieContext';
 
 export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onDelete }) => {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  ArrowLeft, Ticket, CheckCircle2, ShieldCheck, Tag, X, RefreshCw, Building2, QrCode, Monitor
+  ArrowLeft, Ticket, CheckCircle2, ShieldCheck, X, RefreshCw, Building2, QrCode, Monitor,
+  CreditCard, Smartphone, Wallet, AlertTriangle, Download, Printer, Lock, Check
 } from 'lucide-react';
 import { useBooking } from '../../context/BookingContext';
 import { useNavigate } from 'react-router-dom';
@@ -44,9 +45,23 @@ export const SeatSelectionView = ({
   ]);
 
   const [warningMsg, setWarningMsg] = useState(null);
+  
+  // Payment Flow Modal States
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'upi' | 'wallet'
+  const [paymentStatus, setPaymentStatus] = useState('idle'); // 'idle' | 'processing' | 'success' | 'failed'
+  const [failureError, setFailureError] = useState(null);
   const [confirmedTicket, setConfirmedTicket] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Form States
+  const [cardForm, setCardForm] = useState({
+    number: '4532 8901 2234 8892',
+    name: 'Pavan Kumar',
+    expiry: '12/28',
+    cvv: '889'
+  });
+  const [upiVpa, setUpiVpa] = useState('pavan@okicici');
+  const [selectedWallet, setSelectedWallet] = useState('paytm');
 
   const showWarning = (msg) => {
     setWarningMsg(msg);
@@ -69,15 +84,17 @@ export const SeatSelectionView = ({
     }
   };
 
-  // Price Calculation Breakdown (MOVTEGO standard currency formatting)
+  // Price Calculation Breakdown
   const subtotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
   const fee = selectedSeats.length > 0 ? 35 : 0;
   const totalPrice = subtotal + fee;
 
-  const handleConfirmAndPay = () => {
+  // Process Payment Execution
+  const handleExecutePayment = (shouldFail = false) => {
     if (selectedSeats.length === 0) return;
     const seatIdArray = selectedSeats.map(s => s.id);
 
+    // Validate Seat Availability
     const check = validateSeatAvailability(theatreName, movieTitle, dateStr, selectedShowtime, seatIdArray);
     if (!check.isAvailable) {
       showWarning(`❌ Seat(s) ${check.conflicts.join(', ')} were already booked.`);
@@ -85,10 +102,17 @@ export const SeatSelectionView = ({
       return;
     }
 
-    setIsProcessing(true);
+    setPaymentStatus('processing');
 
     setTimeout(() => {
+      if (shouldFail) {
+        setPaymentStatus('failed');
+        setFailureError('Bank transaction timed out. Transaction could not be authorized.');
+        return;
+      }
+
       try {
+        const txnId = `TXN-${Math.floor(10000000 + Math.random() * 90000000)}`;
         const newBooking = addBooking({
           movieId: 101,
           movieTitle,
@@ -103,11 +127,13 @@ export const SeatSelectionView = ({
           totalPrice,
           subtotalPrice: subtotal,
           convenienceFee: fee,
-          customerEmail: 'user@example.com',
-          customerPhone: '9876543210'
+          paymentMethod: paymentMethod.toUpperCase(),
+          transactionId: txnId,
+          customerEmail: 'pavan@example.com',
+          customerPhone: '+91 98765 43210'
         });
 
-        setIsProcessing(false);
+        setPaymentStatus('success');
         setIsCheckoutModalOpen(false);
         setConfirmedTicket(newBooking);
 
@@ -115,10 +141,14 @@ export const SeatSelectionView = ({
           onBookingComplete(newBooking);
         }
       } catch (err) {
-        setIsProcessing(false);
-        showWarning(err.message || 'Booking Failed.');
+        setPaymentStatus('failed');
+        setFailureError(err.message || 'Payment execution failed.');
       }
-    }, 1000);
+    }, 1500);
+  };
+
+  const handleDownloadTicket = () => {
+    window.print();
   };
 
   const timeSlots = ['10:30 AM', '02:15 PM', '06:00 PM', '07:30 PM', '09:45 PM'];
@@ -126,13 +156,11 @@ export const SeatSelectionView = ({
   return (
     <div className="w-full text-[var(--text-heading)] animate-fade-in flex flex-col space-y-6 font-sans select-none pb-10">
       
-      {/* 1. TOP HEADER CONTAINER CARD (MOVTEGO THEME) */}
+      {/* 1. TOP HEADER CONTAINER CARD */}
       <div className="movtego-card p-5 sm:p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-xl">
         
-        {/* Left Section: Back Button + Poster Thumbnail + Movie Meta */}
+        {/* Left Section: Back Button + Poster + Meta */}
         <div className="flex items-center gap-4">
-          
-          {/* Circular Back Button */}
           <button
             onClick={onBack}
             className="w-11 h-11 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] hover:border-[var(--primary)] text-[var(--text-heading)] flex items-center justify-center transition-all cursor-pointer group shrink-0 shadow-sm"
@@ -141,7 +169,6 @@ export const SeatSelectionView = ({
             <ArrowLeft className="w-5 h-5 text-[var(--primary)] group-hover:-translate-x-0.5 transition-transform" />
           </button>
 
-          {/* Movie Poster Thumbnail */}
           <div className="w-13 h-17 rounded-2xl overflow-hidden border border-[var(--border)] shadow-md bg-slate-900 shrink-0">
             <img
               src={moviePoster}
@@ -153,7 +180,6 @@ export const SeatSelectionView = ({
             />
           </div>
 
-          {/* Movie Details */}
           <div className="space-y-1 text-left">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-full bg-[var(--primary-light)] text-[var(--primary)] border border-[var(--primary)]/30 uppercase tracking-wider">
@@ -173,7 +199,6 @@ export const SeatSelectionView = ({
               {theatreName}
             </p>
           </div>
-
         </div>
 
         {/* Right Section: Show Timing Pills */}
@@ -201,7 +226,6 @@ export const SeatSelectionView = ({
             })}
           </div>
         </div>
-
       </div>
 
       {/* Warning Alert Banner */}
@@ -214,10 +238,9 @@ export const SeatSelectionView = ({
       {/* 2. MAIN SPLIT LAYOUT (SEAT MAP CARD + SUMMARY CARD) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
-        {/* LEFT COLUMN: AUDITORIUM SEAT MAP (8 COLS - MOVTEGO THEME) */}
+        {/* LEFT COLUMN: AUDITORIUM SEAT MAP (8 COLS) */}
         <div className="lg:col-span-8 movtego-card p-6 sm:p-8 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl flex flex-col justify-between space-y-8 min-h-[440px]">
           
-          {/* Top Curved Laser Screen Line */}
           <div className="space-y-3 pt-2 text-center">
             <div className="w-3/4 mx-auto h-2.5 border-t-4 border-[var(--primary)] rounded-t-[100%] shadow-[0_-12px_30px_rgba(20,184,160,0.5)] bg-gradient-to-b from-[var(--primary)]/30 to-transparent" />
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-[var(--primary)] block text-center flex items-center justify-center gap-1.5">
@@ -230,15 +253,12 @@ export const SeatSelectionView = ({
             {rows.map((rowLabel) => (
               <div key={rowLabel} className="flex items-center justify-between gap-3 text-xs">
                 
-                {/* Left Row Label */}
                 <span className="w-6 text-center font-black text-[var(--text-muted)] text-xs shrink-0">
                   {rowLabel}
                 </span>
 
-                {/* Seat Row Grid (Left 6 Seats - AISLE - Right 6 Seats) */}
                 <div className="flex items-center gap-2 sm:gap-2.5 mx-auto">
-                  
-                  {/* Left Block (Seats 1 to 6) */}
+                  {/* Left Block (1-6) */}
                   {leftSeats.map((num) => {
                     const seatId = `${rowLabel}${num}`;
                     const isBooked = bookedSeatIds.has(seatId);
@@ -265,12 +285,11 @@ export const SeatSelectionView = ({
                     );
                   })}
 
-                  {/* Middle AISLE Label */}
                   <span className="text-[9px] font-extrabold text-[var(--text-muted)] tracking-widest uppercase px-3 sm:px-4 select-none shrink-0">
                     AISLE
                   </span>
 
-                  {/* Right Block (Seats 7 to 12) */}
+                  {/* Right Block (7-12) */}
                   {rightSeats.map((num) => {
                     const seatId = `${rowLabel}${num}`;
                     const isBooked = bookedSeatIds.has(seatId);
@@ -296,19 +315,16 @@ export const SeatSelectionView = ({
                       </button>
                     );
                   })}
-
                 </div>
 
-                {/* Right Row Label */}
                 <span className="w-6 text-center font-black text-[var(--text-muted)] text-xs shrink-0">
                   {rowLabel}
                 </span>
-
               </div>
             ))}
           </div>
 
-          {/* Seat Capacity & Legend Footer */}
+          {/* Seat Capacity & Legend */}
           <div className="border-t border-[var(--border)] pt-4 flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-[var(--text-muted)] px-2">
             <div className="flex items-center gap-5">
               <div className="flex items-center gap-1.5">
@@ -329,15 +345,11 @@ export const SeatSelectionView = ({
               Multiplex Capacity: 72 Seats
             </span>
           </div>
-
         </div>
 
-        {/* RIGHT COLUMN: SELECTION SUMMARY CARD (4 COLS - MOVTEGO THEME) */}
+        {/* RIGHT COLUMN: SELECTION SUMMARY CARD (4 COLS) */}
         <div className="lg:col-span-4 movtego-card p-6 rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xl flex flex-col justify-between space-y-6">
-          
           <div className="space-y-6">
-            
-            {/* Header */}
             <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
               <h2 className="text-lg font-black text-[var(--text-heading)] flex items-center gap-2">
                 <Ticket className="w-5 h-5 text-[var(--primary)]" /> Selection Summary
@@ -388,10 +400,9 @@ export const SeatSelectionView = ({
                 <span className="font-black text-emerald-500">FREE</span>
               </div>
             </div>
-
           </div>
 
-          {/* Bottom Total Price & Action Row */}
+          {/* Bottom Action */}
           <div className="space-y-4 pt-4 border-t border-[var(--border)]">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-[var(--text-heading)]">
@@ -404,59 +415,303 @@ export const SeatSelectionView = ({
 
             <button
               disabled={selectedSeats.length === 0}
-              onClick={() => setIsCheckoutModalOpen(true)}
+              onClick={() => {
+                setPaymentStatus('idle');
+                setIsCheckoutModalOpen(true);
+              }}
               className="w-full btn-teal py-3.5 px-6 rounded-2xl shadow-xl shadow-[#14B8A0]/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 text-sm font-black uppercase tracking-wider disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ShieldCheck className="w-5 h-5" />
-              <span>Book Tickets</span>
+              <span>Proceed to Checkout</span>
             </button>
           </div>
-
         </div>
-
       </div>
 
-      {/* 3. PAYMENT & BOOKING MODAL */}
+      {/* 3. COMPLETE PAYMENT & CHECKOUT MODAL */}
       {isCheckoutModalOpen && (
         <div 
-          className="fixed inset-0 z-[65] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in text-left"
-          onClick={() => setIsCheckoutModalOpen(false)}
+          className="fixed inset-0 z-[65] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in text-left overflow-y-auto"
+          onClick={() => {
+            if (paymentStatus !== 'processing') setIsCheckoutModalOpen(false);
+          }}
         >
           <div 
-            className="movtego-card relative max-w-md w-full p-6 rounded-3xl bg-[var(--bg-card)] text-[var(--text-heading)] border border-[var(--border)] shadow-2xl space-y-5"
+            className="movtego-card relative max-w-lg w-full p-6 sm:p-7 rounded-3xl bg-[var(--bg-card)] text-[var(--text-heading)] border border-[var(--border)] shadow-2xl space-y-5 my-8"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
-              <h3 className="text-base font-black text-[var(--text-heading)] flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-[var(--primary)]" /> Confirm Booking
-              </h3>
-              <button onClick={() => setIsCheckoutModalOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-heading)] p-1">
-                <X className="w-5 h-5" />
-              </button>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[var(--primary)]" />
+                <h3 className="text-base sm:text-lg font-black text-[var(--text-heading)]">
+                  Payment Checkout & Booking
+                </h3>
+              </div>
+              {paymentStatus !== 'processing' && (
+                <button 
+                  onClick={() => setIsCheckoutModalOpen(false)}
+                  className="text-[var(--text-muted)] hover:text-[var(--text-heading)] p-1 rounded-xl hover:bg-[var(--input-bg)] transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
             </div>
 
-            <div className="p-4 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-[var(--text-muted)] font-bold">Movie:</span>
-                <span className="font-extrabold text-[var(--text-heading)]">{movieTitle}</span>
+            {/* PROCESSING STATE */}
+            {paymentStatus === 'processing' && (
+              <div className="py-12 text-center space-y-4">
+                <RefreshCw className="w-10 h-10 text-[var(--primary)] animate-spin mx-auto" />
+                <div>
+                  <h4 className="text-base font-black text-[var(--text-heading)]">Processing Secure Payment...</h4>
+                  <p className="text-xs text-[var(--text-muted)] pt-1">Communicating with bank payment gateway. Please do not close.</p>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[var(--text-muted)] font-bold">Seats ({selectedSeats.length}):</span>
-                <span className="font-black text-[var(--primary)]">{selectedSeats.map(s => s.id).join(', ')}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-[var(--border)] text-sm font-black">
-                <span>Total Amount:</span>
-                <span className="text-[var(--primary)]">₹{totalPrice.toLocaleString()}</span>
-              </div>
-            </div>
+            )}
 
-            <button
-              disabled={isProcessing}
-              onClick={handleConfirmAndPay}
-              className="w-full btn-teal py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg flex items-center justify-center gap-2"
-            >
-              {isProcessing ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Confirm & Pay Now'}
-            </button>
+            {/* FAILURE STATE */}
+            {paymentStatus === 'failed' && (
+              <div className="py-6 text-center space-y-5">
+                <div className="w-14 h-14 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto border border-red-500/30">
+                  <AlertTriangle className="w-7 h-7" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-lg font-black text-red-500">Payment Failed</h4>
+                  <p className="text-xs text-[var(--text-muted)] font-medium max-w-xs mx-auto">
+                    {failureError || 'Your transaction could not be processed.'}
+                  </p>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={() => setPaymentStatus('idle')}
+                    className="flex-1 btn-teal py-3 rounded-2xl text-xs font-black uppercase cursor-pointer"
+                  >
+                    Retry Payment
+                  </button>
+                  <button
+                    onClick={() => setIsCheckoutModalOpen(false)}
+                    className="px-4 py-3 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] text-xs font-bold text-[var(--text-heading)] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* IDLE / FORM STATE */}
+            {paymentStatus === 'idle' && (
+              <>
+                {/* Booking Summary Box */}
+                <div className="p-4 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                    <span className="font-extrabold text-[var(--text-heading)]">{movieTitle}</span>
+                    <span className="px-2 py-0.5 rounded bg-[var(--primary-light)] text-[var(--primary)] text-[10px] font-black">{format}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text-muted)] font-medium">Theatre:</span>
+                    <span className="font-bold text-[var(--text-heading)] text-right">{theatreName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text-muted)] font-medium">Showtime & Date:</span>
+                    <span className="font-bold text-[var(--text-heading)]">{dateStr} • {selectedShowtime}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text-muted)] font-medium">Seats ({selectedSeats.length}):</span>
+                    <span className="font-black text-[var(--primary)]">{selectedSeats.map(s => s.id).join(', ')}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-[var(--border)] text-sm font-black">
+                    <span>Total Payable Amount:</span>
+                    <span className="text-[var(--primary)]">₹{totalPrice.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                {/* Payment Method Selector Tabs */}
+                <div className="space-y-3">
+                  <span className="text-[11px] font-extrabold text-[var(--text-muted)] uppercase tracking-wider block">
+                    Select Payment Method
+                  </span>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => setPaymentMethod('card')}
+                      className={`p-3 rounded-2xl border text-xs font-bold flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                        paymentMethod === 'card'
+                          ? 'bg-[var(--primary-light)] border-[var(--primary)] text-[var(--primary)] shadow-sm'
+                          : 'bg-[var(--input-bg)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                      }`}
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      <span>Card Payment</span>
+                    </button>
+
+                    <button
+                      onClick={() => setPaymentMethod('upi')}
+                      className={`p-3 rounded-2xl border text-xs font-bold flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                        paymentMethod === 'upi'
+                          ? 'bg-[var(--primary-light)] border-[var(--primary)] text-[var(--primary)] shadow-sm'
+                          : 'bg-[var(--input-bg)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                      }`}
+                    >
+                      <Smartphone className="w-4 h-4" />
+                      <span>UPI Instant</span>
+                    </button>
+
+                    <button
+                      onClick={() => setPaymentMethod('wallet')}
+                      className={`p-3 rounded-2xl border text-xs font-bold flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                        paymentMethod === 'wallet'
+                          ? 'bg-[var(--primary-light)] border-[var(--primary)] text-[var(--primary)] shadow-sm'
+                          : 'bg-[var(--input-bg)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-heading)]'
+                      }`}
+                    >
+                      <Wallet className="w-4 h-4" />
+                      <span>Wallets</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* TAB 1: CARD PAYMENT FORM */}
+                {paymentMethod === 'card' && (
+                  <div className="space-y-3.5 pt-1 text-xs">
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--text-muted)] mb-1">Card Number</label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={cardForm.number}
+                          onChange={(e) => setCardForm({ ...cardForm, number: e.target.value })}
+                          placeholder="4532 •••• •••• 8892"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-mono font-bold focus:outline-none focus:border-[var(--primary)]"
+                        />
+                        <CreditCard className="w-4 h-4 absolute right-3 top-3 text-[var(--text-muted)]" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--text-muted)] mb-1">Cardholder Name</label>
+                      <input
+                        type="text"
+                        value={cardForm.name}
+                        onChange={(e) => setCardForm({ ...cardForm, name: e.target.value })}
+                        placeholder="Name on card"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-bold focus:outline-none focus:border-[var(--primary)]"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-[var(--text-muted)] mb-1">Expiry Date</label>
+                        <input
+                          type="text"
+                          value={cardForm.expiry}
+                          onChange={(e) => setCardForm({ ...cardForm, expiry: e.target.value })}
+                          placeholder="MM/YY"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-bold focus:outline-none focus:border-[var(--primary)]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-[var(--text-muted)] mb-1">CVV</label>
+                        <div className="relative">
+                          <input
+                            type="password"
+                            maxLength={4}
+                            value={cardForm.cvv}
+                            onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
+                            placeholder="•••"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-bold focus:outline-none focus:border-[var(--primary)]"
+                          />
+                          <Lock className="w-3.5 h-3.5 absolute right-3 top-3 text-[var(--text-muted)]" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: UPI PAYMENT UI */}
+                {paymentMethod === 'upi' && (
+                  <div className="space-y-4 pt-1 text-xs">
+                    <div>
+                      <label className="block text-[11px] font-bold text-[var(--text-muted)] mb-1">Enter Virtual Payment Address (VPA)</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={upiVpa}
+                          onChange={(e) => setUpiVpa(e.target.value)}
+                          placeholder="username@upi / mobile@okicici"
+                          className="flex-1 px-3.5 py-2.5 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] text-[var(--text-heading)] font-bold focus:outline-none focus:border-[var(--primary)]"
+                        />
+                        <button className="px-3 py-2.5 bg-[var(--primary-light)] text-[var(--primary)] font-extrabold rounded-xl border border-[var(--primary)]/30">
+                          Verify
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* QR Code Scanner Box */}
+                    <div className="p-4 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] flex items-center justify-between">
+                      <div className="space-y-1">
+                        <span className="font-extrabold text-[var(--text-heading)] block">Scan QR Code</span>
+                        <p className="text-[10px] text-[var(--text-muted)]">Open GPay, PhonePe, or Paytm to scan</p>
+                      </div>
+                      <div className="p-2 bg-white rounded-xl shadow-inner border border-slate-200">
+                        <QrCode className="w-12 h-12 text-slate-950" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 3: WALLET PAYMENT UI */}
+                {paymentMethod === 'wallet' && (
+                  <div className="space-y-3 pt-1 text-xs">
+                    <span className="block text-[11px] font-bold text-[var(--text-muted)]">Select Linked Wallet</span>
+                    <div className="space-y-2">
+                      {[
+                        { id: 'paytm', name: 'Paytm Wallet', desc: 'Balance: ₹ 1,450' },
+                        { id: 'phonepe', name: 'PhonePe Wallet', desc: 'Linked +91 98765 43210' },
+                        { id: 'amazonpay', name: 'Amazon Pay Balance', desc: 'Balance: ₹ 890' },
+                      ].map((w) => (
+                        <label
+                          key={w.id}
+                          onClick={() => setSelectedWallet(w.id)}
+                          className={`p-3 rounded-2xl border flex items-center justify-between cursor-pointer transition-all ${
+                            selectedWallet === w.id
+                              ? 'bg-[var(--primary-light)] border-[var(--primary)] text-[var(--text-heading)]'
+                              : 'bg-[var(--input-bg)] border-[var(--border)] text-[var(--text-muted)]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Wallet className="w-4 h-4 text-[var(--primary)]" />
+                            <div>
+                              <span className="font-black text-[var(--text-heading)] block">{w.name}</span>
+                              <span className="text-[10px] opacity-80">{w.desc}</span>
+                            </div>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedWallet === w.id ? 'border-[var(--primary)] bg-[var(--primary)]' : 'border-[var(--border)]'}`}>
+                            {selectedWallet === w.id && <Check className="w-3 h-3 text-white" />}
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pay Action & Failure Simulation toggle */}
+                <div className="pt-2 space-y-2">
+                  <button
+                    onClick={() => handleExecutePayment(false)}
+                    className="w-full btn-teal py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg shadow-[#14B8A0]/30 flex items-center justify-center gap-2"
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Pay ₹{totalPrice.toLocaleString()} Now</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleExecutePayment(true)}
+                    className="w-full text-[10px] text-red-500 font-bold hover:underline py-1 text-center block cursor-pointer opacity-70 hover:opacity-100"
+                  >
+                    [Test Simulation] Trigger Payment Failure Screen
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -465,27 +720,68 @@ export const SeatSelectionView = ({
       {confirmedTicket && (
         <div className="fixed inset-0 z-[75] bg-black/85 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in text-left">
           <div className="movtego-card relative max-w-sm w-full p-6 rounded-3xl bg-[var(--bg-card)] text-[var(--text-heading)] border border-[var(--primary)]/40 shadow-2xl space-y-5 text-center">
-            <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center mx-auto border border-[var(--primary)]/40">
+            
+            {/* Success Check Badge */}
+            <div className="w-14 h-14 rounded-full bg-[var(--primary-light)] text-[var(--primary)] flex items-center justify-center mx-auto border border-[var(--primary)]/40 shadow-lg shadow-[#14B8A0]/20">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <h2 className="text-xl font-black text-[var(--text-heading)]">Booking Confirmed!</h2>
-            <p className="text-xs text-[var(--text-muted)]">ID: <span className="font-mono text-[var(--primary)] font-bold">{confirmedTicket.bookingId}</span></p>
-
-            <div className="bg-white p-3 rounded-2xl space-y-1 border border-slate-200">
-              <QrCode className="w-24 h-24 text-slate-950 mx-auto" />
-              <p className="text-[10px] font-bold text-slate-800">Scan at Auditorium Gate</p>
+            <div className="space-y-1">
+              <h2 className="text-xl font-black text-[var(--text-heading)]">Payment Successful!</h2>
+              <p className="text-xs text-[var(--text-muted)] font-bold">
+                Booking ID: <span className="font-mono text-[var(--primary)]">{confirmedTicket.bookingId}</span>
+              </p>
+              <p className="text-[10px] text-[var(--text-muted)]">
+                Txn ID: <span className="font-mono">{confirmedTicket.transactionId || 'TXN-89410293'}</span>
+              </p>
             </div>
 
-            <button
-              onClick={() => {
-                setConfirmedTicket(null);
-                navigate('/booking-history');
-              }}
-              className="w-full btn-teal font-black py-3 rounded-2xl text-xs cursor-pointer"
-            >
-              View Booking History
-            </button>
+            {/* Ticket Summary Box */}
+            <div className="p-4 rounded-2xl bg-[var(--input-bg)] border border-[var(--border)] text-xs space-y-2 text-left">
+              <div className="flex justify-between font-extrabold text-[var(--text-heading)] border-b border-[var(--border)] pb-1.5">
+                <span>{confirmedTicket.movieTitle}</span>
+                <span className="text-[var(--primary)]">{confirmedTicket.format}</span>
+              </div>
+              <div className="flex justify-between text-[11px] text-[var(--text-muted)]">
+                <span>Theatre:</span>
+                <span className="font-bold text-[var(--text-heading)] truncate max-w-[170px]">{confirmedTicket.theatreName}</span>
+              </div>
+              <div className="flex justify-between text-[11px] text-[var(--text-muted)]">
+                <span>Showtime:</span>
+                <span className="font-bold text-[var(--text-heading)]">{confirmedTicket.date} • {confirmedTicket.time}</span>
+              </div>
+              <div className="flex justify-between text-[11px] text-[var(--text-muted)]">
+                <span>Seats:</span>
+                <span className="font-black text-[var(--primary)]">{Array.isArray(confirmedTicket.seats) ? confirmedTicket.seats.join(', ') : confirmedTicket.seats}</span>
+              </div>
+            </div>
+
+            {/* QR Boarding Pass */}
+            <div className="bg-white p-3 rounded-2xl space-y-1 border border-slate-200 shadow-inner">
+              <QrCode className="w-24 h-24 text-slate-950 mx-auto" />
+              <p className="text-[10px] font-bold text-slate-800">Scan QR Code at Gate</p>
+            </div>
+
+            {/* Actions: Download Ticket & View History */}
+            <div className="space-y-2">
+              <button
+                onClick={handleDownloadTicket}
+                className="w-full btn-teal font-black py-3 rounded-2xl text-xs cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-[#14B8A0]/30"
+              >
+                <Download className="w-4 h-4" /> Download E-Ticket / Print
+              </button>
+
+              <button
+                onClick={() => {
+                  setConfirmedTicket(null);
+                  navigate('/booking-history');
+                }}
+                className="w-full py-2.5 rounded-2xl text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-heading)] cursor-pointer"
+              >
+                View Booking History
+              </button>
+            </div>
+
           </div>
         </div>
       )}

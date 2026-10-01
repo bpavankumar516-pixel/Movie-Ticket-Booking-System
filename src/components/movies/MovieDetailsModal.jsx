@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Star, Clock, Calendar, Globe, Heart, Play, Ticket, Flame, X, 
-  ArrowLeft, Award, Film, Users, Sparkles, Monitor, Building2, 
-  DollarSign, MessageSquare, CheckCircle2, ShieldAlert, Video,
-  Share2, ThumbsUp, Tag, Percent, Check
+  Star, Clock, Calendar, Play, Ticket, X, 
+  ArrowLeft, Film, Users, Sparkles, Building2, 
+  MessageSquare, CheckCircle2, Video, Percent, Check
 } from 'lucide-react';
 import { useMovies } from '../../context/MovieContext';
 import { useNavigate } from 'react-router-dom';
@@ -269,9 +268,14 @@ export const MovieDetailsModal = ({ movie, isOpen, onClose }) => {
 
                 <div className="flex flex-wrap items-center justify-start gap-2">
                   <span className="text-xs text-slate-300 font-bold">Languages:</span>
-                  <span className="px-2.5 py-0.5 rounded-md bg-[var(--primary)]/20 text-teal-300 text-xs font-bold border border-teal-400/30">
-                    {activeMovie.language || 'English'}, Telugu, Hindi, Tamil
-                  </span>
+                  {(Array.isArray(activeMovie.languages)
+                    ? activeMovie.languages
+                    : (activeMovie.language ? [activeMovie.language] : ['English'])
+                  ).map((lang, idx) => (
+                    <span key={idx} className="px-2.5 py-0.5 rounded-md bg-[var(--primary)]/20 text-teal-300 text-xs font-bold border border-teal-400/30">
+                      {lang}
+                    </span>
+                  ))}
                 </div>
               </div>
 

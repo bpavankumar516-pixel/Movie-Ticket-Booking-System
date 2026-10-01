@@ -6,8 +6,8 @@ import { MovieFormModal } from '../../components/movies/MovieFormModal';
 import { ConfirmationModal } from '../../components/common/ConfirmationModal';
 import { 
   Film, Plus, Search, Eye, Calendar, Star, 
-  Grid, List, CheckCircle2, Ticket, Sparkles, ChevronLeft, ChevronRight,
-  Play, RefreshCw, X, Award, SlidersHorizontal, Check, Flame, Globe, ArrowUpDown, LayoutGrid
+  Grid, List, CheckCircle2, Sparkles, ChevronLeft, ChevronRight,
+  X, SlidersHorizontal, Check, Globe, ArrowUpDown, LayoutGrid
 } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Loading } from '../../components/common/Loading';
@@ -105,7 +105,7 @@ export const Movies = () => {
   );
 
   const genres = ['All', 'Sci-Fi', 'Action', 'Drama', 'Thriller', 'Biography', 'Animation', 'Adventure', 'Crime'];
-  const languages = ['All', 'English', 'Telugu', 'Hindi', 'Tamil', 'French'];
+  const languages = ['All', 'English', 'Telugu', 'Hindi', 'Tamil'];
 
   const hasActiveFilters = searchQuery !== '' || selectedGenre !== 'All' || selectedLanguage !== 'All' || minRating !== 'All' || activeCategoryTab !== 'all';
 
@@ -258,71 +258,6 @@ export const Movies = () => {
         </div>
 
       </div>
-
-      {/* 2. FEATURED SPOTLIGHT HERO BANNER (Only when no search/filters active) */}
-      {featuredMovie && !searchQuery && selectedGenre === 'All' && selectedLanguage === 'All' && activeCategoryTab === 'all' && (
-        <div className="relative rounded-3xl overflow-hidden border border-[#14B8A0]/40 shadow-xl bg-slate-950 text-white min-h-[260px] sm:min-h-[290px] flex items-end">
-          <div className="absolute inset-0 z-0">
-            <img 
-              src={featuredMovie.backdrop || featuredMovie.poster} 
-              alt={featuredMovie.title} 
-              onError={handleImageError}
-              className="w-full h-full object-cover opacity-40 transform scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
-          </div>
-
-          <div className="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
-            <div className="flex gap-5 items-end max-w-3xl">
-              <div className="w-28 sm:w-32 aspect-[2/3] rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl shrink-0 hidden sm:block bg-slate-900">
-                <img src={featuredMovie.poster} alt={featuredMovie.title} onError={handleImageError} className="w-full h-full object-cover" />
-              </div>
-
-              <div className="space-y-2 text-left">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-3 py-1 rounded-full bg-primary-gradient text-white text-[10px] font-black tracking-wider uppercase shadow-md flex items-center gap-1">
-                    <Award className="w-3 h-3" /> Blockbuster Spotlight
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-amber-400 font-extrabold text-xs flex items-center gap-1 border border-amber-400/30">
-                    <Star className="w-3.5 h-3.5 fill-amber-400" /> {featuredMovie.rating}
-                  </span>
-                </div>
-
-                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
-                  {featuredMovie.title}
-                </h2>
-
-                <p className="text-xs sm:text-sm text-slate-300 line-clamp-2 max-w-2xl font-normal">
-                  {featuredMovie.overview}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  {(featuredMovie.genres || ['Sci-Fi', 'Action']).map((g, idx) => (
-                    <span key={idx} className="px-2 py-0.5 rounded-md bg-white/10 text-slate-200 text-xs font-semibold border border-white/10">
-                      {g}
-                    </span>
-                  ))}
-                  {(featuredMovie.formats || ['IMAX 3D', 'Dolby Atmos']).map((f, idx) => (
-                    <span key={idx} className="px-2 py-0.5 rounded-md bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/40">
-                      {f}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={() => setSelectedMovieForDetail(featuredMovie)}
-                className="px-5 py-2.5 rounded-xl bg-primary-gradient text-white font-extrabold text-xs sm:text-sm shadow-lg hover:scale-105 transition-transform flex items-center gap-2 cursor-pointer"
-              >
-                <Ticket className="w-4 h-4" /> Book Showtimes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 3. MAIN CONTENT AREA: ICON-ALIGNED SIDEBAR FILTERS (LEFT) + CATALOG GRID/LIST (RIGHT) */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">

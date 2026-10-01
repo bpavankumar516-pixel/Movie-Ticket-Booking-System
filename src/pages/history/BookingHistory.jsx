@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useBooking } from '../../context/BookingContext';
 import { ETicketModal } from '../../components/booking/ETicketModal';
+import { toast } from 'react-toastify';
 
 export const BookingHistory = () => {
   const { bookingHistory, cancelBooking } = useBooking();
@@ -57,6 +58,7 @@ export const BookingHistory = () => {
   const handleConfirmCancel = () => {
     if (cancellingBookingId) {
       cancelBooking(cancellingBookingId);
+      toast.warning(`Booking #${cancellingBookingId} cancelled. Reserved seats have been released.`, { position: 'top-right' });
       setCancellingBookingId(null);
     }
   };

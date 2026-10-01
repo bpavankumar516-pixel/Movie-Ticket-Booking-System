@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Star, Clock, Ticket, Eye, Edit, Trash2, Play, Heart, MoreVertical } from 'lucide-react';
 import { useMovies } from '../../context/MovieContext';
+import { toast } from 'react-toastify';
 
 export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onDelete }) => {
   const { deleteMovie, isFavorite, toggleFavorite } = useMovies();
@@ -21,6 +22,16 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
   };
 
   const favorite = isFavorite(movie.id);
+
+  const handleToggleFav = (e) => {
+    e.stopPropagation();
+    toggleFavorite(movie.id);
+    if (!favorite) {
+      toast.success(`Added "${movie.title}" to Watchlist Favorites! ❤️`, { position: 'top-right' });
+    } else {
+      toast.info(`Removed "${movie.title}" from Favorites`, { position: 'top-right' });
+    }
+  };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return 'TBA';
@@ -189,13 +200,11 @@ export const MovieCard = ({ movie, viewMode = 'grid', onViewDetails, onEdit, onD
 
           {/* Watchlist Favorite Button */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleFavorite(movie.id);
-            }}
-            className={`p-2 rounded-full backdrop-blur-md transition-all shadow-md ${
+            onClick={handleToggleFav}
+            className={`p-2 rounded-full backdrop-blur-md transition-all shadow-md cursor-pointer ${
               favorite ? 'bg-red-500 text-white' : 'bg-black/60 text-white hover:bg-black/90'
             }`}
+            title={favorite ? "Remove from Favorites" : "Add to Favorites"}
           >
             <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-white' : ''}`} />
           </button>

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useBooking } from '../../context/BookingContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export const SeatSelectionView = ({
   movieTitle = 'Resident Evil',
@@ -159,6 +160,8 @@ export const SeatSelectionView = ({
         setConfirmedTicket(newBooking);
         setCurrentStep('ticket_success');
 
+        toast.success(`🎉 Ticket Booked! ${seatIdArray.length} seats reserved for "${movieTitle}".`, { position: 'top-right' });
+
         if (onBookingComplete) {
           onBookingComplete(newBooking);
         }
@@ -166,11 +169,13 @@ export const SeatSelectionView = ({
       } catch (err) {
         setPaymentStatus('failed');
         setFailureError(err.message || 'Payment execution failed.');
+        toast.error('Payment execution failed. Please try again.', { position: 'top-right' });
       }
     }, 1400);
   };
 
   const handleDownloadTicket = () => {
+    toast.info('📄 Printing / Downloading your M-Ticket...', { position: 'top-right' });
     window.print();
   };
 

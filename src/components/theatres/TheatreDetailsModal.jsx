@@ -5,6 +5,7 @@ import {
   Plus, Trash2, PlusCircle, Search, X, Check
 } from 'lucide-react';
 import { SeatSelectionView } from '../booking/SeatSelectionView';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import { useMovies } from '../../context/MovieContext';
 import { useTheatre } from '../../context/TheatreContext';
 
@@ -46,6 +47,7 @@ export const TheatreDetailsModal = ({ theatre, onClose, onBookShow, initialOpenA
   // Single showtime addition modal/inline state
   const [addShowtimeForMovie, setAddShowtimeForMovie] = useState(null);
   const [singleShowtimeInput, setSingleShowtimeInput] = useState('03:30 PM');
+  const [removingMovieGroup, setRemovingMovieGroup] = useState(null);
 
   const shows = theatre?.shows;
 
@@ -565,7 +567,7 @@ export const TheatreDetailsModal = ({ theatre, onClose, onBookShow, initialOpenA
                         </button>
 
                         <button
-                          onClick={() => handleRemoveMovieGroup(group.movieTitle)}
+                          onClick={() => setRemovingMovieGroup(group.movieTitle)}
                           className="p-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 text-xs font-bold transition-all cursor-pointer"
                           title="Remove this movie from theatre"
                         >
@@ -931,6 +933,23 @@ export const TheatreDetailsModal = ({ theatre, onClose, onBookShow, initialOpenA
           </div>
         </div>
       )}
+
+      {/* CONFIRMATION MODAL FOR REMOVING MOVIE FROM THEATRE */}
+      <ConfirmationModal
+        isOpen={Boolean(removingMovieGroup)}
+        onClose={() => setRemovingMovieGroup(null)}
+        onConfirm={() => {
+          if (removingMovieGroup) {
+            handleRemoveMovieGroup(removingMovieGroup);
+            setRemovingMovieGroup(null);
+          }
+        }}
+        title="Remove Movie from Theatre"
+        message={`Are you sure you want to remove "${removingMovieGroup}" from ${name} showtimes?`}
+        confirmText="Remove Movie"
+        cancelText="Cancel"
+        variant="danger"
+      />
 
     </div>
   );

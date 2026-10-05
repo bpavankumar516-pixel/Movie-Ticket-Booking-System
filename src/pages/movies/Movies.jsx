@@ -52,6 +52,18 @@ export const Movies = () => {
     setTimeout(() => setToastMsg(null), 3500);
   };
 
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setSelectedGenre('All');
+    setSelectedLanguage('All');
+    setSelectedStatus('All');
+    setSortBy('famous');
+    setMinRating('All');
+    setActiveCategoryTab('all');
+    setCurrentPage(1);
+    showToast('Reset all filters & search query.');
+  };
+
   const handleConfirmDelete = () => {
     if (deletingMovie) {
       deleteMovie(deletingMovie.id);
